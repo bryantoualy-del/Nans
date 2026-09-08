@@ -14,48 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add persistent autosave
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          marker="const $=id=>document.getElementById(id),d=n=>Math.floor(Math.random()*n)+1;"
-          block="""
-const SAVE_KEY='nans-combat-state-v1';
-function saveState(){
- try{
-  const payload={state:S,journal:$('log')?$('log').innerHTML:'',journalOpen:$('log')?$('log').classList.contains('open'):false,savedAt:Date.now()};
-  localStorage.setItem(SAVE_KEY,JSON.stringify(payload));
- }catch(e){console.warn('Autosave Nans indisponible',e)}
-}
-function loadState(){
- try{
-  const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
-  const payload=JSON.parse(raw);if(!payload||!payload.state)return false;
-  const st=payload.state;
-  Object.keys(S).forEach(k=>{if(Object.prototype.hasOwnProperty.call(st,k))S[k]=st[k]});
-  if(!S.eco||typeof S.eco!=='object')S.eco={action:false,bonus:false,reaction:false};
-  if($('log')&&payload.journal){$('log').innerHTML=payload.journal;if(payload.journalOpen)$('log').classList.add('open')}
-  return true;
- }catch(e){console.warn('Restauration Nans impossible',e);return false}
-}
-function clearSavedState(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
-"""
-          if "const SAVE_KEY='nans-combat-state-v1'" not in s:
-              if marker not in s: raise SystemExit('state marker not found')
-              s=s.replace(marker,marker+'\n'+block,1)
-          old="let hint=S.attacksLeft>0?S.attacksLeft+' attaque'+(S.attacksLeft>1?'s':'')+' disponible'+(S.attacksLeft>1?'s':'')+' dans l’action':bonusAttackAvailable()&&!S.eco.bonus?'attaque bonus disponible':'aucune attaque restante ce tour';$('attackHint').textContent=hint;$('attackBtn').disabled=S.attacksLeft===0&&!(bonusAttackAvailable()&&!S.eco.bonus);renderRages();renderEco();if($('ancBtn'))$('ancBtn').disabled=S.hornState!=='awakened'||!S.ancReady;\n}"
-          new="let hint=S.attacksLeft>0?S.attacksLeft+' attaque'+(S.attacksLeft>1?'s':'')+' disponible'+(S.attacksLeft>1?'s':'')+' dans l’action':bonusAttackAvailable()&&!S.eco.bonus?'attaque bonus disponible':'aucune attaque restante ce tour';$('attackHint').textContent=hint;$('attackBtn').disabled=S.attacksLeft===0&&!(bonusAttackAvailable()&&!S.eco.bonus);renderRages();renderEco();if($('ancBtn'))$('ancBtn').disabled=S.hornState!=='awakened'||!S.ancReady;saveState();\n}"
-          if old in s:s=s.replace(old,new,1)
-          s=s.replace("e.prepend(div)}", "e.prepend(div);saveState()}",1)
-          oldtail="document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});render();"
-          newtail="document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active');saveState()});loadState();document.addEventListener('click',()=>setTimeout(saveState,0),true);document.addEventListener('change',()=>setTimeout(saveState,0),true);window.addEventListener('beforeunload',saveState);render();"
-          if oldtail not in s: raise SystemExit('tail marker not found')
-          s=s.replace(oldtail,newtail,1)
-          p.write_text(s,encoding='utf-8')
-          PY
+      - name: Patch autosave
+        run: python scripts/patch_autosave.py
       - name: Commit autosave patch
         run: |
           git config user.name "github-actions[bot]"
