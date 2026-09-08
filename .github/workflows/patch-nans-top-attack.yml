@@ -2,7 +2,8 @@ name: Patch Nans top resources and attack toggles
 
 on:
   push:
-    branches: ["main"]
+    paths:
+      - '.github/workflows/patch-nans-top-attack.yml'
   workflow_dispatch:
 
 permissions:
@@ -42,7 +43,6 @@ jobs:
           if 'function exhaustDelta(' not in s:
               s=s.replace(needle,repl)
 
-          # render() previously assumes top Cor/Parade nodes exist; guard them after removing those top cards.
           s=s.replace("$('capeVal').textContent=S.capeReady?'1/1':'0/1';", "if($('capeVal'))$('capeVal').textContent=S.capeReady?'1/1':'0/1';")
           s=s.replace("$('hornVal').textContent=S.horn+' / '+S.hornMax;$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';", "if($('hornVal'))$('hornVal').textContent=S.horn+' / '+S.hornMax;if($('hornStateTxt'))$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';")
 
