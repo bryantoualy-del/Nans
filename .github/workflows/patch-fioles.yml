@@ -1,0 +1,34 @@
+name: Patch Volto vial colors
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-fioles.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make all five vials red at full charge
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          old = "let cells='';for(let i=1;i<=5;i++){let cls=i<=Math.min(S.hits,5)?'hit':'';if(S.hits>=5&&i===5)cls+=' red';if(S.hits>=6)cls+=' danger';cells+='<div class=\"cell '+cls+'\">'+i+'</div>'}"
+          new = "let cells='';for(let i=1;i<=5;i++){let cls=i<=Math.min(S.hits,5)?'hit':'';if(S.hits>=5&&i<=5)cls='hit red';if(S.hits>=6)cls+=' danger';cells+='<div class=\"cell '+cls+'\">'+i+'</div>'}"
+          if old not in s:
+              raise SystemExit('Target snippet not found')
+          p.write_text(s.replace(old, new, 1))
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Show all Volto vials red at full charge"
+          git push
