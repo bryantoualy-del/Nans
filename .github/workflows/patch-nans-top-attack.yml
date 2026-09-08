@@ -1,0 +1,58 @@
+name: Patch Nans top resources and attack toggles
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          s=s.replace('.resources{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:6px;margin-top:6px}', '.resources{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:6px;margin-top:6px}')
+
+          cor=''' <div class="card resource"><div><div class="label">Cor</div><div class="value" id="hornVal">3 / 3</div><div class="small" id="hornStateTxt">Dormant</div></div><button class="btn-horn" onclick="spendHorn(1,'Charge du Cor')">−1 charge</button></div>\n'''
+          parade=''' <div class="card resource"><div><div class="label">Parade de vent</div><div class="value" id="capeVal">1/1</div><div class="small">réaction · +2 CA</div></div><button class="btn-blue" onclick="useCape()">PARER</button></div>\n'''
+          s=s.replace(cor,'').replace(parade,'')
+
+          old_ex=''' <div class="card resource"><div><div class="label">Épuisement</div><div class="value" id="exhaust">1</div><div class="small">fiche actuelle</div></div><button onclick="chgExhaust()">Modifier</button></div>'''
+          new_ex=''' <div class="card resource"><div><div class="label">Épuisement</div><div class="value" id="exhaust">1</div><div class="small">niveau actuel</div></div><div class="exh-actions"><button onclick="exhaustDelta(-1)">−</button><button onclick="exhaustDelta(1)">+</button></div></div>'''
+          s=s.replace(old_ex,new_ex)
+
+          s=s.replace('.attack-options{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:6px 0}.attack-options button{font-size:10px;min-height:38px;padding:5px}.attack-options button.on{background:linear-gradient(#75301d,#38160e);border-color:#e06b38}.main-attack{font-size:19px;min-height:58px;background:linear-gradient(#68481e,#33230f);border-color:#c9993e}', '.attack-integrated{border:1px solid #6f5430;border-radius:14px;background:#15100b;padding:7px;margin-top:7px}.attack-options{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 6px}.attack-options button{flex:1 1 150px;font-size:10px;min-height:36px;padding:5px 8px;border-radius:999px}.attack-options button.on{background:linear-gradient(#75301d,#38160e);border-color:#e06b38;box-shadow:0 0 12px #e06b3833}.main-attack{font-size:19px;min-height:58px;background:linear-gradient(#68481e,#33230f);border-color:#c9993e}.exh-actions{display:flex;gap:5px;justify-content:center;margin-top:4px}.exh-actions button{min-width:42px;min-height:30px;padding:2px 10px;font-weight:900}')
+
+          old_attack='''  <div class="attack-options"><button id="recklessBtn" onclick="toggleOpt('reckless')">Attaque téméraire<br><span class="small">avantage / exposé</span></button><button id="gwmBtn" onclick="toggleOpt('gwm')">Cogneur lourd<br><span class="small">−5 toucher / +10</span></button><button id="ringBtn" onclick="toggleOpt('ring')">Surcharge anneau<br><span class="small">+1d6 / subit 1d4 force</span></button></div>\n  <button class="btn-main main-attack" id="attackBtn" onclick="smartAttack()">⚔️ ATTAQUE<span id="attackHint">2 attaques disponibles dans l'action</span></button>'''
+          new_attack='''  <div class="attack-integrated"><div class="attack-options"><button id="recklessBtn" onclick="toggleOpt('reckless')">Attaque téméraire<br><span class="small">avantage / exposé</span></button><button id="gwmBtn" onclick="toggleOpt('gwm')">Cogneur lourd<br><span class="small">−5 toucher / +10</span></button><button id="ringBtn" onclick="toggleOpt('ring')">Surcharge anneau<br><span class="small">+1d6 / subit 1d4 force</span></button></div><button class="btn-main main-attack" id="attackBtn" onclick="smartAttack()">⚔️ ATTAQUE<span id="attackHint">2 attaques disponibles dans l'action</span></button></div>'''
+          s=s.replace(old_attack,new_attack)
+
+          needle="function chgExhaust(){let v=prompt('Niveau d’épuisement',S.exhaust);if(v!==null&&!isNaN(v)){S.exhaust=Math.max(0,Math.min(6,Number(v)));render()}}"
+          repl=needle+"function exhaustDelta(n){S.exhaust=Math.max(0,Math.min(6,S.exhaust+n));render()}"
+          if 'function exhaustDelta(' not in s:
+              s=s.replace(needle,repl)
+
+          # render() previously assumes top Cor/Parade nodes exist; guard them after removing those top cards.
+          s=s.replace("$('capeVal').textContent=S.capeReady?'1/1':'0/1';", "if($('capeVal'))$('capeVal').textContent=S.capeReady?'1/1':'0/1';")
+          s=s.replace("$('hornVal').textContent=S.horn+' / '+S.hornMax;$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';", "if($('hornVal'))$('hornVal').textContent=S.horn+' / '+S.hornMax;if($('hornStateTxt'))$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';")
+
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Refine Nans top resources and attack toggles"
+          git push
