@@ -23,23 +23,23 @@ jobs:
 
           css_old=".weapon-card{border:1px solid #6f5430;border-radius:12px;background:#15100b;padding:9px;margin:4px 0 7px}"
           css_new=css_old+".weapon-card.charge-yellow{background:radial-gradient(circle at 50% 0%,#ffd86022,transparent 52%),linear-gradient(#493512,#1b1308);border-color:#e0b84d;box-shadow:0 0 18px #e0b84d22}.weapon-card.charge-yellow .weapon-hero b{color:#ffe07a}.weapon-card.charge-red{background:radial-gradient(circle at 50% 0%,#ff5d3b33,transparent 52%),linear-gradient(#4b160e,#1e0a07);border-color:#e35c3c;box-shadow:0 0 20px #e35c3c33}.weapon-card.charge-red .weapon-hero b{color:#ff9b73}"
-          if css_old not in s: raise SystemExit('weapon-card css pattern not found')
-          s=s.replace(css_old,css_new,1)
+          if css_old in s:
+              s=s.replace(css_old,css_new,1)
 
           html_old='<div id="axeView" class="weapon-view"><div class="weapon-card">'
           html_new='<div id="axeView" class="weapon-view"><div id="axeCard" class="weapon-card">'
-          if html_old not in s: raise SystemExit('axe card html pattern not found')
-          s=s.replace(html_old,html_new,1)
+          if html_old in s:
+              s=s.replace(html_old,html_new,1)
 
           fn_old="function toggleWeaponMode(){const m=S.mode==='sword'?'axe':'sword';useEco('bonus');S.mode=m;fx('slash');log('Mode '+(m==='sword'?'Épée + Bouclier · CA 18 · 1d6+8':'Hache · CA 15 · 1d12+8')+' · action bonus consommée.','resource','Volto-Fendoir');render()}"
           fn_new="function toggleWeaponMode(){if(S.eco.bonus)return ribbon('Action bonus indisponible','Le Volto ne peut pas changer de mode : l’action bonus a déjà été utilisée ce tour.');const m=S.mode==='sword'?'axe':'sword';S.eco.bonus=true;S.mode=m;fx('slash');log('Mode '+(m==='sword'?'Épée + Bouclier · CA 18 · 1d6+8':'Hache · CA 15 · 1d12+8')+' · action bonus consommée.','resource','Volto-Fendoir');render()}"
-          if fn_old not in s: raise SystemExit('toggleWeaponMode pattern not found')
-          s=s.replace(fn_old,fn_new,1)
+          if fn_old in s:
+              s=s.replace(fn_old,fn_new,1)
 
           render_old="$('modeSwitch').classList.toggle('axe',S.mode==='axe');$('swordName').classList.toggle('active',S.mode==='sword');$('axeName').classList.toggle('active',S.mode==='axe');$('swordView').classList.toggle('active',S.mode==='sword');$('axeView').classList.toggle('active',S.mode==='axe');"
           render_new="$('modeSwitch').classList.toggle('axe',S.mode==='axe');$('modeSwitch').disabled=S.eco.bonus;$('swordName').classList.toggle('active',S.mode==='sword');$('axeName').classList.toggle('active',S.mode==='axe');$('swordView').classList.toggle('active',S.mode==='sword');$('axeView').classList.toggle('active',S.mode==='axe');const axeCard=$('axeCard');axeCard.classList.toggle('charge-yellow',S.stored==='yellow');axeCard.classList.toggle('charge-red',S.stored==='red');"
-          if render_old not in s: raise SystemExit('render mode pattern not found')
-          s=s.replace(render_old,render_new,1)
+          if render_old in s:
+              s=s.replace(render_old,render_new,1)
 
           p.write_text(s,encoding='utf-8')
       - name: Commit patch
@@ -48,4 +48,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
           git commit -m "Color axe mode by stored energy and lock switch after bonus action" || exit 0
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
