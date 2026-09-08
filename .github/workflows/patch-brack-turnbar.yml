@@ -1,0 +1,59 @@
+name: Match Brack turn bar
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-brack-turnbar.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch turn bar
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          old_css=".turnbar{display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:5px;margin-bottom:7px}.nextturn{background:linear-gradient(#76521f,#3a2812);border-color:#d5a544;font-weight:900}.eco{min-height:44px;border:1px solid #5f4a31;border-radius:9px;background:#17110b;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px}.eco.used{opacity:.45}"
+          new_css=".turnbar{display:grid;grid-template-columns:auto repeat(3,1fr) auto auto;gap:6px;margin:6px 0 5px}.turnmark,.eco{min-height:44px;border:1px solid #624128;border-radius:9px;background:#170e09;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:11px}.turnbar>button{min-height:44px;padding:5px 9px}.eco.used{opacity:.55}.roll-toggle{min-width:108px;font-size:11px;font-weight:800}.roll-toggle.auto{border-color:#cf9d48}.roll-toggle.manual{border-color:#75b9d9;box-shadow:0 0 10px rgba(95,195,240,.18)}.btn-gold{background:linear-gradient(#6b5428,#382914);border-color:#a17d3e}"
+          if old_css not in s: raise SystemExit('old turnbar css not found')
+          s=s.replace(old_css,new_css,1)
+
+          old_media=".turnbar{grid-template-columns:repeat(3,1fr)}.nextturn{grid-column:span 3}"
+          new_media=".turnbar{grid-template-columns:repeat(3,1fr)}.turnmark{grid-column:span 3}.roll-toggle{grid-column:span 1}.turnbar>.btn-gold{grid-column:span 2}"
+          s=s.replace(old_media,new_media,1)
+
+          old_html='<div class="turnbar"><button class="nextturn" onclick="nextTurn()">NOUVEAU TOUR <b id="turn">1</b></button><div class="eco" id="ecoA">ACTION<br>disponible</div><div class="eco" id="ecoB">BONUS<br>disponible</div><div class="eco" id="ecoR">RÉACTION<br>disponible</div></div>'
+          new_html='<div class="turnbar"><div class="turnmark"><b>TOUR <span id="turnNo">1</span></b><span class="small" id="turnDmg">0 dégâts</span></div><div id="ecoAction" class="eco"><b>ACTION</b><span>libre</span></div><div id="ecoBonus" class="eco"><b>BONUS</b><span>libre</span></div><div id="ecoReaction" class="eco"><b>RÉACTION</b><span>libre</span></div><button id="rollToggle" class="roll-toggle auto" onclick="toggleRollMode()">🎲 Jets auto</button><button class="btn-gold" onclick="nextTurn()">Tour suivant ↻</button></div>'
+          if old_html not in s: raise SystemExit('old turnbar html not found')
+          s=s.replace(old_html,new_html,1)
+
+          s=s.replace("energyUsedTurn:false,attacksLeft:2,gwmBonus:false,pending:null};","energyUsedTurn:false,attacksLeft:2,gwmBonus:false,pending:null,turnDamage:0,rollMode:'auto'};",1)
+
+          old_render="function renderEco(){['action','bonus','reaction'].forEach((k,i)=>{const e=$(['ecoA','ecoB','ecoR'][i]);e.classList.toggle('used',S.eco[k]);e.innerHTML=k.toUpperCase()+'<br>'+(S.eco[k]?'utilisée':'disponible')})}"
+          new_render="function renderEco(){$('turnNo').textContent=S.turn;$('turnDmg').textContent=S.turnDamage+' dégâts';let ea=$('ecoAction'),eb=$('ecoBonus'),er=$('ecoReaction');ea.classList.toggle('used',S.eco.action);eb.classList.toggle('used',S.eco.bonus);er.classList.toggle('used',S.eco.reaction);let actionText=S.eco.action?(S.attacksLeft>0?'Attaquer • '+S.attacksLeft+' frappe'+(S.attacksLeft===1?'':'s')+' restante'+(S.attacksLeft===1?'':'s'):'utilisée'):'libre';ea.innerHTML='<b>ACTION</b><span>'+actionText+'</span>';eb.innerHTML='<b>BONUS</b><span>'+(S.eco.bonus?'utilisée':'libre')+'</span>';er.innerHTML='<b>RÉACTION</b><span>'+(S.eco.reaction?'utilisée':'libre')+'</span>';let rt=$('rollToggle');rt.textContent=S.rollMode==='auto'?'🎲 Jets auto':'✋ Jets manuels';rt.classList.toggle('auto',S.rollMode==='auto');rt.classList.toggle('manual',S.rollMode==='manual')}"
+          if old_render not in s: raise SystemExit('renderEco not found')
+          s=s.replace(old_render,new_render,1)
+
+          s=s.replace("function resetTurn(){S.eco={action:false,bonus:false,reaction:false};S.energyUsedTurn=false;S.attacksLeft=2;S.gwmBonus=false;render()}","function resetTurn(){S.eco={action:false,bonus:false,reaction:false};S.energyUsedTurn=false;S.attacksLeft=2;S.gwmBonus=false;S.turnDamage=0;render()}",1)
+          s=s.replace("function nextTurn(){S.turn++;resetTurn();$('turn').textContent=S.turn;render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}","function nextTurn(){S.turn++;resetTurn();render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}",1)
+
+          old_roll="function rollAttack(){let a=d(20),b=S.reckless?d(20):null,raw=b!==null?Math.max(a,b):a;return{a,b,raw,total:raw+attackBonus(),crit:raw===20,bonus:attackBonus()}}"
+          new_roll="function toggleRollMode(){S.rollMode=S.rollMode==='auto'?'manual':'auto';renderEco();log('Mode de jet : '+(S.rollMode==='auto'?'automatique':'manuel'))}function rollAttack(){let a,b=null;if(S.rollMode==='manual'){let v=prompt('Résultat naturel du d20 ?');if(v===null)return null;a=Math.max(1,Math.min(20,parseInt(v)||1));if(S.reckless){let w=prompt('Second d20 (Attaque téméraire) ?');if(w===null)return null;b=Math.max(1,Math.min(20,parseInt(w)||1))}}else{a=d(20);b=S.reckless?d(20):null}let raw=b!==null?Math.max(a,b):a;return{a,b,raw,total:raw+attackBonus(),crit:raw===20,bonus:attackBonus()}}"
+          if old_roll not in s: raise SystemExit('rollAttack not found')
+          s=s.replace(old_roll,new_roll,1)
+          s=s.replace("function beginAttack(kind,impact){let r=rollAttack();let stored=impact?S.stored:'none';","function beginAttack(kind,impact){let r=rollAttack();if(!r){S.pending=null;render();return}let stored=impact?S.stored:'none';",1)
+
+          s=s.replace("let dmg=damageRoll(p);if(p.roll.crit)S.gwmBonus=true;","let dmg=damageRoll(p);S.turnDamage+=dmg.total;if(p.roll.crit)S.gwmBonus=true;",1)
+          s=s.replace("S.turn=1;S.exhaust=Math.max(0,S.exhaust-1);document.body.classList.remove('raging','bark');resetTurn();$('turn').textContent=1;","S.turn=1;S.exhaust=Math.max(0,S.exhaust-1);document.body.classList.remove('raging','bark');resetTurn();",1)
+
+          p.write_text(s)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git commit -m "Use Brack Mard turn bar on Nans"
+          git push
