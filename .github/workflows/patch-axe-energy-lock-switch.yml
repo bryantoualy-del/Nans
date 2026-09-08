@@ -50,3 +50,4 @@ jobs:
           git commit -m "Color axe mode by stored energy and lock switch after bonus action" || exit 0
           git pull --rebase origin main
           git push origin HEAD:main
+# retry 3
