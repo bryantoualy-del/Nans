@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171108">
+<title>Nans Pointud — Compagnon de combat</title>
+<style>
+:root{--bg:#0e0b07;--panel:#20180f;--panel2:#2b2115;--line:#705835;--gold:#d2a64e;--amber:#ffb83f;--cream:#f3e3bd;--muted:#bfae88;--green:#6a8b49;--red:#8a2719;--blue:#6ec6e8}
+*{box-sizing:border-box}html{background:#090704}body{margin:0;background:radial-gradient(circle at 50% -10%,#ffb52b18,transparent 34%),linear-gradient(#181208,#090704);color:var(--cream);font-family:Georgia,"Times New Roman",serif;min-height:100vh;transition:.35s}
+button,select,input{font:inherit}button{min-height:44px;border:1px solid #725632;background:linear-gradient(#3a2c1b,#21180f);color:var(--cream);border-radius:10px;padding:8px 11px;cursor:pointer}button:disabled{opacity:.4}
+.wrap{max-width:1100px;margin:auto;padding:8px}.shell{border:2px solid #826737;border-radius:18px;background:linear-gradient(#261c11fa,#130e09fa);box-shadow:0 16px 50px #000a;padding:10px;transition:.3s}
+.head{text-align:center;border-bottom:1px solid #67502e;padding:2px 8px 8px}.sigil{font-size:11px;letter-spacing:.35em;color:#edbd5d;text-shadow:0 0 12px #ffb22866}.head h1{margin:2px 0;font-size:clamp(30px,6vw,48px);line-height:1;background:linear-gradient(#fff0be,#d8aa4b 52%,#845022);-webkit-background-clip:text;color:transparent;letter-spacing:.04em}.subtitle,.small{font-size:11px;color:var(--muted)}
+.grid{display:grid;gap:6px}.stats{grid-template-columns:repeat(6,1fr);margin-top:6px}.card{background:linear-gradient(var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:10px}.stat{padding:6px;text-align:center;min-height:58px}.big{display:block;font-weight:900;font-size:20px;line-height:1.1}.label{font-size:9px;color:#d6c293;text-transform:uppercase;letter-spacing:.06em}.accent{color:var(--amber)}
+.resources{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:6px;margin-top:6px}.resource{padding:7px;text-align:center;min-height:94px;display:flex;flex-direction:column;justify-content:space-between}.resource .value{font-size:18px;font-weight:900}.resource button{min-height:32px;padding:4px 7px;font-size:10px}.pips{display:flex;gap:4px;justify-content:center;margin:3px 0}.pip{width:23px;height:23px;min-height:23px;padding:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd06a,#b95816 60%,#52190d);border-color:#e1a450}.pip.off{background:#15100c;border-color:#5d4b38}
+.tabs{position:sticky;top:max(6px,env(safe-area-inset-top));z-index:30;display:flex;gap:6px;flex-wrap:wrap;margin:7px 0;padding:5px;background:#100b07e8;border:1px solid #5c472e;border-radius:13px;backdrop-filter:blur(8px)}.tab{flex:1 1 150px}.tab.active{background:linear-gradient(#70511f,#3d2b14);border-color:#e1ad46}.panel{display:none}.panel.active{display:block}
+.turnbar{display:grid;grid-template-columns:auto repeat(3,1fr) auto;gap:5px;margin-bottom:7px}.eco{min-height:44px;border:1px solid #5f4a31;border-radius:9px;background:#17110b;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px}.eco.used{opacity:.45;text-decoration:line-through}.turnbar button{min-height:44px}
+.two{grid-template-columns:repeat(2,1fr)}.three{grid-template-columns:repeat(3,1fr)}.section-title{font-size:18px;font-weight:900;color:#f2c665;margin-bottom:4px}.action-title{font-size:15px;font-weight:900;color:#ffd17d}.meta{font-size:10px;color:#bba87e}.rule{font-size:11px;color:#d5c39d;line-height:1.3;margin:4px 0}
+.btn-main{width:100%;font-size:16px;font-weight:900;margin-top:5px}.btn-rage{background:linear-gradient(#772615,#37120c);border-color:#b34b28}.btn-green{background:linear-gradient(#526a39,#29351f);border-color:#769457}.btn-horn{background:linear-gradient(#5d431f,#2e2111);border-color:#a9803f}.btn-blue{background:linear-gradient(#28516a,#182f3b);border-color:#5d9fbe}.toggle.on{box-shadow:0 0 0 2px #ffb43b20 inset,0 0 15px #ff9b2144;border-color:#ffbd52}
+.attack-stage{background:radial-gradient(circle at 50% 0%,#ffc13a17,transparent 42%),linear-gradient(#2c2114,#19120c);border-color:#8b6a37}.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:5px 0}.mode-switch button.on{background:linear-gradient(#785728,#3c2b15);border-color:#ffd36d;box-shadow:0 0 14px #ffbd3f2d}.volto-meter{padding:8px;border:1px solid #71552f;border-radius:10px;background:#15100b;margin:6px 0}.meterline{display:flex;justify-content:space-between;align-items:center;gap:8px}.meter{display:flex;gap:5px;flex:1;justify-content:center}.cell{width:28px;height:28px;border:1px solid #59482f;border-radius:7px;background:#0d0a07;display:flex;align-items:center;justify-content:center;font-size:10px}.cell.hit{background:radial-gradient(circle,#ffd95e,#995b17);color:#201305;border-color:#ffcf56;box-shadow:0 0 10px #f7b93455}.cell.red{background:radial-gradient(circle,#ff8b3e,#9b2113);color:#fff0d7;border-color:#ff6b31}.cell.danger{animation:danger .7s infinite alternate}@keyframes danger{to{box-shadow:0 0 18px #ff2d16}}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}.chip{border:1px solid #695238;border-radius:999px;padding:2px 7px;font-size:9px;color:#d9c69e}.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin:5px 0}.controls3{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:5px 0}
+.attack-options{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:6px 0}.attack-options button{font-size:10px;min-height:38px;padding:5px}.attack-options button.on{background:linear-gradient(#75301d,#38160e);border-color:#e06b38}
+.horn-grid,.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.feature{border-left:3px solid #8c6b39}.feature.green{border-left-color:#719454}.feature.horn{border-left-color:#c69947}.feature.red{border-left-color:#b74b33}.feature.blue{border-left-color:#63a9c6}
+select{width:100%;min-height:40px;border-radius:9px;border:1px solid #6b5233;background:#130e09;color:var(--cream);padding:6px}
+.log{display:none;max-height:300px;overflow:auto;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:11px;background:#0d0906;border:1px solid #57452e;border-radius:9px;padding:8px;margin-top:7px}.log.open{display:block}
+.utility{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.utility button{font-size:10px}
+#ribbon{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;transform:translate(-50%,-150%);width:min(calc(100% - 16px),820px);z-index:9999;border:2px solid #e6b04a;border-radius:14px;background:linear-gradient(90deg,#44260e,#171009 50%,#44260e);box-shadow:0 14px 40px #000c;padding:12px 14px;opacity:0;transition:.22s;pointer-events:none}#ribbon.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}.rt{font-size:10px;text-transform:uppercase;font-weight:900;color:#f2bf5f;letter-spacing:.08em}.rb{margin-top:4px;font:800 14px ui-monospace,monospace;white-space:pre-wrap;color:#fff1ce}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9000;overflow:hidden}.flash,.ring,.slash,.leaf,.shock{position:absolute;pointer-events:none}.flash{inset:0;opacity:0}.ring{left:50%;top:50%;width:90px;height:90px;border:5px solid #ffd05a;border-radius:50%;transform:translate(-50%,-50%) scale(.25);opacity:0}.slash{left:10%;right:10%;top:48%;height:6px;background:linear-gradient(90deg,transparent,#ffe3a0,#fff,transparent);transform:rotate(-8deg);opacity:0;box-shadow:0 0 20px #ffc33d}.shock{left:50%;top:50%;width:120px;height:120px;border:8px double #e3b65b;border-radius:50%;transform:translate(-50%,-50%) scale(.2);opacity:0}
+body.raging{background:radial-gradient(circle at 50% 10%,#e0351628,transparent 36%),linear-gradient(#1d0805,#090302)}body.raging .shell{border-color:#b64d2b;box-shadow:0 0 26px #e6421e22,0 16px 55px #000b}
+body.bark{background:radial-gradient(circle at 50% 10%,#7ca44725,transparent 40%),linear-gradient(#101608,#070a05)}body.bark .shell{border-color:#708c4d;box-shadow:inset 0 0 40px #6f983018,0 0 24px #77a63b22}
+body.raging.bark .shell{border-color:#c68a38;box-shadow:0 0 30px #db722633,inset 0 0 30px #6f98301a}
+details{border:1px solid #5d482f;border-radius:9px;background:#15100b;margin-top:5px}summary{cursor:pointer;padding:7px 9px;font-size:11px;font-weight:900;color:#e8bd67}.detail-body{padding:0 9px 8px;font-size:10px;color:#cbbb97;line-height:1.35}
+@media(max-width:760px){.stats{grid-template-columns:repeat(3,1fr)}.resources{grid-template-columns:repeat(3,1fr)}.two,.horn-grid,.feature-grid{grid-template-columns:1fr}.attack-options{grid-template-columns:repeat(2,1fr)}.turnbar{grid-template-columns:repeat(3,1fr)}.turnbar>button:first-child,.turnbar>button:last-child{grid-column:span 3}.utility{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="fx"></div><div id="ribbon"><div class="rt" id="rt"></div><div class="rb" id="rb"></div></div>
+<div class="wrap"><div class="shell">
+<header class="head"><div class="sigil">◆ BRAVETERRE ◆ URNGARAK ◆ CLIFFTOP ◆</div><h1>NANS POINTUD</h1><div class="subtitle">Humain · Barbare 10 — Berserker · Tank agressif / briseur de ligne</div></header>
+
+<div class="grid stats">
+ <div class="card stat"><span class="label">PV</span><span class="big" id="hpText">125 / 125</span><div><button onclick="hp(-5)">−5</button> <button onclick="hp(5)">+5</button></div></div>
+ <div class="card stat"><span class="label">PV temp.</span><span class="big" id="tempText">0</span><div><button onclick="temp(-5)">−5</button> <button onclick="temp(5)">+5</button></div></div>
+ <div class="card stat"><span class="label">CA</span><span class="big" id="acText">18</span><span class="small" id="acSub">épée/bouclier</span></div>
+ <div class="card stat"><span class="label">Initiative</span><span class="big">+2</span><span class="small">avantage</span></div>
+ <div class="card stat"><span class="label">Vitesse</span><span class="big">12 m</span><span class="small">sans armure lourde</span></div>
+ <div class="card stat"><span class="label">Athlétisme</span><span class="big">+8</span><span class="small">avantage en Rage</span></div>
+</div>
+
+<div class="resources">
+ <div class="card resource"><div><div class="label">Rages</div><div class="pips" id="ragePips"></div></div><button class="btn-rage" id="rageBtn" onclick="toggleRage()">ENTRER EN RAGE</button></div>
+ <div class="card resource"><div><div class="label">Frénésie</div><div class="value" id="frenzyVal">OFF</div><div class="small">attaque bonus dès T2</div></div><button onclick="toggleFrenzy()">Basculer</button></div>
+ <div class="card resource"><div><div class="label">Écorce</div><div class="value" id="barkVal">1/1</div><div class="small">20 PV temp · 1 min</div></div><button class="btn-green" onclick="useBark()">ÉVEILLER</button></div>
+ <div class="card resource"><div><div class="label">Cor</div><div class="value" id="hornVal">3 / 3</div><div class="small" id="hornStateTxt">Dormant</div></div><button class="btn-horn" onclick="spendHorn(1,'Charge du Cor')">−1 charge</button></div>
+ <div class="card resource"><div><div class="label">Parade de vent</div><div class="value" id="capeVal">1/1</div><div class="small">réaction · +2 CA</div></div><button class="btn-blue" onclick="useCape()">PARER</button></div>
+ <div class="card resource"><div><div class="label">Épuisement</div><div class="value" id="exhaust">1</div><div class="small">fiche actuelle</div></div><button onclick="chgExhaust()">Modifier</button></div>
+</div>
+
+<nav class="tabs">
+ <button class="tab active" data-tab="combat">⚔️ Combat</button>
+ <button class="tab" data-tab="cor">📯 Cor & pouvoirs</button>
+ <button class="tab" data-tab="def">🛡 Défense & contrôle</button>
+ <button class="tab" data-tab="fiche">📜 Fiche rapide</button>
+</nav>
+
+<section class="panel active" id="combat">
+ <div class="turnbar">
+  <button onclick="nextTurn()">TOUR <b id="turn">1</b><br><span class="small">nouveau tour</span></button>
+  <div class="eco" id="ecoA">ACTION<br>disponible</div><div class="eco" id="ecoB">BONUS<br>disponible</div><div class="eco" id="ecoR">RÉACTION<br>disponible</div>
+  <button onclick="resetTurn()">↻ économie</button>
+ </div>
+
+ <div class="card attack-stage">
+  <div class="section-title">Volto-Fendoir de Braveterre</div>
+  <div class="mode-switch"><button id="swordBtn" class="on" onclick="switchMode('sword')">🗡 ÉPÉE + BOUCLIER<br><span class="small">+9 · 1d6+8 · CA 18</span></button><button id="axeBtn" onclick="switchMode('axe')">🪓 HACHE<br><span class="small">+9 · 1d12+8 · lourde</span></button></div>
+
+  <div class="volto-meter">
+   <div class="meterline"><b>Touches chargées</b><span class="small" id="chargeLabel">0 / 5</span></div>
+   <div class="meter" id="meter"></div>
+   <div class="small" style="text-align:center" id="energyText">Énergie : vide · 3 touches = jaune · 5 = rouge · 6+ = surcharge dangereuse</div>
+  </div>
+
+  <div class="controls">
+   <button onclick="transferEnergy()">⚡ TRANSFÉRER L'ÉNERGIE <span class="small">(AB)</span></button>
+   <button onclick="clearVolto()">↻ Purger / repos</button>
+  </div>
+
+  <div class="attack-options">
+   <button id="recklessBtn" onclick="toggleOpt('reckless')">Attaque téméraire<br><span class="small">avantage / exposé</span></button>
+   <button id="gwmBtn" onclick="toggleOpt('gwm')">Cogneur lourd<br><span class="small">−5 toucher / +10</span></button>
+   <button id="ringBtn" onclick="toggleOpt('ring')">Surcharge anneau<br><span class="small">+1d6 / subit 1d4 force</span></button>
+   <button id="critBtn" onclick="toggleOpt('crit')">Forcer critique<br><span class="small">test / jet manuel</span></button>
+  </div>
+
+  <div class="controls">
+   <button class="btn-main" onclick="attackAction()">⚔️ ACTION : 2 ATTAQUES</button>
+   <button class="btn-main" onclick="singleAttack('bonus')">⚔️ ATTAQUE BONUS</button>
+  </div>
+  <div class="controls">
+   <button onclick="singleAttack('action')">1 attaque</button>
+   <button id="impactBtn" onclick="chargedImpact()">💥 IMPACT CHARGÉ</button>
+  </div>
+  <div class="chips"><span class="chip">Rage : +3 déjà dans 1d6/1d12+8</span><span class="chip">Sous 63 PV : +1 dégâts (anneau)</span><span class="chip">Hache chargée : +1d6 foudre 1×/tour</span><span class="chip">Critique brutal : +1 dé d'arme</span></div>
+ </div>
+
+ <div class="grid two" style="margin-top:7px">
+  <div class="card"><div class="action-title">🩸 Rage & Frénésie</div><div class="rule">Rage : résistance C/P/T, avantage tests/JdS FOR, immunité charme/peur via Rage aveugle. La Frénésie donne une attaque d'arme en action bonus à partir du tour suivant l'activation, puis +1 niveau d'épuisement en fin de Rage.</div><button class="btn-rage btn-main" onclick="toggleRage()">Basculer Rage</button></div>
+  <div class="card"><div class="action-title">🌳 Don de l'Écorce</div><div class="rule">Action bonus, 1/repos long : 20 PV temporaires. Tant qu'il en reste : résistance C/P/T des attaques non magiques et 1d6 perforants à une créature qui vous touche au contact, 1×/tour/créature.</div><button class="btn-green btn-main" onclick="useBark()">Éveiller l'Écorce</button></div>
+ </div>
+</section>
+
+<section class="panel" id="cor">
+ <div class="card">
+  <div class="section-title">Cor de Guerre d'Urngarak</div>
+  <div class="controls"><select id="hornState" onchange="setHornState()"><option value="dormant">État Dormant — 3 charges</option><option value="awakened">État Éveillé — 5 charges</option></select><button onclick="hornRest()">🌙 Tombée de la nuit : recharger</button></div>
+  <div class="rule">DD du Cor 12. Un son est audible jusqu'à 600 m et impose au groupe désavantage en Discrétion pendant 1 minute. Tout effet du Cor qui blesse déclenche la <b>Tentation du Grand Saccageur</b> : JdS SAG +0, DD 13 Dormant / 15 Éveillé.</div>
+ </div>
+ <div class="horn-grid" style="margin-top:7px">
+  <div class="card feature horn"><div class="action-title">Cri de ralliement</div><div class="meta">Action bonus · 1 charge · 6 alliés à 18 m</div><div class="rule">2d6+4 PV temporaires, avantage à la prochaine attaque d'arme avant fin du prochain tour, immunité/libération de l'état effrayé.</div><button class="btn-horn btn-main" onclick="hornPower('rally',1,'bonus')">📯 SONNER</button></div>
+  <div class="card feature horn"><div class="action-title">Fracas de guerre</div><div class="meta">Action · 1 charge · cône 4,5 m · CON DD 12</div><div class="rule">3d8 tonnerre, moitié en réussite; échec : repoussé de 3 m. Déclenche la Tentation.</div><button class="btn-horn btn-main" onclick="hornPower('crash',1,'action')">💥 FRACAS</button></div>
+  <div class="card feature red"><div class="action-title">Hurlement du Grand Saccageur</div><div class="meta">Éveillé · Action · 2 charges · 18 m · SAG DD 12</div><div class="rule">Cibles choisies effrayées 1 min sur échec et utilisent leur réaction pour s'éloigner si possible.</div><button class="btn-rage btn-main" onclick="hornPower('howl',2,'action',true)">👁 HURLEMENT</button></div>
+  <div class="card feature green"><div class="action-title">Appel des ancêtres guerriers</div><div class="meta">Éveillé · Action · 3 charges · 1/repos long · 1 min</div><div class="rule">Esprits gardiens centrés sur Nans, ennemis seulement. Le dossier le traite sans concentration et compatible Rage.</div><button class="btn-green btn-main" id="ancBtn" onclick="hornPower('ancestors',3,'action',true)">🛡 APPELER LES ANCÊTRES</button></div>
+ </div>
+ <div class="card" style="margin-top:7px"><div class="action-title">Tentation du Grand Saccageur</div><div class="rule">En cas d'échec : jusqu'à la fin du prochain tour, Nans doit utiliser son action bonus (si disponible) pour se ruer vers la créature la plus proche — alliée ou ennemie — et l'attaquer si possible. Refus : 2d6 psychiques et fin de l'effet.</div><button class="btn-rage btn-main" onclick="temptation()">🎲 LANCER JDS SAG +0</button></div>
+</section>
+
+<section class="panel" id="def">
+ <div class="feature-grid">
+  <div class="card feature blue"><div class="action-title">Cape de la Brise Silencieuse</div><div class="rule"><b>Silence</b> : action bonus ON/OFF, mouvements silencieux et avantage aux tests de Dextérité pour se déplacer sans être détecté.<br><b>Parade de vent</b> 1/repos long : réaction, +2 CA contre une attaque à distance.</div><div class="controls"><button onclick="capeSilence()">Silence ON/OFF</button><button class="btn-blue" onclick="useCape()">Parade +2 CA</button></div></div>
+  <div class="card feature red"><div class="action-title">Anneau de la Surcharge Furieuse</div><div class="rule">Sur une attaque à deux mains qui touche : +1d6 dégâts (type non précisé), Nans subit 1d4 force. À 62 PV ou moins : +1 aux dégâts d'arme automatiquement.</div><button id="ringBtn2" onclick="toggleOpt('ring')">Basculer surcharge</button></div>
+  <div class="card feature"><div class="action-title">Empoigner</div><div class="meta">Remplace une attaque · Athlétisme +8</div><div class="rule">Athlétisme contre Athlétisme ou Acrobaties de la cible. En Rage, avantage au test de Force. Réussite : vitesse cible 0.</div><button onclick="grapple('grab')">🤼 Test d'empoignade</button></div>
+  <div class="card feature"><div class="action-title">Bousculer</div><div class="meta">Remplace une attaque · Athlétisme +8</div><div class="rule">Réussite : cible renversée ou poussée de 1,50 m. Très bon contrôle avec l'avantage de Rage.</div><button onclick="grapple('shove')">💢 Test de bousculade</button></div>
+  <div class="card feature green"><div class="action-title">Résistances</div><div class="rule"><b>En Rage :</b> C/P/T sans restriction magique.<br><b>Écorce :</b> C/P/T provenant d'attaques non magiques tant que les PV temp de l'Écorce subsistent.<br><b>Rage aveugle :</b> ne peut être charmé ni effrayé pendant la Rage.</div></div>
+  <div class="card feature"><div class="action-title">Sens du danger</div><div class="rule">Avantage aux JdS DEX contre les effets visibles. Ne fonctionne pas si aveuglé, assourdi ou incapable d'agir.</div><button onclick="rollSave('DEX',2,true)">🎲 JdS DEX +2 avec avantage</button></div>
+ </div>
+</section>
+
+<section class="panel" id="fiche">
+ <div class="grid two">
+  <div class="card"><div class="section-title">Caractéristiques</div><div class="rule">FOR 18 (+4) · DEX 14 (+2) · CON 16 (+3) · INT 8 (−1) · SAG 8 (−1, JdS +0 grâce à l'Écorce) · CHA 10 (+0).<br>JdS maîtrisés : FOR +8, CON +7.</div></div>
+  <div class="card"><div class="section-title">Compétences</div><div class="rule">Athlétisme +8 · Acrobaties +6 · Perception +3 · Survie +3 · Intimidation +4.<br>Perception passive 13 · Intuition 9 · Investigation 9.</div></div>
+  <div class="card"><div class="section-title">Présence intimidante</div><div class="meta">Action · 9 m · SAG DD 12</div><div class="rule">Échec : effrayée jusqu'à la fin du prochain tour. Action aux tours suivants pour prolonger. Réussite initiale : immunisée 24 h.</div><button onclick="useEco('action'); ribbon('Présence intimidante','DD SAG 12 · cible visible à 9 m')">Utiliser</button></div>
+  <div class="card"><div class="section-title">Critique brutal</div><div class="rule">Sur critique au corps à corps, ajoute 1 dé de dégâts d'arme. Hache : noyau critique 3d12 + modificateurs avant les autres dés.</div></div>
+ </div>
+ <details open><summary>Économie d'action à retenir</summary><div class="detail-body">Action bonus très congestionnée : Rage, Écorce, changement de mode Volto, transfert d'énergie, Frénésie, attaque bonus de Cogneur lourd, Cri de ralliement, Cape. Le compagnon ne bloque pas toutes les combinaisons : il marque l'économie utilisée pour te prévenir sans t'empêcher d'appliquer un arbitrage MJ.</div></details>
+ <details><summary>Ouvertures recommandées</summary><div class="detail-body"><b>Simple :</b> Rage → deux attaques. <b>Défensive :</b> Écorce → placement/attaque, Rage T2. <b>Soutien :</b> Cri de ralliement → Rage T2. Attaque téméraire + Cogneur lourd est le moteur principal de dégâts lorsque l'avantage compense le −5.</div></details>
+ <details><summary>Objets et cohérences retenues</summary><div class="detail-body">CA finale 18 en mode épée/bouclier sans empiler davantage. Attaques +9 = FOR +4 + maîtrise +4 + magie +1. Le type du +1d6 de l'Anneau n'est pas inventé. Le Cor Exalté n'est pas implémenté, car ses pouvoirs ne sont pas documentés.</div></details>
+</section>
+
+<div class="utility">
+ <button onclick="longRest()">🌙 Repos long</button><button onclick="shortRest()">☕ Repos court</button><button onclick="toggleLog()">📜 Journal</button><button onclick="rollInit()">🎲 Initiative</button><button onclick="rollSave('FOR',8,false)">🎲 JdS FOR +8</button><button onclick="rollSave('SAG',0,false)">🎲 JdS SAG +0</button>
+</div>
+<div class="log" id="log"></div>
+</div></div>
+
+<script>
+const S={hp:125,maxHp:125,temp:0,rages:4,raging:false,frenzy:false,barkReady:true,barkActive:false,capeReady:true,capeSilent:false,exhaust:1,hornState:'dormant',horn:3,hornMax:3,ancReady:true,mode:'sword',hits:0,stored:'none',weaponMagic:true,turn:1,eco:{action:false,bonus:false,reaction:false},reckless:false,gwm:false,ring:false,crit:false,energyUsedTurn:false};
+const $=id=>document.getElementById(id); const d=n=>Math.floor(Math.random()*n)+1;
+function log(t){const el=$('log');el.textContent='['+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'] '+t+'\n'+el.textContent}
+let ribTimer;function ribbon(t,b){$('rt').textContent=t;$('rb').textContent=b;$('ribbon').classList.add('show');clearTimeout(ribTimer);ribTimer=setTimeout(()=>$('ribbon').classList.remove('show'),4300)}
+function fx(type){let el=document.createElement('div');el.className=type==='slash'?'slash':type==='shock'?'shock':type==='ring'?'ring':'flash';$('fx').appendChild(el);if(type==='flash'){el.style.background='rgba(255,80,20,.22)';el.animate([{opacity:0},{opacity:.9},{opacity:0}],{duration:520})}else if(type==='shock'){el.animate([{opacity:.9,transform:'translate(-50%,-50%) scale(.2)'},{opacity:0,transform:'translate(-50%,-50%) scale(8)'}],{duration:850})}else if(type==='ring'){el.animate([{opacity:1,transform:'translate(-50%,-50%) scale(.25)'},{opacity:0,transform:'translate(-50%,-50%) scale(7)'}],{duration:700})}else{el.animate([{opacity:0},{opacity:1},{opacity:0}],{duration:420})}setTimeout(()=>el.remove(),1000)}
+function useEco(k){if(S.eco[k]) ribbon('Économie d’action','⚠️ '+k.toUpperCase()+' déjà marquée utilisée ce tour.');S.eco[k]=true;renderEco()}
+function renderEco(){['action','bonus','reaction'].forEach((k,i)=>{const e=$(['ecoA','ecoB','ecoR'][i]);e.classList.toggle('used',S.eco[k]);e.innerHTML=k.toUpperCase()+'<br>'+(S.eco[k]?'utilisée':'disponible')})}
+function resetTurn(){S.eco={action:false,bonus:false,reaction:false};S.energyUsedTurn=false;renderEco();render()}
+function nextTurn(){S.turn++;resetTurn();$('turn').textContent=S.turn; if(S.raging&&S.frenzy&&S.turn>1) ribbon('Frénésie disponible','Attaque d’arme en action bonus disponible ce tour.')}
+function hp(n){S.hp=Math.max(0,Math.min(S.maxHp,S.hp+n));render()}
+function temp(n){S.temp=Math.max(0,S.temp+n);if(S.barkActive&&S.temp===0){S.barkActive=false;document.body.classList.remove('bark');log('Écorce du Serment terminée : PV temporaires épuisés.')}render()}
+function renderRages(){let x='';for(let i=0;i<4;i++)x+='<button class="pip '+(i<S.rages?'':'off')+'" onclick="setRagePips('+i+')"></button>';$('ragePips').innerHTML=x}
+function setRagePips(i){S.rages=i+1;render()}
+function toggleRage(){if(!S.raging){if(S.rages<=0)return ribbon('Rage','Aucune Rage restante.');useEco('bonus');S.rages--;S.raging=true;document.body.classList.add('raging');fx('flash');log('Nans entre en Rage.')}else{S.raging=false;document.body.classList.remove('raging');if(S.frenzy){S.exhaust++;S.frenzy=false;log('Fin de Rage frénétique : +1 niveau d’épuisement.')}log('Rage terminée.')}render()}
+function toggleFrenzy(){S.frenzy=!S.frenzy;if(S.frenzy&&!S.raging)ribbon('Frénésie armée','Elle s’appliquera à une Rage frénétique; attaque bonus à partir du tour suivant.');render()}
+function useBark(){if(!S.barkReady)return ribbon('Don de l’Écorce','Déjà utilisé depuis le dernier repos long.');useEco('bonus');S.barkReady=false;S.barkActive=true;S.temp=Math.max(S.temp,20);document.body.classList.add('bark');fx('ring');log('Écorce du Serment : 20 PV temporaires.');ribbon('Écorce du Serment','20 PV temp · échardes 1d6 au contact · 1 minute');render()}
+function useCape(){if(!S.capeReady)return ribbon('Parade de vent','Déjà utilisée.');useEco('reaction');S.capeReady=false;fx('ring');ribbon('Parade de vent','+2 CA contre cette attaque à distance.');log('Parade de vent utilisée.');render()}
+function capeSilence(){useEco('bonus');S.capeSilent=!S.capeSilent;ribbon('Cape — Silence',S.capeSilent?'Mouvements silencieux · avantage DEX pour ne pas être détecté.':'Silence désactivé.');log('Cape Silence '+(S.capeSilent?'ON':'OFF'))}
+function chgExhaust(){let v=prompt('Niveau d’épuisement',S.exhaust);if(v!==null&&!isNaN(v)){S.exhaust=Math.max(0,Math.min(6,Number(v)));render()}}
+function switchMode(m){if(S.mode===m)return;useEco('bonus');S.mode=m;fx('slash');log('Volto passe en mode '+(m==='sword'?'Épée/Bouclier':'Hache')+'.');render()}
+function transferEnergy(){useEco('bonus');if(S.hits<3)return ribbon('Transfert impossible','Il faut au moins 3 touches chargées.');S.stored=S.hits>=5?'red':'yellow';S.hits=0;fx('ring');log('Énergie transférée : '+S.stored+'.');ribbon('Énergie transférée',S.stored==='red'?'ROUGE · Impact 5d6 foudre':'JAUNE · Impact 3d6 foudre');render()}
+function clearVolto(){S.hits=0;S.stored='none';S.weaponMagic=true;log('Volto-Fendoir réinitialisé.');render()}
+function toggleOpt(k){S[k]=!S[k];render()}
+function attackBonus(){let b=9;if(S.gwm&&S.mode==='axe')b-=5;return b}
+function damageRoll(crit=false,impact=false){const die=S.mode==='axe'?12:6;let dice=crit?3:1;let total=0,parts=[];for(let i=0;i<dice;i++){let r=d(die);total+=r;parts.push(r)}let flat=8+(S.hp<=62?1:0)+(S.gwm&&S.mode==='axe'?10:0);total+=flat;let txt=(crit?dice+'d'+die:'1d'+die)+' ['+parts.join('+')+'] + '+flat;
+ if(S.mode==='axe'&&S.stored!=='none'&&!impact&&!S.energyUsedTurn){let r=d(6);total+=r;txt+=' + 1d6 foudre ['+r+']';S.energyUsedTurn=true}
+ if(S.ring&&S.mode==='axe'){let r=d(6),self=d(4);total+=r;txt+=' + anneau 1d6 ['+r+']';S.hp=Math.max(0,S.hp-self);txt+=' · Nans subit '+self+' force'}
+ if(impact&&S.stored!=='none'){let n=S.stored==='red'?5:3,s=0,arr=[];for(let i=0;i<n;i++){let r=d(6);s+=r;arr.push(r)}total+=s;txt+=' + '+n+'d6 foudre ['+arr.join('+')+']';S.stored='none'}
+ return {total,txt}}
+function rollAttack(){let a=d(20),b=null,raw=a;if(S.reckless){b=d(20);raw=Math.max(a,b)}if(S.crit)raw=20;let crit=raw===20;let bonus=attackBonus();return {raw,a,b,total:raw+bonus,crit,bonus}}
+function doAttack(){let r=rollAttack();let hitText='d20 '+r.a+(r.b!==null?'/'+r.b+' (avantage)':'')+' + '+r.bonus+' = '+r.total+(r.crit?' — CRITIQUE':'');let dmg=damageRoll(r.crit,false); if(S.mode==='sword'&&S.weaponMagic){S.hits++;if(S.hits>=6){S.weaponMagic=false;hitText+=' · ⚠️ SURCHARGE : propriétés magiques perdues jusqu’au repos';fx('flash')} }
+ fx('slash');ribbon('Attaque '+(S.mode==='sword'?'Épée':'Hache'),hitText+'\nDégâts si touche : '+dmg.total+' — '+dmg.txt);log('Attaque '+(S.mode==='sword'?'épée':'hache')+' : '+hitText+' | dégâts '+dmg.total);render()}
+function attackAction(){useEco('action');doAttack();setTimeout(doAttack,500)}
+function singleAttack(kind){useEco(kind==='bonus'?'bonus':'action');doAttack()}
+function chargedImpact(){if(S.mode!=='axe')return ribbon('Impact chargé','Passe en mode Hache.');if(S.stored==='none')return ribbon('Impact chargé','Aucune énergie transférée.');useEco('action');let r=rollAttack(),txt='d20 '+r.a+(r.b!==null?'/'+r.b:'')+' + '+r.bonus+' = '+r.total;let dmg=damageRoll(r.crit,true);fx('shock');ribbon('💥 IMPACT CHARGÉ',txt+'\nSi touche : '+dmg.total+' dégâts\nZone 3 m : DEX DD 13 ou renversé');log('Impact chargé : '+txt+' | '+dmg.total+' dégâts si touche.');render()}
+function setHornState(){S.hornState=$('hornState').value;S.hornMax=S.hornState==='awakened'?5:3;S.horn=Math.min(S.horn,S.hornMax);render()}
+function hornRest(){S.horn=S.hornMax;S.ancReady=true;log('Cor rechargé à la tombée de la nuit.');render()}
+function spendHorn(n,name){if(S.horn<n){ribbon('Cor d’Urngarak','Pas assez de charges.');return false}S.horn-=n;log(name+' : '+n+' charge(s) dépensée(s).');render();return true}
+function hornPower(p,cost,eco,awake=false){if(awake&&S.hornState!=='awakened')return ribbon('Pouvoir indisponible','Nécessite l’état Éveillé.');if(p==='ancestors'&&!S.ancReady)return ribbon('Appel des ancêtres','Déjà utilisé depuis le dernier repos long.');if(!spendHorn(cost,p))return;useEco(eco);fx('shock');let msg='';if(p==='rally')msg='Jusqu’à 6 alliés : 2d6+4 PV temp + avantage prochaine attaque.';if(p==='crash'){let arr=[d(8),d(8),d(8)];msg='3d8 tonnerre = '+arr.reduce((a,b)=>a+b,0)+' ['+arr.join('+')+'] · CON DD 12 · Tentation à tester.'}if(p==='howl')msg='Ennemis choisis à 18 m : SAG DD 12 ou effrayés 1 min + réaction pour s’éloigner.';if(p==='ancestors'){S.ancReady=false;msg='Esprits guerriers actifs 1 minute autour de Nans (sans concentration selon le dossier).'}ribbon('📯 '+p.toUpperCase(),msg);log(msg);render()}
+function temptation(){let roll=d(20),dc=S.hornState==='awakened'?15:13,ok=roll>=dc;fx(ok?'ring':'flash');ribbon('Tentation du Grand Saccageur','JdS SAG +0 : '+roll+' vs DD '+dc+' → '+(ok?'RÉUSSITE':'ÉCHEC · ruer/attaquer la créature la plus proche ou subir 2d6 psychiques'));log('Tentation : '+roll+' vs DD '+dc+' '+(ok?'réussie':'ratée'))}
+function grapple(type){let a=d(20),b=S.raging?d(20):null,raw=b?Math.max(a,b):a,total=raw+8;ribbon(type==='grab'?'Empoignade':'Bousculade','Athlétisme +8'+(b?' avec avantage':'')+' : '+(b?a+'/'+b:a)+' + 8 = '+total);log((type==='grab'?'Empoignade':'Bousculade')+' = '+total)}
+function rollSave(name,bonus,adv){let a=d(20),b=adv?d(20):null,raw=b?Math.max(a,b):a;ribbon('JdS '+name,(b?a+'/'+b:a)+' + '+bonus+' = '+(raw+bonus))}
+function rollInit(){let a=d(20),b=d(20),v=Math.max(a,b)+2;ribbon('Initiative avec avantage',a+' / '+b+' + 2 = '+v);log('Initiative : '+v)}
+function shortRest(){S.hits=0;S.stored='none';S.weaponMagic=true;resetTurn();ribbon('Repos court','Volto réinitialisé. Les ressources repos long ne reviennent pas.');log('Repos court.')}
+function longRest(){S.hp=S.maxHp;S.temp=0;S.rages=4;S.raging=false;S.frenzy=false;S.barkReady=true;S.barkActive=false;S.capeReady=true;S.horn=S.hornMax;S.ancReady=true;S.hits=0;S.stored='none';S.weaponMagic=true;S.turn=1;S.exhaust=Math.max(0,S.exhaust-1);document.body.classList.remove('raging','bark');resetTurn();$('turn').textContent=1;ribbon('Repos long','PV, Rages, Écorce, Cape et ressources 1/repos long restaurés. Épuisement −1.');log('Repos long.');render()}
+function toggleLog(){$('log').classList.toggle('open')}
+function render(){
+ $('hpText').textContent=S.hp+' / '+S.maxHp;$('tempText').textContent=S.temp;$('acText').textContent=S.mode==='sword'?18:15;$('acSub').textContent=S.mode==='sword'?'épée/bouclier':'sans bouclier';
+ $('rageBtn').textContent=S.raging?'TERMINER LA RAGE':'ENTRER EN RAGE';$('rageBtn').classList.toggle('toggle',S.raging);$('rageBtn').classList.toggle('on',S.raging);
+ $('frenzyVal').textContent=S.frenzy?'ON':'OFF';$('barkVal').textContent=S.barkReady?'1/1':'0/1';$('capeVal').textContent=S.capeReady?'1/1':'0/1';$('exhaust').textContent=S.exhaust;
+ $('hornVal').textContent=S.horn+' / '+S.hornMax;$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';
+ $('swordBtn').classList.toggle('on',S.mode==='sword');$('axeBtn').classList.toggle('on',S.mode==='axe');
+ ['reckless','gwm','ring','crit'].forEach(k=>{let id=k==='gwm'?'gwmBtn':k+'Btn';if($(id))$(id).classList.toggle('on',S[k])});if($('ringBtn2'))$('ringBtn2').classList.toggle('on',S.ring);
+ let cells='';for(let i=1;i<=5;i++){let cls=i<=Math.min(S.hits,5)?'hit':'';if(S.hits>=5&&i===5)cls+=' red';if(S.hits>=6)cls+=' danger';cells+='<div class="cell '+cls+'">'+i+'</div>'}$('meter').innerHTML=cells;
+ $('chargeLabel').textContent=S.hits+' / 5'+(S.hits>=6?' ⚠️':'');$('energyText').textContent=!S.weaponMagic?'⚠️ SURCHARGE : propriétés magiques perdues jusqu’au repos court/long':S.stored!=='none'?'Énergie stockée : '+S.stored.toUpperCase():(S.hits>=5?'Énergie ROUGE prête à transférer':S.hits>=3?'Énergie JAUNE prête à transférer':'Énergie : vide · 3 touches = jaune · 5 = rouge');
+ renderRages();renderEco();$('ancBtn').disabled=!S.ancReady;
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+render();
+</script>
+</body></html>
