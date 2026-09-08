@@ -1,0 +1,61 @@
+name: Patch Nans rich combat journal
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-rich-journal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enrich journal display and combat logs
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          s=s.replace(".log{display:none;max-height:300px;overflow:auto;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:11px;background:#0d0906;border:1px solid #57452e;border-radius:9px;padding:8px;margin-top:7px}.log.open{display:block}", ".log{display:none;max-height:360px;overflow:auto;background:#0d0906;border:1px solid #57452e;border-radius:11px;padding:8px;margin-top:7px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.log.open{display:block}.log-entry{border:1px solid #4e3c28;border-left:3px solid #92703a;border-radius:9px;background:linear-gradient(#17100b,#100b07);padding:8px 9px;margin:0 0 7px}.log-entry.hit{border-left-color:#7fa75a}.log-entry.miss{border-left-color:#a34a36}.log-entry.turn{border-left-color:#d5a544;background:linear-gradient(#21180e,#130d08)}.log-entry.resource{border-left-color:#7291a8}.log-head{display:flex;justify-content:space-between;gap:8px;color:#f0c66e;font-weight:900;font-size:10px;letter-spacing:.04em}.log-time{color:#8f7f63;font-weight:400}.log-body{margin-top:4px;white-space:pre-wrap;color:#e6d4b0;font-size:11px;line-height:1.38}.log-total{color:#fff0c7;font-weight:900}.log-empty{color:#8f8065;text-align:center;padding:12px;font-size:11px}")
+
+          old="function log(t){const e=$('log');e.textContent='['+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'] '+t+'\\n'+e.textContent}"
+          new="""function escHtml(x){return String(x).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}\nfunction log(t,tone='info',title='Événement'){const e=$('log');const tm=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});if(e.querySelector('.log-empty'))e.innerHTML='';const div=document.createElement('div');div.className='log-entry '+tone;div.innerHTML='<div class=\"log-head\"><span>T'+S.turn+' · '+escHtml(title)+'</span><span class=\"log-time\">'+tm+'</span></div><div class=\"log-body\">'+escHtml(t)+'</div>';e.prepend(div)}\nfunction logTurnSummary(){const action=S.eco.action?'utilisée':'disponible',bonus=S.eco.bonus?'utilisée':'disponible',reaction=S.eco.reaction?'utilisée':'disponible';log('💥 Dégâts infligés : '+(S.turnDamage||0)+'\\n⚔ Action : '+action+' · attaques restantes '+S.attacksLeft+'/2\\n✦ Bonus : '+bonus+'\\n↯ Réaction : '+reaction,'turn','Fin du tour')}"""
+          if old not in s: raise SystemExit('log function pattern not found')
+          s=s.replace(old,new)
+
+          old="function nextTurn(){log('⏱ Fin du tour '+S.turn+' · '+S.turnDamage+' dégâts infligés.');S.turn++;S.turnDamage=0;resetTurn();$('turnNo').textContent=S.turn;render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}"
+          if old in s:
+            s=s.replace(old,"function nextTurn(){logTurnSummary();S.turn++;S.turnDamage=0;resetTurn();$('turnNo').textContent=S.turn;render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}")
+          else:
+            s=s.replace("function nextTurn(){S.turn++;S.turnDamage=0;resetTurn();$('turnNo').textContent=S.turn;render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}","function nextTurn(){logTurnSummary();S.turn++;S.turnDamage=0;resetTurn();$('turnNo').textContent=S.turn;render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}")
+
+          s=s.replace("log('Nans entre en Rage.')", "log('🔥 Rage activée · résistance C/P/T · +3 dégâts déjà inclus · avantage FOR.','resource','Rage')")
+          s=s.replace("log('Rage terminée.')", "log('Rage terminée.'+(S.frenzy?' · Frénésie : épuisement appliqué.':''),'resource','Rage')")
+          s=s.replace("log('Volto : mode '+(m==='sword'?'Épée/Bouclier':'Hache'))", "log('Mode '+(m==='sword'?'Épée + Bouclier · CA 18 · 1d6+8':'Hache · CA 15 · 1d12+8')+' · action bonus consommée.','resource','Volto-Fendoir')")
+          s=s.replace("ribbon('Énergie transférée',S.stored==='red'?'ROUGE · Impact 5d6 foudre':'JAUNE · Impact 3d6 foudre');render()", "ribbon('Énergie transférée',S.stored==='red'?'ROUGE · Impact 5d6 foudre':'JAUNE · Impact 3d6 foudre');log('⚡ '+S.stored.toUpperCase()+' transférée vers la hache · '+(S.stored==='red'?'Impact chargé +5d6 foudre':'Impact chargé +3d6 foudre')+'.','resource','Transfert Volto');render()")
+
+          oldmiss="if(!hit){ribbon('ATTAQUE RATÉE','Aucun dégât · aucune charge gagnée.');log('Attaque ratée.');render();return}"
+          newmiss="if(!hit){let r=p.roll;let opts=(S.reckless?'Téméraire · ':'')+(S.gwm&&p.mode==='axe'?'Cogneur lourd · ':'')+(S.ring&&p.mode==='axe'?'Surcharge anneau · ':'');ribbon('ATTAQUE RATÉE','Aucun dégât · aucune charge gagnée.');log('🎲 Jet : '+r.raw+' + '+r.bonus+' = '+r.total+(r.b!==null?' · avantage ('+r.a+'/'+r.b+')':'')+'\\n🗡 Mode : '+(p.mode==='sword'?'Épée + Bouclier':'Hache')+'\\n⚙ Options : '+(opts||'aucune')+'\\n❌ Aucun dégât · aucune charge Volto.','miss','Attaque ratée');render();return}"
+          if oldmiss not in s: raise SystemExit('miss pattern not found')
+          s=s.replace(oldmiss,newmiss)
+
+          oldhit="log('Touche : '+dmg.total+' dégâts.');render()"
+          newhit="let r=p.roll;let lines=[];lines.push('🎲 Jet : '+r.raw+' + '+r.bonus+' = '+r.total+(r.b!==null?' · avantage ('+r.a+'/'+r.b+')':''));lines.push('🗡 Mode : '+(p.mode==='sword'?'Épée + Bouclier':'Hache')+(r.crit?' · CRITIQUE BRUTAL':''));lines.push('💥 Dégâts : '+dmg.total+' · '+dmg.txt);if(p.mode==='sword'&&!p.impact)lines.push('🧪 Fiole Volto : '+S.hits+'/5'+(S.hits>=5?' · ROUGE':S.hits>=3?' · JAUNE':''));if(p.mode==='axe'&&S.energyUsedTurn)lines.push('⚡ Foudre Volto : bonus 1d6 consommé pour ce tour');if(S.gwm&&p.mode==='axe')lines.push('💪 Cogneur lourd : −5 toucher / +10 dégâts');if(S.ring&&p.mode==='axe')lines.push('💍 Surcharge anneau active');if(p.impact)lines.push('🌩 Zone 3 m : DEX DD 13 ou à terre');log(lines.join('\\n'),'hit',p.impact?'Impact chargé':'Attaque touchée');render()"
+          if oldhit not in s: raise SystemExit('hit pattern not found')
+          s=s.replace(oldhit,newhit)
+
+          s=s.replace("function toggleLog(){$('log').classList.toggle('open')}", "function toggleLog(){const e=$('log');e.classList.toggle('open');if(e.classList.contains('open')&&!e.children.length)e.innerHTML='<div class=\"log-empty\">Aucun événement de combat pour le moment.</div>'}")
+
+          p.write_text(s,encoding='utf-8')
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Enrich Nans combat journal" || exit 0
+          git push
