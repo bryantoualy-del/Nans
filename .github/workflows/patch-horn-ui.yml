@@ -1,0 +1,66 @@
+name: Patch Nans Horn UI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-horn-ui.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Horn interface
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          # Top resources: add Horn charges indicator and make room for it.
+          s=s.replace('.resources{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:6px;margin-top:6px}', '.resources{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:6px;margin-top:6px}', 1)
+          exh=''' <div class="card resource"><div><div class="label">Épuisement</div><div class="value" id="exhaust">1</div><div class="small">niveau actuel</div></div><div class="exh-actions"><button onclick="exhaustDelta(-1)">−</button><button onclick="exhaustDelta(1)">+</button></div></div>'''
+          horn=''' <div class="card resource horn-top"><div><div class="label">Cor d’Urngarak</div><div class="value" id="hornVal">3 / 3</div><div class="small" id="hornStateTxt">Dormant</div></div><div class="small">charges disponibles</div></div>'''
+          if horn not in s and exh in s:
+              s=s.replace(exh, exh+'\n'+horn, 1)
+
+          # Horn state styling.
+          css='''.horn-state-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.horn-badge{font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border:1px solid #8a6936;border-radius:999px;padding:4px 8px;background:#21160b;color:#e8bd67}.horn-group-label{grid-column:1/-1;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#d4ad63;border-bottom:1px solid #654a28;padding:7px 2px 4px;margin-top:2px}.feature.locked{opacity:.34;filter:grayscale(.9);box-shadow:none}.feature.locked button{pointer-events:none}.feature.awake-only{border-left-color:#a84e32}.feature.dormant-power{border-left-color:#c69947}.horn-top{border-color:#8c6b39;background:radial-gradient(circle at 50% 0%,#d49b3420,transparent 55%),linear-gradient(var(--panel2),var(--panel))}'''
+          anchor='.feature.blue{border-left-color:#63a9c6}'
+          if '.horn-state-head{' not in s and anchor in s:
+              s=s.replace(anchor,anchor+css,1)
+
+          old_start='''<section class="panel" id="cor"><div class="card"><div class="section-title">Cor de Guerre d'Urngarak</div><div class="controls"><select id="hornState" onchange="setHornState()"><option value="dormant">État Dormant — 3 charges</option><option value="awakened">État Éveillé — 5 charges</option></select><button onclick="hornRest()">🌙 Tombée de la nuit : recharger</button></div><div class="rule">DD du Cor 12. Un son est audible jusqu'à 600 m. Tout effet du Cor qui blesse déclenche la Tentation du Grand Saccageur : JdS SAG +0, DD 13 Dormant / 15 Éveillé.</div></div><div class="horn-grid" style="margin-top:7px">'''
+          new_start='''<section class="panel" id="cor"><div class="card"><div class="horn-state-head"><div><div class="section-title">Cor de Guerre d'Urngarak</div><div class="small">Les pouvoirs Dormants restent disponibles lorsque le Cor est Éveillé.</div></div><div class="horn-badge" id="hornStateBadge">DORMANT · 3/3</div></div><div class="controls"><select id="hornState" onchange="setHornState()"><option value="dormant">État Dormant — 3 charges</option><option value="awakened">État Éveillé — 5 charges</option></select><button onclick="hornRest()">🌙 Tombée de la nuit : recharger</button></div><div class="rule">DD du Cor 12. Un son est audible jusqu'à 600 m. Tout effet du Cor qui blesse déclenche la Tentation du Grand Saccageur : JdS SAG +0, DD 13 Dormant / 15 Éveillé.</div></div><div class="horn-grid" style="margin-top:7px"><div class="horn-group-label">Pouvoirs Dormants · toujours disponibles</div>'''
+          if old_start in s:
+              s=s.replace(old_start,new_start,1)
+
+          s=s.replace('<div class="card feature horn"><div class="action-title">Cri de ralliement</div>', '<div class="card feature horn dormant-power"><div class="action-title">Cri de ralliement</div>', 1)
+          s=s.replace('<div class="card feature horn"><div class="action-title">Fracas de guerre</div>', '<div class="card feature horn dormant-power"><div class="action-title">Fracas de guerre</div>', 1)
+          s=s.replace('<div class="card feature red"><div class="action-title">Hurlement du Grand Saccageur</div>', '<div class="horn-group-label">Pouvoirs Éveillés · uniquement si le Cor est Éveillé</div><div id="howlCard" class="card feature red awake-only"><div class="action-title">Hurlement du Grand Saccageur</div>', 1)
+          s=s.replace('<div class="card feature green"><div class="action-title">Appel des ancêtres guerriers</div>', '<div id="ancCard" class="card feature green awake-only"><div class="action-title">Appel des ancêtres guerriers</div>', 1)
+          s=s.replace('<button class="btn-rage btn-main" onclick="hornPower(\'howl\',2,\'action\',true)">👁 HURLEMENT</button>', '<button id="howlBtn" class="btn-rage btn-main" onclick="hornPower(\'howl\',2,\'action\',true)">👁 HURLEMENT</button>', 1)
+
+          # Render top charges + visible state + lock awakened powers while dormant.
+          old="if($('hornVal'))$('hornVal').textContent=S.horn+' / '+S.hornMax;if($('hornStateTxt'))$('hornStateTxt').textContent=S.hornState==='awakened'?'Éveillé':'Dormant';"
+          new=old+"if($('hornStateBadge'))$('hornStateBadge').textContent=(S.hornState==='awakened'?'ÉVEILLÉ':'DORMANT')+' · '+S.horn+'/'+S.hornMax;if($('howlCard'))$('howlCard').classList.toggle('locked',S.hornState!=='awakened');if($('ancCard'))$('ancCard').classList.toggle('locked',S.hornState!=='awakened');if($('howlBtn'))$('howlBtn').disabled=S.hornState!=='awakened';if($('ancBtn'))$('ancBtn').disabled=S.hornState!=='awakened'||!S.ancReady;"
+          if "hornStateBadge" not in s.split('function render(){',1)[-1] and old in s:
+              s=s.replace(old,new,1)
+
+          # Existing final ancBtn assignment would otherwise re-enable it in Dormant state.
+          s=s.replace("renderRages();renderEco();$('ancBtn').disabled=!S.ancReady;", "renderRages();renderEco();if($('ancBtn'))$('ancBtn').disabled=S.hornState!=='awakened'||!S.ancReady;", 1)
+
+          p.write_text(s,encoding='utf-8')
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Refine Horn charges and dormant awakened states"
+          git pull --rebase origin main
+          git push origin HEAD:main
