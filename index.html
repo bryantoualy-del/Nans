@@ -31,6 +31,17 @@ body.volto-red #axeCard:after{opacity:.68;animation:chargeOrbit 2.2s linear infi
 @keyframes impactShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
 @media(prefers-reduced-motion:reduce){body.volto-yellow #axeCard,body.volto-red #axeCard,#impactBtn.charged-yellow,#impactBtn.charged-red,.shell.fx-impact-shake{animation:none!important}}
 body.raging{background:radial-gradient(circle at 50% 10%,#e0351628,transparent 36%),linear-gradient(#1d0805,#090302)}body.raging .shell{border-color:#b64d2b;box-shadow:0 0 26px #e6421e22,0 16px 55px #000b}body.bark{background:radial-gradient(circle at 50% 10%,#7ca44725,transparent 40%),linear-gradient(#101608,#070a05)}body.bark .shell{border-color:#708c4d;box-shadow:inset 0 0 40px #6f983018,0 0 24px #77a63b22}body.raging.bark .shell{border-color:#c68a38;box-shadow:0 0 30px #db722633,inset 0 0 30px #6f98301a}details{border:1px solid #5d482f;border-radius:9px;background:#15100b;margin-top:5px}summary{cursor:pointer;padding:7px 9px;font-size:11px;font-weight:900;color:#e8bd67}.detail-body{padding:0 9px 8px;font-size:10px;color:#cbbb97;line-height:1.35}@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.stats .stat:nth-child(n+3){grid-column:auto}.resources{grid-template-columns:repeat(3,1fr)}.two,.horn-grid,.feature-grid{grid-template-columns:1fr}.attack-options{grid-template-columns:1fr}.turnbar{grid-template-columns:repeat(3,1fr)}.turnmark{grid-column:span 3}.roll-toggle{grid-column:span 1}.turnbar>.btn-gold{grid-column:span 2}.utility{grid-template-columns:repeat(2,1fr)}}
+
+/* VOLTO PROC FX BOOST */
+.fx-proc-flash{position:fixed;inset:0;pointer-events:none;z-index:9092;opacity:0;background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.52),rgba(255,232,120,.20) 22%,transparent 58%)}
+.fx-proc-flash.red{background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.58),rgba(255,105,65,.24) 24%,transparent 60%)}
+.fx-proc-ring{position:fixed;left:50%;top:50%;width:96px;height:96px;margin:-48px;border:4px solid #fff1a3;border-radius:50%;pointer-events:none;z-index:9110;opacity:0;box-shadow:0 0 18px #fff,0 0 34px #ffd653}
+.fx-proc-ring.red{border-color:#ffd1be;box-shadow:0 0 18px #fff,0 0 36px #ff5a35}
+#axeCard.fx-proc-card,#attackBtn.fx-proc-card{animation:voltoProcKick .42s cubic-bezier(.2,.8,.2,1)}
+.shell.fx-proc-shake{animation:voltoProcShake .20s linear}
+@keyframes voltoProcKick{0%{filter:brightness(1)}18%{filter:brightness(1.5);box-shadow:0 0 28px rgba(255,235,120,.70),0 0 48px rgba(110,220,255,.30)}100%{filter:brightness(1)}}
+@keyframes voltoProcShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,0)}}
+@media(prefers-reduced-motion:reduce){#axeCard.fx-proc-card,#attackBtn.fx-proc-card,.shell.fx-proc-shake{animation:none!important}}
 </style>
 </head>
 <body>
@@ -119,8 +130,15 @@ function fxTransfer(level){
 }
 function fxLightningHit(level='yellow'){
  const red=level==='red',r=$('attackBtn')?.getBoundingClientRect(),cx=r?r.left+r.width/2:innerWidth/2,cy=r?r.top+r.height/2:innerHeight/2;
- for(let i=0;i<(red?5:3);i++){const x=cx+(Math.random()-.5)*90;makeBolt(x,Math.max(0,cy-170-Math.random()*90),cx+(Math.random()-.5)*30,cy,red,180+Math.random()*100,i*35)}
- scatterSparks(cx,cy,red,red?12:7)
+ const flash=document.createElement('div');flash.className='fx-proc-flash'+(red?' red':'');$('fx').appendChild(flash);
+ flash.animate([{opacity:0},{opacity:.88,offset:.13},{opacity:.22,offset:.42},{opacity:0}],{duration:520,easing:'ease-out'});setTimeout(()=>flash.remove(),580);
+ const ring=document.createElement('div');ring.className='fx-proc-ring'+(red?' red':'');ring.style.left=cx+'px';ring.style.top=cy+'px';$('fx').appendChild(ring);
+ ring.animate([{opacity:.95,transform:'scale(.25)'},{opacity:.55,offset:.35,transform:'scale(1.25)'},{opacity:0,transform:'scale(2.7)'}],{duration:560,easing:'cubic-bezier(.05,.7,.2,1)'});setTimeout(()=>ring.remove(),620);
+ for(let i=0;i<(red?9:7);i++){const topX=cx+(Math.random()-.5)*(red?180:150),topY=Math.max(0,cy-230-Math.random()*150),endX=cx+(Math.random()-.5)*42,endY=cy+(Math.random()-.5)*16;makeBolt(topX,topY,endX,endY,red,240+Math.random()*130,i*22)}
+ for(let i=0;i<(red?4:3);i++){const a=Math.random()*Math.PI*2,len=100+Math.random()*120;makeBolt(cx,cy,cx+Math.cos(a)*len,cy+Math.sin(a)*len,red,210+Math.random()*90,70+i*28)}
+ scatterSparks(cx,cy,red,red?22:16);
+ const card=$('axeCard'),btn=$('attackBtn'),shell=document.querySelector('.shell');card?.classList.add('fx-proc-card');btn?.classList.add('fx-proc-card');shell?.classList.add('fx-proc-shake');
+ setTimeout(()=>{card?.classList.remove('fx-proc-card');btn?.classList.remove('fx-proc-card');shell?.classList.remove('fx-proc-shake')},460)
 }
 function fxChargedImpact(level){
  const red=level==='red',cx=innerWidth/2,cy=innerHeight/2;
