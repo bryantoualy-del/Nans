@@ -84,4 +84,44 @@ render_marker = "const axeCard=$('axeCard');axeCard.classList.toggle('charge-yel
 if render_marker in s and 'syncVoltoFx();' not in s[s.find(render_marker):s.find(render_marker)+len(render_marker)+80]:
     s = s.replace(render_marker, render_marker + 'syncVoltoFx();', 1)
 
+# Upgrade first-hit 1d6 lightning proc visibility without competing with Charged Impact.
+upgrade_css = r'''
+/* VOLTO PROC FX BOOST */
+.fx-proc-flash{position:fixed;inset:0;pointer-events:none;z-index:9092;opacity:0;background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.52),rgba(255,232,120,.20) 22%,transparent 58%)}
+.fx-proc-flash.red{background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.58),rgba(255,105,65,.24) 24%,transparent 60%)}
+.fx-proc-ring{position:fixed;left:50%;top:50%;width:96px;height:96px;margin:-48px;border:4px solid #fff1a3;border-radius:50%;pointer-events:none;z-index:9110;opacity:0;box-shadow:0 0 18px #fff,0 0 34px #ffd653}
+.fx-proc-ring.red{border-color:#ffd1be;box-shadow:0 0 18px #fff,0 0 36px #ff5a35}
+#axeCard.fx-proc-card,#attackBtn.fx-proc-card{animation:voltoProcKick .42s cubic-bezier(.2,.8,.2,1)}
+.shell.fx-proc-shake{animation:voltoProcShake .20s linear}
+@keyframes voltoProcKick{0%{filter:brightness(1)}18%{filter:brightness(1.5);box-shadow:0 0 28px rgba(255,235,120,.70),0 0 48px rgba(110,220,255,.30)}100%{filter:brightness(1)}}
+@keyframes voltoProcShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,0)}}
+@media(prefers-reduced-motion:reduce){#axeCard.fx-proc-card,#attackBtn.fx-proc-card,.shell.fx-proc-shake{animation:none!important}}
+'''
+if '/* VOLTO PROC FX BOOST */' not in s:
+    pos=s.find('</style>')
+    if pos==-1: raise SystemExit('style end not found')
+    s=s[:pos]+upgrade_css+s[pos:]
+
+old_fx = r'''function fxLightningHit(level='yellow'){
+ const red=level==='red',r=$('attackBtn')?.getBoundingClientRect(),cx=r?r.left+r.width/2:innerWidth/2,cy=r?r.top+r.height/2:innerHeight/2;
+ for(let i=0;i<(red?5:3);i++){const x=cx+(Math.random()-.5)*90;makeBolt(x,Math.max(0,cy-170-Math.random()*90),cx+(Math.random()-.5)*30,cy,red,180+Math.random()*100,i*35)}
+ scatterSparks(cx,cy,red,red?12:7)
+}'''
+new_fx = r'''function fxLightningHit(level='yellow'){
+ const red=level==='red',r=$('attackBtn')?.getBoundingClientRect(),cx=r?r.left+r.width/2:innerWidth/2,cy=r?r.top+r.height/2:innerHeight/2;
+ const flash=document.createElement('div');flash.className='fx-proc-flash'+(red?' red':'');$('fx').appendChild(flash);
+ flash.animate([{opacity:0},{opacity:.88,offset:.13},{opacity:.22,offset:.42},{opacity:0}],{duration:520,easing:'ease-out'});setTimeout(()=>flash.remove(),580);
+ const ring=document.createElement('div');ring.className='fx-proc-ring'+(red?' red':'');ring.style.left=cx+'px';ring.style.top=cy+'px';$('fx').appendChild(ring);
+ ring.animate([{opacity:.95,transform:'scale(.25)'},{opacity:.55,offset:.35,transform:'scale(1.25)'},{opacity:0,transform:'scale(2.7)'}],{duration:560,easing:'cubic-bezier(.05,.7,.2,1)'});setTimeout(()=>ring.remove(),620);
+ for(let i=0;i<(red?9:7);i++){const topX=cx+(Math.random()-.5)*(red?180:150),topY=Math.max(0,cy-230-Math.random()*150),endX=cx+(Math.random()-.5)*42,endY=cy+(Math.random()-.5)*16;makeBolt(topX,topY,endX,endY,red,240+Math.random()*130,i*22)}
+ for(let i=0;i<(red?4:3);i++){const a=Math.random()*Math.PI*2,len=100+Math.random()*120;makeBolt(cx,cy,cx+Math.cos(a)*len,cy+Math.sin(a)*len,red,210+Math.random()*90,70+i*28)}
+ scatterSparks(cx,cy,red,red?22:16);
+ const card=$('axeCard'),btn=$('attackBtn'),shell=document.querySelector('.shell');card?.classList.add('fx-proc-card');btn?.classList.add('fx-proc-card');shell?.classList.add('fx-proc-shake');
+ setTimeout(()=>{card?.classList.remove('fx-proc-card');btn?.classList.remove('fx-proc-card');shell?.classList.remove('fx-proc-shake')},460)
+}'''
+if old_fx in s:
+    s=s.replace(old_fx,new_fx,1)
+elif new_fx not in s:
+    raise SystemExit('fxLightningHit marker not found')
+
 p.write_text(s, encoding='utf-8')
