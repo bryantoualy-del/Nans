@@ -286,3 +286,6 @@ body[data-v3-character=nans] .attack-roll-entry [hidden]{display:none!important}
 #v3-root .v3-social-tabs button{flex:1;min-height:44px;border-radius:9px}
 #v3-root .v3-social-tabs button.active{border-color:#d7b682;color:#fff2d8}
 @media(max-width:700px){#v3-root .v3-dock span{font-size:10px;line-height:1.15}}
+
+#v3-root .v3-sheet-tabs{display:flex;gap:6px;overflow-x:auto;margin:9px 0;padding:5px;border:1px solid var(--v3-line,#515260);border-radius:12px;background:#11151bcf}#v3-root .v3-sheet-tabs button{flex:1 0 auto;min-height:42px;padding:7px 10px;border-radius:9px;font-size:12px}#v3-root .v3-sheet-tabs button.active{border-color:var(--v3-accent,#d5a45b);color:#fff2d8;background:#473527}#v3-root .v3-roll-grid button span{display:grid;gap:2px}#v3-root .v3-roll-grid button small{font-size:10px;opacity:.75}#v3-root .v3-roll-grid button strong{font-size:16px}#v3-root .v3-social-mode{display:flex;gap:6px}#v3-root .v3-social-mode button{flex:1}
+.head img.nans-mark{object-fit:cover;border-radius:16px;box-shadow:0 0 20px #db932655}
