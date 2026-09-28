@@ -45,3 +45,10 @@ run("S.eco.action=false;S.hornState='awakened';S.hornMax=5;S.horn=5;hornPower('a
 run('hornRest()');assert.equal(state().horn,5);assert.equal(state().ancReady,true);
 run('longRest()');assert.equal(state().hp,state().maxHp);assert.equal(state().rages,4);
 console.log('Critical, GWM, ring, rage, frenzy, horn, rest: OK');
+// Ordinary results collapse to Pik-like badge; hit confirmation stays modal.
+run("S.pending=null;ribbon('Essai','14 dégâts')");assert(elements.ribbon.classList.contains('show'));assert(!elements.ribbon.classList.contains('question'));
+run('collapseRibbon()');assert(!elements.ribbon.classList.contains('show'));assert.equal(elements.resultBadge.hidden,false);
+run('expandRibbon()');assert(elements.ribbon.classList.contains('show'));assert.equal(elements.resultBadge.hidden,true);
+run("ribbon('Attaque','d20 12 + 9 = 21',true)");assert(elements.ribbon.classList.contains('question'));
+run("S.pending={roll:{raw:12}};collapseRibbon()");assert(elements.ribbon.classList.contains('show'),'pending confirmation cannot collapse');
+console.log('Bottom result ribbon, recall badge, center confirmation: OK');

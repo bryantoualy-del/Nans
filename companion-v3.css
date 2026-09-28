@@ -108,3 +108,58 @@ body[data-v3-character=nans] #v3-log-slot .log{display:block;max-height:480px}
 body[data-v3-character=nans] .v3-social-mode{display:flex;gap:6px;position:sticky;top:72px;z-index:61;padding:7px;background:#161b18ee;border:1px solid #5e624e;border-radius:12px;backdrop-filter:blur(10px)}
 body[data-v3-character=nans] .v3-social-mode button{flex:1;font-size:12px}
 @media(max-width:700px){body[data-v3-character=nans] .v3-social-mode{top:0}}
+
+/* Pik-inspired scale and result dock; Nans keeps its stone, copper and Volto palette. */
+body[data-v3-character=nans]{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;--v3-panel:#1e211e;--v3-line:#56604f;--v3-text:#f3f2e9;color:#f3f2e9;background:radial-gradient(circle at 14% 0%,#51664435,transparent 28rem),radial-gradient(circle at 95% 38%,#7b4d3030,transparent 32rem),linear-gradient(145deg,#101510,#161915 55%,#15120f)}
+body[data-v3-character=nans] .shell{background:linear-gradient(145deg,#20271fcf,#171b16f4);border:1px solid #657157;box-shadow:0 18px 50px #0009,inset 0 1px 0 #f6e9c213}
+body[data-v3-character=nans] .head{border-bottom:1px solid #59634c;border-top:3px solid #aa946b;background:linear-gradient(90deg,#293024a0,transparent);border-radius:12px 12px 0 0}
+body[data-v3-character=nans] .head h1{background:linear-gradient(#fffdf0,#d8c59b);-webkit-background-clip:text;color:transparent}
+body[data-v3-character=nans] .subtitle{font-size:13px;color:#c4cbb7}
+body[data-v3-character=nans] .card,body[data-v3-character=nans] #v3-root .v3-card{background:linear-gradient(145deg,#252a22,#181d18);border-color:#53604d;box-shadow:inset 0 1px 0 #f5efd510,0 9px 25px #0004}
+body[data-v3-character=nans] .stat{background:#151b15;border-color:#475445}
+body[data-v3-character=nans] .stat .big{font-size:25px}
+body[data-v3-character=nans] .label{font:700 11px system-ui,sans-serif;color:#c7d0bc;letter-spacing:.09em}
+body[data-v3-character=nans] .small{font-size:12px;color:#b8c5b1}
+body[data-v3-character=nans] .rule{font-size:13px;line-height:1.48;color:#e3e2d3}
+body[data-v3-character=nans] .meta{font-size:12px;line-height:1.4;color:#b8c7b2}
+body[data-v3-character=nans] .section-title{font-size:20px;color:#e4d2a4}
+body[data-v3-character=nans] .action-title{font-size:16px;color:#eee4c9}
+body[data-v3-character=nans] .chip{font-size:11px;padding:5px 9px;border-color:#53634c;color:#c6d1bd}
+body[data-v3-character=nans] #combatResources .resource .value{font-size:24px;color:#f6f0da}
+body[data-v3-character=nans] .turnbar{background:#182019f4;border:1px solid #63735a;border-top:2px solid #c1a775;box-shadow:0 12px 28px #0009,inset 0 3px 0 #7b44341f}
+body[data-v3-character=nans] .turnmark,body[data-v3-character=nans] .eco{background:#19251b;border-color:#49654d;font-size:12px}
+body[data-v3-character=nans] .turnbar>.btn-gold{background:linear-gradient(135deg,#eddbb4,#bd9d67);border-color:#eed6a5;color:#231a12;font-weight:900}
+body[data-v3-character=nans] .turnbar>button:not(.btn-gold){font-weight:700;font-size:12px}
+body[data-v3-character=nans] .turnbar>button[onclick="longRest()"]{background:#34251f;border-color:#8c6250}
+body[data-v3-character=nans] .combat-tabs button{background:#1b281e;border-color:#506450;color:#e6eada}
+body[data-v3-character=nans] .combat-tabs button.active{background:linear-gradient(135deg,#596a47,#3a4d39);border-color:#a9c18a;color:#fffdf0;box-shadow:inset 0 -2px 0 #bb8b61}
+body[data-v3-character=nans] nav.tabs{background:#162018ee;border-color:#596f57}
+body[data-v3-character=nans] nav.tabs button{font-size:14px;font-weight:750;border-color:#4a614b;background:#1e3023}
+body[data-v3-character=nans] nav.tabs button.active{background:linear-gradient(135deg,#577d4b,#435f3c);border-color:#9ec491;color:#fff;box-shadow:inset 0 -3px 0 #bd906d}
+body[data-v3-character=nans] .attack-stage{border-color:#927854;background:linear-gradient(145deg,#292b22,#171c17);box-shadow:inset 0 2px 0 #bda27144,0 10px 28px #0005}
+body[data-v3-character=nans] .weapon-card{background:#1b211b;border-color:#6b6a4e}
+body[data-v3-character=nans] .weapon-hero b{font-size:20px;color:#f4e5b8}
+body[data-v3-character=nans] .weapon-hero span{font-size:14px;color:#dce1ce}
+body[data-v3-character=nans] .attack-options button{font-size:12px;line-height:1.3;min-height:48px;background:#25251e;border-color:#776248}
+body[data-v3-character=nans] .attack-options button.on{background:#5c3825;border-color:#e1a16a}
+body[data-v3-character=nans] .main-attack{background:linear-gradient(135deg,#b79862,#6d532e);color:#fff8e7;border-color:#e0ba78;font-size:20px;min-height:62px}
+body[data-v3-character=nans] .main-attack:disabled{background:#383a31;border-color:#62685b}
+body[data-v3-character=nans] #v3-root .v3-card{font-size:14px}
+body[data-v3-character=nans] .log-entry{font-size:13px;background:#1a221b;border-color:#455848}
+body[data-v3-character=nans] .log-body{font-size:12px;color:#e6e7db}
+/* Ordinary results follow Pik: bottom ribbon, then a persistent recall badge. */
+body[data-v3-character=nans] #ribbon{top:auto;bottom:max(15px,env(safe-area-inset-bottom));left:50%;width:min(760px,calc(100% - 24px));padding:13px 48px 13px 16px;transform:translate(-50%,145%);background:#1a211af7;border:1px solid #a89168;border-top:3px solid #d8c497;border-radius:14px;box-shadow:0 18px 56px #000c;transition:transform .28s ease,opacity .28s ease}
+body[data-v3-character=nans] #ribbon.show{transform:translate(-50%,0)}
+body[data-v3-character=nans] #ribbon .rt{font-size:12px;color:#e1c596;letter-spacing:.1em}
+body[data-v3-character=nans] #ribbon .rb{font:650 14px/1.5 system-ui,sans-serif;color:#fff9e8;max-height:28vh;overflow:auto}
+body[data-v3-character=nans] #ribbonClose{position:absolute;right:8px;top:8px;min-height:34px;width:34px;padding:0;background:transparent;border:0;font:22px system-ui,sans-serif;color:#e2d1b5}
+body[data-v3-character=nans] #resultBadge:not([hidden]){display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;position:fixed;z-index:8998;right:max(13px,env(safe-area-inset-right));bottom:max(13px,env(safe-area-inset-bottom));width:60px;height:60px;padding:3px;border-radius:50%;border:1px solid #bea879;background:#283322;color:#e4d4a3;box-shadow:0 8px 24px #000a,0 0 14px #c9a8743d;font-size:22px}
+body[data-v3-character=nans] #resultBadge .badge-caption{font:700 8px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+/* Touché / Raté stays centered and cannot be collapsed while a decision is pending. */
+body[data-v3-character=nans] #ribbon.question.show{top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(92vw,620px);padding:24px;border:2px solid #d9bd89;box-shadow:0 0 0 100vmax #000a,0 22px 70px #000}
+body[data-v3-character=nans] #ribbon.question #ribbonClose{display:none}
+body[data-v3-character=nans] #ribbon.question .rb{font-size:18px;max-height:55vh}
+body[data-v3-character=nans] #ribbon.question .ribbon-actions button{min-height:58px;font-size:18px}
+@media(min-width:901px){body[data-v3-character=nans] .turnbar{display:grid;grid-template-columns:minmax(100px,1.3fr) repeat(3,minmax(72px,1fr)) minmax(98px,1fr) minmax(105px,1.2fr) repeat(2,minmax(86px,1fr)) minmax(100px,1.2fr) minmax(72px,.8fr);gap:5px}body[data-v3-character=nans] .turnbar>*{min-width:0}}
+@media(max-width:700px){body[data-v3-character=nans] #ribbon{bottom:calc(82px + env(safe-area-inset-bottom))}body[data-v3-character=nans] #resultBadge:not([hidden]){bottom:calc(82px + env(safe-area-inset-bottom))}body[data-v3-character=nans] .weapon-hero{align-items:start;flex-direction:column}body[data-v3-character=nans] .weapon-hero span{font-size:13px}body[data-v3-character=nans] .stat .big{font-size:21px}body[data-v3-character=nans] .head .subtitle{font-size:11px}}
+@media(prefers-reduced-motion:reduce){body[data-v3-character=nans] #ribbon{transition:none}}
