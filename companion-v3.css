@@ -279,3 +279,10 @@ body[data-v3-character=nans] .attack-roll-entry input::placeholder{color:#aa9a80
 body[data-v3-character=nans] .attack-roll-entry .manual-hint{color:#b5a68d;font-size:10px}
 body[data-v3-character=nans] .attack-roll-entry [hidden]{display:none!important}
 @media(max-width:700px){body[data-v3-character=nans] .attack-roll-entry{justify-content:flex-start;padding:5px;gap:5px}body[data-v3-character=nans] .attack-roll-entry .manual-hint{flex-basis:100%;text-align:center}body[data-v3-character=nans] .attack-roll-entry label{font-size:11px}}
+
+/* Shared four-destination dock, with inventory inside Social. */
+#v3-root .v3-social-tabs{display:flex;gap:7px;padding:5px;margin:3px 0 10px;border:1px solid var(--v3-line,#59606a);border-radius:12px;background:#11171bcc}
+#v3-root .v3-social-tabs[hidden]{display:none!important}
+#v3-root .v3-social-tabs button{flex:1;min-height:44px;border-radius:9px}
+#v3-root .v3-social-tabs button.active{border-color:#d7b682;color:#fff2d8}
+@media(max-width:700px){#v3-root .v3-dock span{font-size:10px;line-height:1.15}}
