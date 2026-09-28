@@ -192,3 +192,72 @@ body[data-v3-character=nans] .attack-integrated{padding:6px;margin-top:5px}
 body[data-v3-character=nans] .attack-options{margin-bottom:4px}
 body[data-v3-character=nans] .attack-options button{min-height:42px}
 @media(max-width:700px){body[data-v3-character=nans] .head{padding:5px 8px}body[data-v3-character=nans] .nans-mark{width:42px;height:42px}body[data-v3-character=nans] .stats{display:flex!important}body[data-v3-character=nans] .stats>*{flex:0 0 145px!important;min-width:145px!important}body[data-v3-character=nans] .stats>*:first-child,body[data-v3-character=nans] .stats>*:nth-child(2){flex-basis:165px!important;min-width:165px!important}}
+
+/* Portrait palette: pale fur, dark leather, tempered steel and the amber Volto core. */
+body[data-v3-character=nans]{--v3-panel:#241d16;--v3-line:#6d5946;--v3-text:#f4ead8;--v3-accent:#d4b786;color:#f4ead8;background:radial-gradient(circle at 12% 0%,#6f493029,transparent 30rem),radial-gradient(circle at 90% 75%,#4531222b,transparent 35rem),linear-gradient(145deg,#15120f,#211812 52%,#130f0d)}
+body[data-v3-character=nans] .wrap{position:relative;z-index:1}
+body[data-v3-character=nans] .shell{position:relative;background:linear-gradient(145deg,#2a211acc,#171411f2);border-color:#736047;box-shadow:0 18px 50px #000a,inset 0 1px 0 #f9e0b820}
+body[data-v3-character=nans] .head{background:linear-gradient(95deg,#463223a8,#1c1b17a0 65%,#32251a);border-top-color:#c5ab82;border-bottom-color:#756047}
+body[data-v3-character=nans] .head h1{background:linear-gradient(#fff4db,#cbb38a);-webkit-background-clip:text;color:transparent}
+body[data-v3-character=nans] .sigil{color:#d5ba8f}
+body[data-v3-character=nans] .subtitle{color:#d4c6b0}
+body[data-v3-character=nans] .head-tags span{background:#2a211b;border-color:#80684e;color:#efdbc0}
+body[data-v3-character=nans] .nans-mark{color:#b8b4a6;filter:drop-shadow(0 0 9px #b6874c66)}
+body[data-v3-character=nans] .card,body[data-v3-character=nans] #v3-root .v3-card{background:linear-gradient(145deg,#2b241e,#1d1a17);border-color:#665442;box-shadow:inset 0 1px 0 #f7dfbe12,0 9px 25px #0004}
+body[data-v3-character=nans] .stat{background:#201b17;border-color:#574a3c}
+body[data-v3-character=nans] .label{color:#d6c5a8}
+body[data-v3-character=nans] .small,body[data-v3-character=nans] .meta{color:#bfbaa9}
+body[data-v3-character=nans] .rule{color:#e9ddca}
+body[data-v3-character=nans] .chip{border-color:#695746;color:#d8c9b1}
+body[data-v3-character=nans] .turnbar{background:#201a16f4;border-color:#806c55;border-top-color:#cbb490}
+body[data-v3-character=nans] .turnmark,body[data-v3-character=nans] .eco{background:#251e19;border-color:#685544}
+body[data-v3-character=nans] .turnbar>.btn-gold{background:linear-gradient(135deg,#e1c99e,#b28a54);border-color:#efdbb6;color:#2d2115}
+body[data-v3-character=nans] .turnbar>button[onclick="longRest()"]{background:#38241f;border-color:#8c6655}
+body[data-v3-character=nans] .combat-tabs button{background:#2a231e;border-color:#715c49;color:#e9d9c1}
+body[data-v3-character=nans] .combat-tabs button.active{background:linear-gradient(135deg,#736249,#4e4032);border-color:#d6bc8d;color:#fff4dd;box-shadow:inset 0 -2px 0 #ae7a48}
+body[data-v3-character=nans] nav.tabs{background:#201a16ed;border-color:#745f49}
+body[data-v3-character=nans] nav.tabs button{background:#30251e;border-color:#715844;color:#e9dcc7}
+body[data-v3-character=nans] nav.tabs button.active{background:linear-gradient(135deg,#7d6747,#55432e);border-color:#d8b684;color:#fff3de;box-shadow:inset 0 -3px 0 #a97748}
+body[data-v3-character=nans] .attack-stage{background:linear-gradient(145deg,#292722,#1c1c19);border-color:#9c825a}
+body[data-v3-character=nans] .weapon-card{background:#242420;border-color:#777064}
+body[data-v3-character=nans] .weapon-hero b{color:#f2dfb7}
+body[data-v3-character=nans] .attack-options button{background:#2f2924;border-color:#80654b}
+body[data-v3-character=nans] .main-attack{background:linear-gradient(135deg,#b99760,#765735);border-color:#dec18e}
+body[data-v3-character=nans] .combat-pane#horn .card{border-color:#60715a;background:linear-gradient(145deg,#202b20,#1b211b)}
+body[data-v3-character=nans] .combat-pane#horn .horn-badge,body[data-v3-character=nans] .horn-top{border-color:#84a481;color:#d5e8ce;background:#243525}
+body[data-v3-character=nans] .combat-pane#horn .btn-horn,body[data-v3-character=nans] .combat-pane#horn .btn-green{background:linear-gradient(135deg,#426144,#263b2b);border-color:#779c75;color:#edf4e8}
+body[data-v3-character=nans] #v3-root .v3-dock{background:#1e1916f5}
+/* Rage sits above the Volto and stays available without opening Resources. */
+body[data-v3-character=nans] .barbarian-drive{display:flex;align-items:center;gap:10px;min-height:64px;padding:8px 11px;margin:2px 0 8px;border:1px solid #80664c;border-radius:13px;background:linear-gradient(105deg,#33251d,#251d18 55%,#1f1a17);box-shadow:inset 0 1px 0 #ead3ac18;position:relative;overflow:hidden}
+body[data-v3-character=nans] .barbarian-drive:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:linear-gradient(90deg,#ad8760,#5f4b3a,transparent);pointer-events:none}
+body[data-v3-character=nans] .drive-mark{width:42px;height:42px;display:grid;place-items:center;flex:none;border:1px solid #82684c;border-radius:10px;background:#1c1714;color:#d1b28a}
+body[data-v3-character=nans] .drive-mark svg{width:33px;height:33px}
+body[data-v3-character=nans] .drive-copy{display:grid;gap:2px;min-width:0;flex:1}
+body[data-v3-character=nans] .drive-copy strong{font:850 13px system-ui,sans-serif;letter-spacing:.11em;color:#f4dfbd}
+body[data-v3-character=nans] .drive-copy span{font:550 11px/1.35 system-ui,sans-serif;color:#cfbfa8}
+body[data-v3-character=nans] .drive-actions{display:flex;gap:7px;flex:none}
+body[data-v3-character=nans] .drive-actions button{min-width:125px;min-height:43px;font:750 12px system-ui,sans-serif}
+body[data-v3-character=nans] #quickRageBtn{background:linear-gradient(135deg,#804537,#4a2925);border-color:#bb7862;color:#fff0dd}
+body[data-v3-character=nans] #quickFrenzyBtn{background:linear-gradient(135deg,#80523a,#423026);border-color:#b98a63;color:#fff0dd}
+body[data-v3-character=nans] .barbarian-drive.active{border-color:#ad6552;background:linear-gradient(105deg,#462720,#2b201b 55%,#211a17)}
+body[data-v3-character=nans] .barbarian-drive.active .drive-copy strong{color:#ffc7a6}
+body[data-v3-character=nans] .barbarian-drive.frenzy{border-color:#d38a66}
+body[data-v3-character=nans] .barbarian-drive.frenzy .drive-copy strong{color:#ffe0b7}
+body[data-v3-character=nans] .barbarian-drive button:disabled{opacity:.42}
+body[data-v3-character=nans] #combatResources>.resource:first-child{border-left:3px solid #b16d55}
+body[data-v3-character=nans] #combatResources>.resource:nth-child(2){border-left:3px solid #d19764}
+body[data-v3-character=nans] #combatResources>.resource:nth-child(3){border-left:3px solid #718d59}
+/* Physical, slow breathing presence; kept below Volto's protected lightning layer. */
+#rageAura{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 36%,#953f2933,transparent 58%),radial-gradient(circle at 50% 90%,#7a372627,transparent 56%)}
+body.raging #rageAura{opacity:.7;animation:nansRageBreath 3.1s ease-in-out infinite}
+body.frenzied #rageAura{background:radial-gradient(circle at 50% 36%,#ad492e50,transparent 60%),radial-gradient(circle at 50% 95%,#a1512c3b,transparent 58%);animation-duration:1.65s}
+body[data-v3-character=nans].raging .shell:before{content:"";position:absolute;inset:0;border-radius:18px;box-shadow:inset 0 0 0 1px #c66d4b66,inset 0 0 20px #99402833;pointer-events:none;z-index:2;animation:nansRageRim 3.1s ease-in-out infinite}
+body[data-v3-character=nans].frenzied .shell:before{animation-duration:1.65s}
+body[data-v3-character=nans].raging .barbarian-drive:before{content:"";position:absolute;inset:-35% -10%;pointer-events:none;background:radial-gradient(ellipse at center,#b75c332b,transparent 65%);animation:nansRageBreath 2s ease-in-out infinite}
+body[data-v3-character=nans].frenzied .barbarian-drive:before{animation-duration:1s}
+body[data-v3-character=nans] .nans-rage{background:radial-gradient(circle at 50% 48%,#c6684147,transparent 54%)}
+body[data-v3-character=nans] .nans-frenzy{background:radial-gradient(circle at 50% 50%,#f6c38c44 0 5%,#c75b3638 18%,transparent 60%)}
+@keyframes nansRageBreath{0%,100%{opacity:.34;transform:scale(.98)}50%{opacity:.85;transform:scale(1.025)}}
+@keyframes nansRageRim{0%,100%{box-shadow:inset 0 0 0 1px #b55b4266,inset 0 0 16px #8e332333}50%{box-shadow:inset 0 0 0 2px #df947377,inset 0 0 35px #aa4d3859,0 0 28px #bd5b3444}}
+@media(max-width:700px){body[data-v3-character=nans] .barbarian-drive{display:grid;grid-template-columns:36px minmax(0,1fr);gap:6px;padding:7px}body[data-v3-character=nans] .drive-mark{width:34px;height:34px}body[data-v3-character=nans] .drive-mark svg{width:28px;height:28px}body[data-v3-character=nans] .drive-copy strong{font-size:11px}body[data-v3-character=nans] .drive-copy span{font-size:10px}body[data-v3-character=nans] .drive-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr}body[data-v3-character=nans] .drive-actions button{min-width:0;min-height:44px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){#rageAura,body[data-v3-character=nans].raging .shell:before,body[data-v3-character=nans].raging .barbarian-drive:before{animation:none!important}body.raging #rageAura{opacity:.28}}

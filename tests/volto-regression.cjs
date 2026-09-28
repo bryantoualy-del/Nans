@@ -52,3 +52,12 @@ run('expandRibbon()');assert(elements.ribbon.classList.contains('show'));assert.
 run("ribbon('Attaque','d20 12 + 9 = 21',true)");assert(elements.ribbon.classList.contains('question'));
 run("S.pending={roll:{raw:12}};collapseRibbon()");assert(elements.ribbon.classList.contains('show'),'pending confirmation cannot collapse');
 console.log('Bottom result ribbon, recall badge, center confirmation: OK');
+// A frenzied Rage is chosen in one action bonus and cannot be activated late.
+run("S.raging=false;S.frenzy=false;S.rages=3;S.exhaust=0;S.turn=1;S.eco={action:false,bonus:false,reaction:false};startFrenzy()");
+assert.equal(state().raging,true);assert.equal(state().frenzy,true);assert.equal(state().rages,2);assert.equal(state().eco.bonus,true);
+assert.equal(get('bonusAttackAvailable()'),false,'frenzy starts attacking next turn');
+run('nextTurn()');assert.equal(get('bonusAttackAvailable()'),true);
+run('toggleRage()');assert.equal(state().frenzy,false);assert.equal(state().exhaust,1,'exhaustion applied once when frenzy ends');
+run('toggleRage()');assert.equal(state().frenzy,false,'ordinary Rage is not accidentally frenzied');
+assert.equal(elements.quickRageBtn.textContent,'Terminer la Rage');
+console.log('One-tap Frenzy, bonus timing, exhaustion and normal Rage: OK');
