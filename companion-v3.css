@@ -163,3 +163,32 @@ body[data-v3-character=nans] #ribbon.question .ribbon-actions button{min-height:
 @media(min-width:901px){body[data-v3-character=nans] .turnbar{display:grid;grid-template-columns:minmax(100px,1.3fr) repeat(3,minmax(72px,1fr)) minmax(98px,1fr) minmax(105px,1.2fr) repeat(2,minmax(86px,1fr)) minmax(100px,1.2fr) minmax(72px,.8fr);gap:5px}body[data-v3-character=nans] .turnbar>*{min-width:0}}
 @media(max-width:700px){body[data-v3-character=nans] #ribbon{bottom:calc(82px + env(safe-area-inset-bottom))}body[data-v3-character=nans] #resultBadge:not([hidden]){bottom:calc(82px + env(safe-area-inset-bottom))}body[data-v3-character=nans] .weapon-hero{align-items:start;flex-direction:column}body[data-v3-character=nans] .weapon-hero span{font-size:13px}body[data-v3-character=nans] .stat .big{font-size:21px}body[data-v3-character=nans] .head .subtitle{font-size:11px}}
 @media(prefers-reduced-motion:reduce){body[data-v3-character=nans] #ribbon{transition:none}}
+/* Bring the Volto and its attack button into the first iPad view. */
+body[data-v3-character=nans] .stats{grid-template-columns:1.3fr 1.3fr repeat(3,.85fr);margin:7px 0;gap:6px}
+body[data-v3-character=nans] .stats .stat{min-height:72px;padding:6px}
+body[data-v3-character=nans] .head{padding:5px 12px 7px}
+body[data-v3-character=nans] .head h1{font-size:clamp(30px,3.2vw,42px);margin:1px 0}
+body[data-v3-character=nans] .head-tags{margin-top:5px}
+body[data-v3-character=nans] .head-tags span{padding:3px 8px}
+body[data-v3-character=nans] .nans-mark{width:62px;height:62px}
+body[data-v3-character=nans] nav.tabs{margin:5px 0;padding:3px}
+body[data-v3-character=nans] nav.tabs button{min-height:40px;padding:6px 9px}
+body[data-v3-character=nans] .combat-tabs{margin:5px 0 6px;padding:0}
+body[data-v3-character=nans] .combat-tabs button{min-height:38px;padding:5px 8px}
+body[data-v3-character=nans] .turnbar{margin:4px 0;padding:4px}
+body[data-v3-character=nans] .turnbar>*{min-height:49px}
+body[data-v3-character=nans] .turnmark,body[data-v3-character=nans] .eco{font-size:11px}
+body[data-v3-character=nans] .rage-tactical{padding:4px 9px;margin:2px 0 5px}
+body[data-v3-character=nans] .attack-stage{padding:9px}
+body[data-v3-character=nans] .attack-stage>.section-title{margin:0;font-size:18px}
+body[data-v3-character=nans] .weapon-switch{margin:3px 0 5px}
+body[data-v3-character=nans] .weapon-card{padding:7px;margin:2px 0 5px}
+body[data-v3-character=nans] .volto-rule{margin-top:3px;border:0;background:transparent}
+body[data-v3-character=nans] .volto-rule summary{padding:3px 0;font-size:11px;color:#c4cabb}
+body[data-v3-character=nans] .volto-meter{margin:5px 0;padding:7px}
+body[data-v3-character=nans] .volto-meter .meter{margin-top:3px}
+body[data-v3-character=nans] .weapon-card .weapon-hero b{font-size:17px}
+body[data-v3-character=nans] .attack-integrated{padding:6px;margin-top:5px}
+body[data-v3-character=nans] .attack-options{margin-bottom:4px}
+body[data-v3-character=nans] .attack-options button{min-height:42px}
+@media(max-width:700px){body[data-v3-character=nans] .head{padding:5px 8px}body[data-v3-character=nans] .nans-mark{width:42px;height:42px}body[data-v3-character=nans] .stats{display:flex!important}body[data-v3-character=nans] .stats>*{flex:0 0 145px!important;min-width:145px!important}body[data-v3-character=nans] .stats>*:first-child,body[data-v3-character=nans] .stats>*:nth-child(2){flex-basis:165px!important;min-width:165px!important}}
