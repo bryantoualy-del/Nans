@@ -64,3 +64,47 @@ body[data-v3-character] .panel{min-width:0}
  body[data-v3-character=brackmard] .resources>*:first-child{flex-basis:185px!important;min-width:185px;max-width:185px}
 }
 @media(max-width:700px){body[data-v3-character] .stats button:not(.pip),body[data-v3-character] .hpbox button,body[data-v3-character] .hpedit button,body[data-v3-character=samoth] .hpctrl button{min-width:44px!important;min-height:44px!important}body[data-v3-character] .stats input{min-width:0}}
+/* Nans: compact combat shell. Volto effects remain in index.html. */
+body[data-v3-character=nans]{--v3-accent:#dbba81;--v3-panel:#221e1a;--v3-line:#675846;--v3-text:#f5ead9}
+body[data-v3-character=nans] .wrap{max-width:1240px;padding:12px}
+body[data-v3-character=nans] .shell{background:linear-gradient(145deg,#28241edc,#121311f5);border-color:#685a48;padding:14px}
+body[data-v3-character=nans] .head{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:8px 15px 14px}
+body[data-v3-character=nans] .head h1{font-size:clamp(32px,4vw,50px);letter-spacing:.11em}
+body[data-v3-character=nans] .sigil{font:700 11px system-ui,sans-serif;letter-spacing:.28em}
+body[data-v3-character=nans] .head-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+body[data-v3-character=nans] .head-tags span{border:1px solid #766349;border-radius:99px;padding:5px 10px;font:600 10px system-ui,sans-serif;color:#e6d1b0}
+body[data-v3-character=nans] .nans-mark{width:80px;height:80px;color:#bb9660;filter:drop-shadow(0 0 15px #a2773b55);flex:none}
+body[data-v3-character=nans] .stats{grid-template-columns:1.25fr 1.25fr 1.2fr repeat(3,.8fr);gap:8px;margin:10px 0}
+body[data-v3-character=nans] .stat{background:#191a18;border-color:#574b39;min-height:84px}
+body[data-v3-character=nans] .combat-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:8px 0 10px;padding-bottom:3px}
+body[data-v3-character=nans] .combat-tabs button{flex:1 0 auto;background:#1d211f;border-color:#4b594b;font:700 12px system-ui,sans-serif;white-space:nowrap}
+body[data-v3-character=nans] .combat-tabs button.active{border-color:#d1b07a;background:#393428;color:#fff0cc}
+body[data-v3-character=nans] .combat-pane{display:none}body[data-v3-character=nans] .combat-pane.active{display:block}
+body[data-v3-character=nans] .rage-tactical{display:inline-flex;padding:6px 12px;border:1px solid #71523a;border-radius:99px;color:#e9b391;font:700 11px system-ui,sans-serif;margin:0 0 8px}
+body[data-v3-character=nans] .attack-stage{background:linear-gradient(145deg,#252622,#151811);border-color:#83714a}
+body[data-v3-character=nans] #combatResources{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body[data-v3-character=nans] #combatResources .resource{min-height:105px;display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;gap:12px;padding:14px}
+body[data-v3-character=nans] #combatResources .resource button{font-size:12px;min-height:44px}
+body[data-v3-character=nans] .pips{justify-content:flex-start}
+body[data-v3-character=nans] .defense-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body[data-v3-character=nans] .damage-controls{display:flex;gap:5px;margin:7px 0}body[data-v3-character=nans] .damage-controls input{width:85px;padding:8px}
+body[data-v3-character=nans] .turnbar{position:sticky;top:max(4px,env(safe-area-inset-top));z-index:60;background:#141611ef;padding:6px;border:1px solid #626049}
+body[data-v3-character=nans] #ribbon.show:has(.ribbon-actions.show){top:50%;transform:translate(-50%,-50%);width:min(92vw,620px);padding:24px;box-shadow:0 0 0 100vmax #0008,0 18px 60px #000}
+body[data-v3-character=nans] #ribbon.show:has(.ribbon-actions.show) .rb{font-size:18px;line-height:1.5}
+body[data-v3-character=nans] #ribbon.show:has(.ribbon-actions.show) .ribbon-actions button{min-height:58px;font-size:18px}
+body[data-v3-character=nans] .nans-fx{position:fixed;inset:0;pointer-events:none;z-index:8000;opacity:0;animation:nansPulse .7s ease-out}
+body[data-v3-character=nans] .nans-stone{background:radial-gradient(circle at 50% 55%,#ab937544,transparent 46%)}
+body[data-v3-character=nans] .nans-heal{background:radial-gradient(circle at 50% 55%,#839f6540,transparent 46%)}
+body[data-v3-character=nans] .nans-rage{background:radial-gradient(circle at 50% 55%,#ae3b2350,transparent 50%)}
+body[data-v3-character=nans] .nans-horn{background:radial-gradient(circle at 50% 55%,transparent 10%,#b7a57833 32%,transparent 60%)}
+@keyframes nansPulse{15%{opacity:.9}100%{opacity:0}}
+body[data-v3-character=nans] #v3-root .v3-dock{background:#141612f5}
+@media(max-width:900px){body[data-v3-character=nans] #combatResources{grid-template-columns:1fr 1fr}body[data-v3-character=nans] .turnbar{display:flex;overflow-x:auto}body[data-v3-character=nans] .turnbar>*{flex:none;min-width:90px}}
+@media(max-width:700px){body[data-v3-character=nans] .wrap{padding:5px}body[data-v3-character=nans] .shell{padding:7px}body[data-v3-character=nans] .head{padding:5px 8px}body[data-v3-character=nans] .nans-mark{width:48px;height:48px}body[data-v3-character=nans] .head-tags{gap:3px}body[data-v3-character=nans] .head-tags span{font-size:9px;padding:4px 6px}body[data-v3-character=nans] .combat-tabs button{font-size:11px;min-height:42px}body[data-v3-character=nans] #combatResources,body[data-v3-character=nans] .defense-tools{grid-template-columns:1fr}body[data-v3-character=nans] #combatResources{display:grid!important;overflow:visible!important}body[data-v3-character=nans] #combatResources>*{max-width:none!important;min-width:0!important;flex:auto!important}body[data-v3-character=nans] .turnbar{top:0!important}}
+@media(prefers-reduced-motion:reduce){body[data-v3-character=nans] .nans-fx{animation:none}}
+body[data-v3-character=nans] .kill-confirm{display:block;margin:7px 0 0 auto;min-height:35px;background:transparent;border-color:#685a44;color:#c7b89d;font-size:11px}
+body[data-v3-character=nans] #v3-log-search{width:100%;min-height:44px;padding:9px;margin:4px 0 10px}
+body[data-v3-character=nans] #v3-log-slot .log{display:block;max-height:480px}
+body[data-v3-character=nans] .v3-social-mode{display:flex;gap:6px;position:sticky;top:72px;z-index:61;padding:7px;background:#161b18ee;border:1px solid #5e624e;border-radius:12px;backdrop-filter:blur(10px)}
+body[data-v3-character=nans] .v3-social-mode button{flex:1;font-size:12px}
+@media(max-width:700px){body[data-v3-character=nans] .v3-social-mode{top:0}}
