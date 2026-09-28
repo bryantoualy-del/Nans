@@ -5,7 +5,7 @@ const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 const classes=()=>({set:new Set(),add(x){this.set.add(x)},remove(x){this.set.delete(x)},toggle(x,on){if(on===undefined)on=!this.set.has(x);on?this.set.add(x):this.set.delete(x);return on},contains(x){return this.set.has(x)}});
 function el(){return {classList:classes(),style:{},value:'0',innerHTML:'',textContent:'',children:[],disabled:false,appendChild(c){this.children.push(c)},prepend(c){this.children.unshift(c)},remove(){},animate(){return {}},querySelector(){return null},getBoundingClientRect(){return {left:0,top:0,width:120,height:60}},addEventListener(){},setAttribute(){}}}
 const elements=Object.fromEntries(ids.map(id=>[id,el()]));
-elements.manualRoll.value='';elements.manualRollSecond.value='';
+elements.manualRoll.value='';
 const body=el(),fxClasses=[];elements.fx.appendChild=c=>fxClasses.push(c.className);
 const store=new Map();
 const document={body,getElementById:id=>elements[id]||null,querySelector:s=>s==='.shell'?elements.shell||el():null,querySelectorAll:()=>[],createElement:()=>el(),addEventListener(){}};
@@ -69,9 +69,11 @@ run("S.mode='sword';S.hits=0;S.reckless=false;S.rollMode='auto';S.eco.action=fal
 elements.manualRoll.value='11';run('smartAttack()');assert.equal(state().pending.roll.raw,11);
 assert.equal(state().pending.roll.total,20);assert.equal(elements.manualRoll.value,'');run('confirmHit(false)');assert.equal(state().hits,0);
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='12';run('smartAttack()');run('confirmHit(true)');assert.equal(state().hits,1);
-run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');assert.equal(elements.manualSecondLabel.hidden,false);
-elements.manualRoll.value='7';run('smartAttack()');assert.equal(state().attacksLeft,2,'incomplete advantage does not consume attack');assert.equal(state().pending,null);assert.equal(elements.manualRoll.value,'7');
-elements.manualRollSecond.value='19';run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,7);assert.equal(state().pending.roll.b,19);run('confirmHit(false)');assert.equal(state().hits,1);
+run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');assert.equal(elements.manualHint.textContent.includes('meilleur de 2'),true);
+elements.manualRoll.value='19';run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,19);assert.equal(state().pending.roll.b,null,'player supplies the better die');run('confirmHit(false)');assert.equal(state().hits,1);
+run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='21';run('smartAttack()');assert.equal(state().attacksLeft,2,'invalid manual result does not consume attack');assert.equal(state().pending,null);elements.manualRoll.value='';
+run("S.rollMode='manual';renderEco()");ctx.prompt=()=> '17';run('smartAttack()');assert.equal(state().pending.roll.raw,17);assert.equal(state().pending.roll.b,null,'legacy manual mode asks for one selected die');run('confirmHit(false)');ctx.prompt=()=>null;
+run("S.rollMode='auto'");assert.notEqual(get('rollAttack().b'),null,'automatic Reckless Attack still rolls two dice');
 run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');elements.manualRoll.value='1';run('smartAttack()');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';run('smartAttack()');assert.equal(state().hits,2,'natural 20 automatically hits and charges');
-console.log('Inline manual d20, advantage, incomplete input, natural 1/20 and Volto charge: OK');
+console.log('Inline manual d20, selected advantage, invalid input, natural 1/20 and Volto charge: OK');
