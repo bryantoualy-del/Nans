@@ -261,3 +261,10 @@ body[data-v3-character=nans] .nans-frenzy{background:radial-gradient(circle at 5
 @keyframes nansRageRim{0%,100%{box-shadow:inset 0 0 0 1px #b55b4266,inset 0 0 16px #8e332333}50%{box-shadow:inset 0 0 0 2px #df947377,inset 0 0 35px #aa4d3859,0 0 28px #bd5b3444}}
 @media(max-width:700px){body[data-v3-character=nans] .barbarian-drive{display:grid;grid-template-columns:36px minmax(0,1fr);gap:6px;padding:7px}body[data-v3-character=nans] .drive-mark{width:34px;height:34px}body[data-v3-character=nans] .drive-mark svg{width:28px;height:28px}body[data-v3-character=nans] .drive-copy strong{font-size:11px}body[data-v3-character=nans] .drive-copy span{font-size:10px}body[data-v3-character=nans] .drive-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr}body[data-v3-character=nans] .drive-actions button{min-width:0;min-height:44px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){#rageAura,body[data-v3-character=nans].raging .shell:before,body[data-v3-character=nans].raging .barbarian-drive:before{animation:none!important}body.raging #rageAura{opacity:.28}}
+/* The heartbeat is visible on the Rage control without shaking Volto's protected FX. */
+body[data-v3-character=nans] .barbarian-drive.active .drive-mark{position:relative;border-color:#cf866a;background:#352019;color:#ffd8b5;box-shadow:0 0 13px #b3573b77}
+body[data-v3-character=nans] .barbarian-drive.active .drive-mark:after{content:"";position:absolute;inset:-3px;border:1px solid #dd8964;border-radius:12px;pointer-events:none;animation:nansMarkPulse 3.1s ease-in-out infinite}
+body[data-v3-character=nans] .barbarian-drive.frenzy .drive-mark:after{animation-duration:1.65s;border-color:#f3aa78}
+body[data-v3-character=nans] .barbarian-drive.frenzy .drive-mark{box-shadow:0 0 18px #d5684588,inset 0 0 12px #c3654244}
+@keyframes nansMarkPulse{0%,100%{opacity:.2;transform:scale(.92)}50%{opacity:1;transform:scale(1.13);box-shadow:0 0 20px #c36b4d77}}
+@media(prefers-reduced-motion:reduce){body[data-v3-character=nans] .barbarian-drive.active .drive-mark:after{animation:none;opacity:.55}}
