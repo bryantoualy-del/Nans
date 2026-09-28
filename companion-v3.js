@@ -68,8 +68,8 @@ function syncEconomy(){let st=window.CompanionV3State?.();if(!st)return;const ec
  for(const [b,k] of buttons){if(!k||!b.isConnected)continue;let used=!!eco[k];if(cfg.id==='brackmard'&&k==='action'&&st.extraAction)used=false;if(cfg.id==='samoth'&&st.phase==='dragon'&&k!=='reaction')used=true;if(used)b.disabled=true;else if(b.classList.contains('v3-unavailable'))b.disabled=false;b.classList.toggle('v3-unavailable',used);b.setAttribute('aria-disabled',String(used));}
 }
 const undoAdapter=window.CompanionV3UndoAdapter;
-let transactionStart=null,lastTransaction=null;
-if(undoAdapter){let bar=$('.turnbar');if(bar){let u=document.createElement('button');u.type='button';u.id='v3-undo';u.textContent='↶ Annuler';u.disabled=true;u.setAttribute('aria-label','Annuler la dernière opération mécanique');bar.appendChild(u);u.addEventListener('click',()=>{if(!lastTransaction)return;try{undoAdapter.restore(lastTransaction);lastTransaction=null;transactionStart=null;u.disabled=true;syncEconomy();}catch(e){warn('Annulation impossible : '+e.message)}})}
+let transactionStart=null,lastTransaction=null;let undoLastTransaction=()=>false;
+if(undoAdapter){let bar=$('.turnbar');if(bar){let u=document.createElement('button');u.type='button';u.id='v3-undo';u.textContent='↶ Annuler';u.disabled=true;u.setAttribute('aria-label','Annuler la dernière opération mécanique');bar.appendChild(u);undoLastTransaction=()=>{if(!lastTransaction)return false;try{undoAdapter.restore(lastTransaction);lastTransaction=null;transactionStart=null;u.disabled=true;syncEconomy();return true}catch(e){warn('Annulation impossible : '+e.message);return false}};u.addEventListener('click',undoLastTransaction)}
  document.addEventListener('click',e=>{if(e.target.closest('#v3-root,#v3-undo,nav.tabs'))return;const target=e.target.closest('button,input,select');if(!target)return;
  if(transactionStart===null)transactionStart=undoAdapter.snapshot();
  setTimeout(()=>{if(transactionStart===null||undoAdapter.pending())return;let after=undoAdapter.snapshot();if(after!==transactionStart){lastTransaction=transactionStart;$('#v3-undo').disabled=false;}transactionStart=null;syncEconomy()},70);
@@ -77,7 +77,7 @@ if(undoAdapter){let bar=$('.turnbar');if(bar){let u=document.createElement('butt
  document.addEventListener('change',e=>{if(e.target.closest('#v3-root'))return;let before=undoAdapter.snapshot();setTimeout(()=>{if(undoAdapter.pending())return;let after=undoAdapter.snapshot();if(after!==before){lastTransaction=before;$('#v3-undo').disabled=false;}syncEconomy()},70)},true);
 }
 document.addEventListener('click',()=>setTimeout(syncEconomy,0));document.addEventListener('change',()=>setTimeout(syncEconomy,0));
-window.CompanionV3={key,exportAll,go,syncEconomy,
+window.CompanionV3={key,exportAll,go,syncEconomy,undo:undoLastTransaction,
  getItems:()=>structuredClone(data.items),
  addItem:item=>{const i={id:crypto.randomUUID(),name:String(item?.name||'Objet').slice(0,160),category:item?.category==='equipment'?'equipment':'misc',qty:Math.min(9999,Math.max(0,Math.floor(Number(item?.qty??1)))),note:String(item?.note||'').slice(0,5000),image:'',active:false,attuned:false};data.items.push(i);persist();renderItems();return structuredClone(i)},
  updateItem:item=>{const i=data.items.find(x=>x.id===item?.id||x.name===item?.id);if(!i)throw Error('Objet inconnu');if(item.qty!==undefined)i.qty=Math.min(9999,Math.max(0,Math.floor(Number(item.qty))));if(item.note!==undefined)i.note=String(item.note).slice(0,5000);persist();renderItems();return structuredClone(i)},
