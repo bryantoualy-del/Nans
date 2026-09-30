@@ -1,0 +1,290 @@
+/* Nans — Brackmard visual system clone (presentation only, mechanics/FX untouched) */
+:root{
+  --bg:#08090b;--panel:#121416;--panel2:#181a1d;--ink:#f5f1e9;--muted:#a9adb2;
+  --copper:#d6a15f;--copper2:#8d6235;--ember:#ff7a2a;--ember2:#b8421f;--iron:#aeb8bf;
+  --green:#79b88a;--red:#d96858;--blue:#78b9d5;--line:#30343a;--shadow:0 14px 40px #0009;--r:16px
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);font:15px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+  background:
+    radial-gradient(circle at 84% -12%,rgba(255,112,34,.13),transparent 31rem),
+    radial-gradient(circle at 12% 5%,rgba(214,161,95,.08),transparent 26rem),
+    linear-gradient(145deg,#07080a,#0f0d0c 62%,#090a0b);
+  min-height:100vh
+}
+button,input,select,textarea{font:inherit}button{color:inherit}
+.wrap{max-width:1480px;margin:auto;padding:14px 18px 118px}
+.shell{border:0;border-radius:0;background:transparent;box-shadow:none;padding:0}
+.top{display:grid;grid-template-columns:1.4fr 2fr;gap:14px;margin-bottom:14px}
+.head,.stats,.turnbar,.card{
+  background:linear-gradient(145deg,#17191beb,#0d0f11f2);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)
+}
+
+/* Exact Brack-style identity panel */
+.head{
+  min-height:132px;padding:18px 108px 18px 18px;position:relative;overflow:hidden;
+  display:block;text-align:left;border-bottom:1px solid var(--line)
+}
+.head:before{
+  content:'';position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,122,42,.10),transparent 68%);pointer-events:none
+}
+.head-copy{position:relative;z-index:1;min-width:0}
+.sigil{color:var(--copper);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;text-shadow:none}
+.head h1{
+  font-family:Georgia,serif;font-size:clamp(1.85rem,4vw,3rem);line-height:1;margin:.22rem 0 .45rem;
+  background:none;-webkit-background-clip:initial;color:var(--ink);letter-spacing:0
+}
+.subtitle{margin:0;color:var(--muted);font-size:.88rem}
+.head-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.head-tags span{
+  border:1px solid #47433d;border-radius:999px;padding:3px 8px;font-size:.72rem;color:#d9d3c8;background:#111315
+}
+.nans-mark{
+  position:absolute;z-index:1;right:14px;bottom:10px;width:82px;height:82px;border-radius:22px;
+  padding:7px;object-fit:contain;background:radial-gradient(circle at 50% 42%,#342116 0,#171719 48%,#090a0c 78%);
+  border:1px solid #6f4a2d;box-shadow:inset 0 0 0 1px #d6a15f22,inset 0 0 26px #000b,0 0 24px #ff742522;
+  filter:drop-shadow(0 2px 5px #000) drop-shadow(0 0 8px #ff742544)
+}
+
+/* Exact Brack-style vitals strip */
+.stats{
+  padding:12px;display:grid;grid-template-columns:2fr 2fr repeat(3,1fr);gap:8px;margin:0
+}
+.stats .card{
+  background:#0a0c0e;border:1px solid #292d32;border-radius:12px;padding:10px;min-width:0;
+  box-shadow:none;text-align:left;min-height:0
+}
+.stat{display:flex;flex-direction:column;justify-content:center}
+.stat .label{color:var(--muted);text-transform:uppercase;font-size:.66rem;letter-spacing:.07em}
+.stat .big{font-size:1.35rem;display:block;color:var(--ink)}
+.stat .small{color:var(--muted);font-size:.69rem}
+.hpedit{display:grid;grid-template-columns:auto minmax(62px,1fr) auto;gap:5px;align-items:center;justify-content:stretch;margin-top:6px}
+.hpedit button{min-height:32px;width:32px;padding:0;border:1px solid var(--line);background:#181b1d;border-radius:8px}
+.hpedit input{
+  width:100%;min-height:32px;background:#07090b;border:1px solid var(--line);border-radius:8px;color:var(--ink);
+  font-weight:800;padding:6px;text-align:center
+}
+
+/* Main nav and Brack segmented combat tabs */
+.tabs{display:flex;gap:7px;margin:0 0 14px;overflow:auto;scrollbar-width:none;background:none;border:0;padding:0;position:static}
+.tabs button{
+  white-space:nowrap;background:#121416;border:1px solid var(--line);border-radius:999px;padding:10px 15px;cursor:pointer
+}
+.tabs button.active{color:#170f08;background:var(--copper);border-color:var(--copper)}
+.combat-tabs{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 11px;padding:5px;
+  border:1px solid #30343a;border-radius:13px;background:#0b0d0f;overflow:visible
+}
+.combat-tabs button{
+  min-height:38px;border:1px solid transparent;border-radius:9px;background:transparent;color:#aeb2b6;
+  font-weight:780;font-size:.76rem;cursor:pointer
+}
+.combat-tabs button:hover,.combat-tabs button:focus-visible{border-color:#474b50;color:var(--ink)}
+.combat-tabs button.active{
+  border-color:#7a5735;background:linear-gradient(145deg,#2b2117,#171411);color:#f2d5a9;
+  box-shadow:inset 0 0 0 1px #d6a15f1f
+}
+
+/* Exact Brack turn bar grammar */
+.turnbar{
+  position:sticky;top:8px;z-index:40;margin:0 0 14px;padding:8px;
+  display:grid;grid-template-columns:auto repeat(3,minmax(78px,1fr)) minmax(110px,1.1fr) auto auto;
+  gap:7px;backdrop-filter:blur(14px)
+}
+.turnmark,.eco{
+  border:1px solid #34393e;background:#111416;border-radius:11px;padding:8px;text-align:center;min-width:0;
+  min-height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center
+}
+.turnmark small,.eco span{color:var(--muted);font-size:.69rem}
+.eco.used{opacity:.42;text-decoration:line-through}
+.turnbar>button{
+  min-height:44px;border-radius:11px;padding:8px 10px;border:1px solid #41464b;background:#171a1c;
+  font-weight:800;white-space:nowrap
+}
+.turnbar>.btn-gold{
+  background:linear-gradient(135deg,#9a672e,#d6a15f);color:#160e07;border:0;font-weight:900
+}
+.turnbar>button[onclick="longRest()"]{border-color:#50556b;background:linear-gradient(145deg,#1a1d28,#111319)}
+.turnbar>button:hover,.turnbar>button:focus-visible{border-color:var(--copper);box-shadow:0 0 12px #d6a15f22}
+
+/* Brack cards / typography */
+.card{padding:15px}
+.section-title{font:700 1.45rem Georgia,serif;color:var(--copper)}
+.action-title{font-size:1rem;font-weight:850;color:#f3c789}
+.meta{color:var(--muted);font-size:.83rem}
+.rule{color:#d5d0c8;font-size:.83rem;line-height:1.45}
+.small{color:var(--muted)}
+.chip{border:1px solid #3a3f44;border-radius:999px;padding:3px 8px;font-size:.72rem;color:#d3cec6}
+
+/* Rage strip follows Brack's compact tactical surface */
+.barbarian-drive{
+  display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;
+  margin:0 0 10px;padding:10px 12px;border:1px solid #4b3b32;border-radius:12px;
+  background:linear-gradient(145deg,#1a1715,#101214)
+}
+.drive-mark{
+  width:46px;height:46px;display:grid;place-items:center;border:1px solid #60412e;border-radius:11px;
+  background:#17110e;color:var(--ember)
+}
+.drive-mark svg{width:31px;height:31px}
+.drive-copy strong{display:block;color:#f4dcc0}.drive-copy span{display:block;color:var(--muted);font-size:.75rem}
+.drive-actions{display:flex;gap:6px}
+.drive-actions button{
+  min-height:40px;border:1px solid #5a4032;background:#211613;border-radius:9px;padding:7px 9px;font-size:.72rem;font-weight:800
+}
+
+/* Volto-Fendoir = Brack pyro-card treatment */
+.attack-stage{
+  position:relative;overflow:hidden;border-color:#6a452d;
+  background:radial-gradient(circle at 90% 8%,rgba(255,117,38,.11),transparent 34%),linear-gradient(145deg,#1b1714,#101214)
+}
+.attack-stage:after{
+  content:'ᚠ';position:absolute;right:18px;top:8px;font:700 58px/1 Georgia,serif;color:#d6a15f;opacity:.07;pointer-events:none
+}
+.weapon-switch{
+  position:relative;z-index:2;display:grid;grid-template-columns:minmax(150px,1fr) auto minmax(150px,1fr);
+  align-items:center;gap:8px;margin:10px 0;padding:7px;border:1px solid #423c36;border-radius:11px;background:#0d0f10
+}
+.mode-name{
+  min-height:58px!important;width:auto!important;display:flex!important;align-items:center;justify-content:center;gap:8px;
+  border:1px solid transparent;border-radius:9px;color:#8f969b!important;font-size:.72rem!important;font-weight:850;text-align:center
+}
+.mode-name.active{color:#f2d5a9!important;background:#211a14;border-color:#6f5235}
+.mode-icon{
+  width:42px;height:42px;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px #000b)
+}
+.switchbtn{
+  position:relative;width:74px;height:36px;min-height:36px;border-radius:999px;padding:0;background:#0b0d0f;border:1px solid #5a4634
+}
+.switchbtn:before{
+  content:"";position:absolute;width:28px;height:28px;left:4px;top:3px;border-radius:50%;
+  background:linear-gradient(#ffd58f,#b95d27 60%,#34140b);box-shadow:0 0 12px #ff742544;transition:.22s
+}
+.switchbtn.axe:before{transform:translateX(36px);background:linear-gradient(#ff9b60,#a43d22)}
+.attack-integrated{
+  border:1px solid #423c36;border-radius:11px;background:#0d0f10;padding:10px;margin-top:8px
+}
+.attack-options{
+  display:flex;flex-wrap:wrap;gap:7px;margin:0 0 9px
+}
+.attack-options button{
+  flex:1 1 150px;min-height:44px;border:1px solid #42474d;background:#121518;border-radius:10px;padding:8px 10px;
+  cursor:pointer;font-size:.72rem;font-weight:800
+}
+.attack-options button.on{
+  border-color:var(--ember);box-shadow:0 0 0 1px #ff7a2a55 inset;background:#261710
+}
+.attack-roll-entry{
+  display:grid;grid-template-columns:auto minmax(190px,250px) 1fr;gap:7px;align-items:center;margin:8px 0
+}
+.attack-roll-entry label{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #41464b;border-radius:10px;
+  background:#080a0c;padding:6px 8px;font-size:.72rem;color:var(--muted)
+}
+.attack-roll-entry input{
+  width:52px;min-height:30px;border:0;border-left:1px solid #42474d;background:transparent;color:var(--ink);padding-left:7px
+}
+.roll-toggle{border:1px solid #42474d;background:#121518;border-radius:10px;padding:8px 10px;min-height:40px}
+.main-attack{
+  width:100%;min-height:56px;border:1px solid #a35f2d;background:linear-gradient(135deg,#4d2818,#8e401f);
+  border-radius:11px;padding:11px;font-size:1.05rem;font-weight:900
+}
+.main-attack:disabled{opacity:.35}
+.kill-confirm{
+  display:block;margin:7px 0 0 auto;min-height:34px;border:1px solid #3d4247;background:#15181a;border-radius:9px;
+  color:var(--muted);padding:5px 9px;font-size:.68rem
+}
+.weapon-card,.volto-meter{
+  border:1px solid #2e3338;border-radius:11px;background:#0c0f11;padding:11px;margin:8px 0
+}
+.weapon-hero b{font-family:Georgia,serif;font-size:1rem;color:var(--copper)}
+.weapon-hero span{color:var(--muted);font-size:.78rem}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:8px 0}
+.controls button{
+  min-height:42px;border:1px solid var(--line);background:#171a1c;border-radius:10px;padding:8px 10px;font-weight:800
+}
+#chargeAxeBtn,#impactBtn{border-color:#70452c;background:#25160f}
+.volto-meter .cell{
+  width:23px;height:23px;border:1px solid #4b4f53;border-radius:7px;background:#0b0d0f
+}
+.volto-meter .cell.hit{background:radial-gradient(circle at 35% 30%,#ffd58f,#b95d27 60%,#34140b);border-color:#d5924f}
+.volto-meter .cell.red{background:radial-gradient(circle at 35% 30%,#ffb184,#b8421f 60%,#32100a);border-color:#d96858}
+
+/* Resource dashboard / powers / defence */
+.resources{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.resource{
+  background:#0d1012;border:1px solid #2e3338;border-radius:12px;padding:11px;text-align:center;
+  display:flex;flex-direction:column;justify-content:space-between;min-height:132px
+}
+.resource .value{font-size:1.25rem;font-weight:900;color:#f5ddba;margin:5px 0}
+.resource button{margin-top:9px;border:1px solid #4a453f;background:#181a1d;border-radius:9px;min-height:40px}
+.pips{display:flex;justify-content:center;gap:5px;margin:8px 0}
+.pip{
+  width:23px!important;height:23px!important;min-width:23px!important;min-height:23px!important;padding:0!important;border-radius:50%!important;
+  background:radial-gradient(circle at 35% 30%,#ffd58f,#b95d27 60%,#34140b);border:1px solid #d5924f
+}
+.pip.off{background:#0b0d0f;border-color:#4b4f53}
+.feature,.horn-top{
+  border:1px solid #2e3338;border-left:3px solid #87949d;border-radius:11px;background:#0c0f11
+}
+.feature.green{border-left-color:#6f8a76}.feature.red{border-left-color:#bd6f51}.feature.blue{border-left-color:#6c8fa1}.feature.horn{border-left-color:#c1733d}
+.horn-grid,.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.defense-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.horn-badge{
+  font-size:.68rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;border:1px solid #5d4936;
+  border-radius:999px;padding:4px 8px;background:#1b1712;color:#e4c596
+}
+.horn-group-label{
+  grid-column:1/-1;color:#c7a36e;border-bottom:1px solid #3e352e;padding:7px 2px 4px;font-size:.7rem;font-weight:900;letter-spacing:.08em
+}
+select{
+  width:100%;min-height:44px;background:#080a0c;color:var(--ink);border:1px solid #41464b;border-radius:10px;padding:8px 10px
+}
+.damage-controls{display:flex;gap:6px;margin:9px 0}.damage-controls input{width:90px}
+.log{
+  background:#07090a;border:1px solid #2b3034;border-radius:10px;padding:11px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.log-entry{background:#0c0f11;border-color:#2e3338}
+
+/* Shared V3 surfaces inherit Brack values */
+#v3-root{max-width:1480px}
+#v3-root .v3-card{background:linear-gradient(145deg,#121416,#0b0d0f)!important;border-color:#30343a!important}
+#v3-root h2{color:var(--copper)!important}
+#v3-root button{background:#171a1d!important;border-color:#30343a!important;color:var(--ink)!important}
+#v3-root button.active,#v3-root button:hover{border-color:var(--copper)!important;background:#2a2119!important}
+
+/* Mobile / iPad follows Brack responsive proportions */
+@media(max-width:767px){
+  body{font-size:14px}
+  .wrap{padding:8px 9px 120px}
+  .top{display:block}
+  .head{border-radius:13px 13px 0 0;padding:13px 82px 13px 13px;min-height:105px}
+  .head h1{font-size:1.65rem}
+  .subtitle{font-size:.78rem}
+  .nans-mark{width:66px;height:66px;right:10px;bottom:10px;border-radius:17px}
+  .stats{border-radius:0 0 13px 13px;grid-template-columns:repeat(3,1fr);padding:8px}
+  .stats .card{padding:8px}.stats .card:nth-child(1),.stats .card:nth-child(2){grid-column:span 3}
+  .stat .big{font-size:1.05rem}
+  .combat-tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+  .combat-tabs button{flex:0 0 auto;min-width:108px}
+  .turnbar{top:4px;margin:8px 0;display:flex;overflow-x:auto;padding:6px;scrollbar-width:none}
+  .turnbar>*{flex:0 0 auto;min-width:82px}
+  .weapon-switch{grid-template-columns:1fr auto 1fr;padding:5px}
+  .mode-name{min-height:52px!important;font-size:.62rem!important;gap:4px}
+  .mode-icon{width:34px;height:34px}
+  .attack-options{display:grid;grid-template-columns:1fr}
+  .attack-roll-entry{grid-template-columns:1fr 1.2fr}.manual-hint{grid-column:1/-1}
+  .controls{grid-template-columns:1fr}
+  .resources{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important}
+  .resources>*{min-width:0!important;max-width:none!important;flex:auto!important}
+  .horn-grid,.feature-grid,.defense-tools{grid-template-columns:1fr}
+}
+@media(min-width:768px) and (max-width:1100px){
+  .stats{grid-template-columns:2fr 2fr repeat(3,1fr)}
+  .resources{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition:none!important}}
