@@ -426,3 +426,34 @@ select{
   .charge-actions{grid-template-columns:1fr}
   .charge-action{min-height:54px!important}
 }
+
+/* iPad: keep Brack-style turn bar on a single row */
+@media(min-width:768px) and (max-width:1180px){
+  .turnbar{
+    display:grid!important;
+    grid-template-columns:86px 86px 86px 86px 112px 112px 108px 72px 72px 86px!important;
+    gap:5px!important;
+    align-items:stretch!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    white-space:nowrap!important;
+    scrollbar-width:none!important;
+    padding:6px!important;
+  }
+  .turnbar::-webkit-scrollbar{display:none}
+  .turnbar>*{
+    min-width:0!important;
+    width:auto!important;
+    margin:0!important;
+  }
+  .turnmark,.eco,.damage-turn,#v3-movement,.next,.restquick,#v3-undo{
+    min-height:46px!important;
+    padding:6px 7px!important;
+    font-size:.69rem!important;
+  }
+  .turnmark b,.eco b,.damage-turn b{font-size:.72rem!important}
+  .turnmark small,.eco span,.damage-turn small{font-size:.61rem!important}
+  #v3-movement{font-size:.65rem!important}
+  .next{font-size:.68rem!important}
+  .restquick{font-size:.66rem!important}
+}
