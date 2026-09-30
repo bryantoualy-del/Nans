@@ -69,8 +69,8 @@ $('#v3-file').addEventListener('change',async e=>{let file=e.target.files[0];if(
 function syncEconomy(){let st=window.CompanionV3State?.();if(!st)return;const eco=st.eco||st.used||{};
  const turn=st.round||st.turn||1;
  if(cfg.id!=='samoth'){
-  let marker=$('#v3-movement');if(!marker){let bar=$('.turnbar');if(bar){marker=document.createElement('button');marker.type='button';marker.id='v3-movement';marker.className='v3-movement';marker.addEventListener('click',()=>{data.movement={turn,used:!(data.movement?.used&&data.movement.turn===turn)};persist();syncEconomy()});bar.appendChild(marker)}}
-  if(marker){if(data.movement?.turn!==turn)data.movement={turn,used:false};marker.textContent=data.movement.used?'⟶ Mouvement utilisé':'⟶ Mouvement libre';marker.classList.toggle('used',data.movement.used);marker.setAttribute('aria-pressed',String(data.movement.used));}
+  let marker=$('#v3-movement');if(!marker){let bar=$('.turnbar');if(bar){marker=document.createElement('button');marker.type='button';marker.id='v3-movement';marker.className='v3-movement';bar.appendChild(marker)}}
+  if(marker){if(!marker.dataset.v3Bound){marker.addEventListener('click',()=>{const currentTurn=window.CompanionV3State?.()?.round||window.CompanionV3State?.()?.turn||1;data.movement={turn:currentTurn,used:!(data.movement?.used&&data.movement.turn===currentTurn)};persist();syncEconomy()});marker.dataset.v3Bound='1';}if(data.movement?.turn!==turn)data.movement={turn,used:false};marker.textContent=data.movement.used?'Mouvement · utilisé':(cfg.id==='brackmard'?'Mouvement · 7,5 m':cfg.id==='nans'?'Mouvement · 12 m':'Mouvement · libre');marker.classList.toggle('used',data.movement.used);marker.setAttribute('aria-pressed',String(data.movement.used));}
  }
  let buttons=[];
  if(cfg.id==='samoth')buttons=[...document.querySelectorAll('.cast')].map(b=>[b,b.dataset.spell==='shield'||b.dataset.spell==='absorb'||b.dataset.spell==='counter'?'reaction':st.meta==='Accéléré'&&b.dataset.spell!=='shield'?'bonus':'action']);
