@@ -361,3 +361,43 @@ select{
 @media(prefers-reduced-motion:reduce){
   .fx-charge-orb,#meter .cell.fx-vial-catch{animation:none!important}
 }
+
+/* Exact Brack turn bar */
+.turnbar{
+  position:sticky;top:8px;z-index:40;margin:14px 0;padding:8px;
+  display:grid;grid-template-columns:auto repeat(4,minmax(78px,1fr)) minmax(110px,1.1fr) auto auto auto auto;
+  gap:7px;backdrop-filter:blur(14px)
+}
+.turnmark,.eco,.damage-turn{
+  border:1px solid #34393e;background:#111416;border-radius:11px;padding:8px;text-align:center;min-width:0
+}
+.turnmark{display:flex;flex-direction:column;justify-content:center}
+.turnmark small,.eco span,.damage-turn small{color:var(--muted);font-size:.69rem}
+.eco{display:flex;flex-direction:column;justify-content:center}
+.eco.used{opacity:.42;text-decoration:line-through}
+#v3-movement{
+  border:1px solid #34393e;background:#111416;border-radius:11px;padding:8px;text-align:center;cursor:pointer;
+  color:var(--ink);font-weight:700
+}
+#v3-movement.used{opacity:.42;text-decoration:line-through}
+.damage-turn{border-color:#624126;background:#21150f}
+.damage-turn b{display:block;color:#efc58e}
+.next{
+  background:linear-gradient(135deg,#9a672e,#d6a15f)!important;color:#160e07!important;border:0!important;
+  border-radius:11px!important;font-weight:900!important;padding:8px 14px!important;cursor:pointer
+}
+.restquick{
+  border:1px solid #535b43!important;background:linear-gradient(145deg,#1c2118,#111410)!important;
+  border-radius:11px!important;padding:7px 9px!important;cursor:pointer;font-weight:800!important;white-space:nowrap
+}
+.restquick.long{border-color:#50556b!important;background:linear-gradient(145deg,#1a1d28,#111319)!important}
+.restquick:hover,.restquick:focus-visible{border-color:var(--copper)!important;box-shadow:0 0 12px #d6a15f22}
+@media(max-width:767px){
+  .turnbar{top:4px;margin:8px 0;display:flex!important;overflow-x:auto;scrollbar-width:none;padding:6px}
+  .turnbar>*{flex:0 0 auto!important;min-width:78px}
+  .turnbar .turnmark{min-width:86px}
+  .turnbar .damage-turn{min-width:96px}
+  #v3-movement{min-width:108px}
+  .next{min-width:104px}
+  .restquick{min-width:74px}
+}
