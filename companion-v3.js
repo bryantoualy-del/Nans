@@ -20,11 +20,13 @@ function go(id){const powers=id==='powers';if(id==='combat'||powers)id=cfg.comba
  nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.v3Tab===id));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));host.querySelectorAll('.v3-panel').forEach(p=>p.hidden=p.id!=='v3-'+id);
  }else{host.querySelectorAll('.v3-panel').forEach(p=>p.hidden=true);let btn=[...nav.querySelectorAll('button')].find(b=>b.dataset.tab===id);btn?.click();}
  host.querySelectorAll('[data-v3-go]').forEach(b=>b.classList.toggle('active',b.dataset.v3Go===id||(['social','inventory'].includes(id)&&b.dataset.v3Go==='social')||(id===(cfg.combatTab||'combat')&&b.dataset.v3Go===(powers?'powers':'combat'))));
- const socialTabs=$('.v3-social-tabs');socialTabs.hidden=!['social','inventory'].includes(id);socialTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.v3SocialGo===id));document.querySelector(`[data-combat-subtab="${powers?'resources':'offense'}"]`)?.click()
+ const socialTabs=$('.v3-social-tabs');socialTabs.hidden=!['social','inventory'].includes(id);socialTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.v3SocialGo===id));
+ if(cfg.id==='nans'&&id===(cfg.combatTab||'combat'))document.querySelector(`[data-combat-tab="${powers?'resources':'attacks'}"]`)?.click();
+ else document.querySelector(`[data-combat-subtab="${powers?'resources':'offense'}"]`)?.click();
  if(id==='social')renderSocial();if(id==='inventory')renderItems();if(id==='notes')renderNotes();
  window.scrollTo({top:0,behavior:'instant'});
 }
-nav.addEventListener('click',e=>{let b=e.target.closest('[data-v3-tab]');if(b)go(b.dataset.v3Tab);else if(e.target.closest('[data-tab]')){$('.v3-social-tabs').hidden=true;host.querySelectorAll('.v3-panel').forEach(p=>p.hidden=true)}});
+nav.addEventListener('click',e=>{let b=e.target.closest('[data-v3-tab]');if(b)go(b.dataset.v3Tab);else{const native=e.target.closest('[data-tab]');if(native){$('.v3-social-tabs').hidden=true;host.querySelectorAll('.v3-panel').forEach(p=>p.hidden=true);host.querySelectorAll('[data-v3-go]').forEach(x=>x.classList.toggle('active',x.dataset.v3Go==='combat'));if(cfg.id==='nans'&&native.dataset.tab===(cfg.combatTab||'combat'))document.querySelector('[data-combat-tab="attacks"]')?.click();}}});
 host.addEventListener('click',e=>{const b=e.target.closest('[data-v3-go],[data-v3-social-go]');if(b)go(b.dataset.v3Go||b.dataset.v3SocialGo)});
 let socialRollMode='normal';function roll(label,bonus){const a=Math.floor(Math.random()*20)+1,b=socialRollMode==='normal'?null:Math.floor(Math.random()*20)+1,n=b===null?a:socialRollMode==='adv'?Math.max(a,b):Math.min(a,b);const msg=`${label} : d20 ${b===null?a:a+' / '+b+' → '+n} ${bonus<0?'−':'+'} ${Math.abs(bonus)} = ${n+bonus}${n===1?' · 1 naturel':n===20?' · 20 naturel':''}`;let out=$('#v3-roll');out.textContent=msg;out.hidden=false;window.CompanionSocialDice?.show({label,dice:b===null?a:[a,b],bonus,total:n+bonus,mode:socialRollMode});try{window.CompanionV3Log?.(msg);}catch{} }
 let socialPane='skills';
