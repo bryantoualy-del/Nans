@@ -731,3 +731,106 @@ body.frenzied .drive-mark .frenzy-emblem{
 @media(prefers-reduced-motion:reduce){
   body.frenzied .drive-mark .frenzy-emblem{animation:none!important}
 }
+
+/* Continuous Volto-Fendoir electrical field: intensity follows exact transferred charge */
+#voltoSection{
+  --volto-electric:#79d8ff;
+  --volto-hot:#f0c766;
+  --volto-glow:.18;
+  transition:border-color .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+#voltoSection::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  border-radius:inherit;
+  padding:2px;
+  opacity:0;
+  background:
+    conic-gradient(from 0deg,
+      transparent 0 7%,
+      var(--volto-electric) 9%,
+      transparent 11% 23%,
+      var(--volto-hot) 25%,
+      transparent 27% 42%,
+      var(--volto-electric) 44%,
+      transparent 46% 63%,
+      var(--volto-hot) 65%,
+      transparent 67% 82%,
+      var(--volto-electric) 84%,
+      transparent 86% 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  filter:drop-shadow(0 0 4px var(--volto-electric));
+  transition:opacity .18s ease;
+}
+#voltoSection.volto-live::before{opacity:.72}
+#voltoSection.volto-live{
+  border-color:#587989!important;
+  box-shadow:0 0 12px rgba(95,200,255,var(--volto-glow)),inset 0 0 18px rgba(74,176,235,.05)!important;
+}
+#voltoSection.volto-charge-3{
+  --volto-electric:#7bdcff;
+  --volto-hot:#f0cf76;
+  --volto-glow:.18;
+  animation:voltoField3 2.5s ease-in-out infinite;
+}
+#voltoSection.volto-charge-3::before{
+  animation:voltoBorderCurrent3 2.2s linear infinite;
+}
+#voltoSection.volto-charge-4{
+  --volto-electric:#65d7ff;
+  --volto-hot:#ffc668;
+  --volto-glow:.28;
+  border-color:#6795a9!important;
+  animation:voltoField4 1.75s ease-in-out infinite;
+}
+#voltoSection.volto-charge-4::before{
+  opacity:.88;
+  animation:voltoBorderCurrent4 1.45s linear infinite;
+}
+#voltoSection.volto-charge-5{
+  --volto-electric:#ff8050;
+  --volto-hot:#ffd08a;
+  --volto-glow:.40;
+  border-color:#b75837!important;
+  animation:voltoField5 .95s ease-in-out infinite;
+}
+#voltoSection.volto-charge-5::before{
+  opacity:1;
+  filter:drop-shadow(0 0 5px #ff9a63) drop-shadow(0 0 10px #ff4b2f66);
+  animation:voltoBorderCurrent5 .82s linear infinite;
+}
+@keyframes voltoField3{
+  0%,100%{box-shadow:0 0 10px rgba(95,200,255,.16),inset 0 0 14px rgba(74,176,235,.04)}
+  50%{box-shadow:0 0 18px rgba(95,200,255,.25),0 0 26px rgba(240,199,102,.07),inset 0 0 20px rgba(74,176,235,.07)}
+}
+@keyframes voltoField4{
+  0%,100%{box-shadow:0 0 14px rgba(85,205,255,.24),0 0 24px rgba(255,198,104,.08),inset 0 0 18px rgba(74,176,235,.06)}
+  50%{box-shadow:0 0 24px rgba(85,205,255,.38),0 0 34px rgba(255,198,104,.14),inset 0 0 25px rgba(74,176,235,.10)}
+}
+@keyframes voltoField5{
+  0%,100%{box-shadow:0 0 18px rgba(255,95,55,.32),0 0 28px rgba(255,184,94,.14),inset 0 0 22px rgba(255,82,44,.08)}
+  50%{box-shadow:0 0 30px rgba(255,95,55,.52),0 0 42px rgba(255,184,94,.22),0 0 56px rgba(93,198,255,.12),inset 0 0 31px rgba(255,82,44,.13)}
+}
+@keyframes voltoBorderCurrent3{
+  0%,100%{opacity:.58;filter:drop-shadow(0 0 3px #7bdcff)}
+  35%{opacity:.9;filter:drop-shadow(0 0 6px #7bdcff)}
+  68%{opacity:.66;filter:drop-shadow(0 0 4px #f0cf76)}
+}
+@keyframes voltoBorderCurrent4{
+  0%,100%{opacity:.72;filter:drop-shadow(0 0 4px #65d7ff)}
+  28%{opacity:1;filter:drop-shadow(0 0 8px #65d7ff)}
+  62%{opacity:.78;filter:drop-shadow(0 0 6px #ffc668)}
+}
+@keyframes voltoBorderCurrent5{
+  0%,100%{opacity:.82;filter:drop-shadow(0 0 5px #ff8050) drop-shadow(0 0 8px #ff4b2f55)}
+  24%{opacity:1;filter:drop-shadow(0 0 9px #ffd08a) drop-shadow(0 0 14px #ff4b2f88)}
+  55%{opacity:.88;filter:drop-shadow(0 0 7px #ff8050) drop-shadow(0 0 11px #65d7ff66)}
+}
+@media(prefers-reduced-motion:reduce){
+  #voltoSection.volto-live,#voltoSection.volto-live::before{animation:none!important}
+}
