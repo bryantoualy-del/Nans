@@ -320,3 +320,44 @@ select{
   .attack-stage>.volto-meter{margin:7px 0;padding:9px}
   .attack-stage>.volto-meter .meter{justify-content:center}
 }
+
+/* Exact Brack hit confirmation component + Volto charge impact */
+.hit-modal[hidden]{display:none}
+.hit-modal{
+  position:fixed;inset:0;z-index:10020;display:grid;place-items:center;padding:18px;
+  background:#020304c9;backdrop-filter:blur(7px)
+}
+.hit-box{
+  width:min(470px,100%);background:linear-gradient(150deg,#201914,#0d0f11);
+  border:1px solid #8d6235;border-radius:20px;box-shadow:0 24px 80px #000,0 0 35px #ff7a2a20;
+  padding:20px;text-align:center
+}
+.hit-box .eyebrow{color:var(--copper);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase}
+.hit-roll{
+  font:800 clamp(2rem,8vw,4rem)/1 Georgia,serif;color:var(--copper);
+  text-shadow:0 0 24px #d6a15f44;margin:10px
+}
+.hit-detail{color:var(--muted);margin-bottom:15px;white-space:pre-wrap}
+.hit-question{font:700 1.12rem Georgia,serif;margin:12px 0}
+.hit-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hit-actions button{min-height:50px;border-radius:12px;font-weight:900;cursor:pointer}
+.hit-no{border:1px solid #704039;background:#281615}
+.hit-yes{border:1px solid #53705a;background:linear-gradient(135deg,#17331f,#28563a)}
+.fx-charge-orb{
+  position:fixed;width:13px;height:13px;border-radius:50%;pointer-events:none;z-index:9200;
+  background:#e9fbff;box-shadow:0 0 8px #fff,0 0 18px #73dfff,0 0 30px #44bfff
+}
+.fx-charge-orb.red{
+  background:#fff1df;box-shadow:0 0 8px #fff,0 0 18px #ff9b64,0 0 30px #ff5a38
+}
+#meter .cell.fx-vial-catch{
+  animation:vialCatch .5s ease-out;
+}
+@keyframes vialCatch{
+  0%{transform:scale(1);filter:brightness(1)}
+  25%{transform:scale(1.28);filter:brightness(2);box-shadow:0 0 22px #7bdfff,0 0 38px #ffd56c}
+  100%{transform:scale(1);filter:brightness(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .fx-charge-orb,#meter .cell.fx-vial-catch{animation:none!important}
+}
