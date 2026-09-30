@@ -288,3 +288,35 @@ select{
   .resources{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition:none!important}}
+
+/* Nans fixes: emblem transparency + persistent Volto gauge */
+.nans-mark{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  border-radius:0!important;
+  filter:drop-shadow(0 3px 5px #000c) drop-shadow(0 0 10px #ff742544)!important;
+}
+.attack-stage>.volto-meter{
+  position:relative;z-index:2;
+  margin:9px 0 8px;
+  padding:10px 12px;
+  border-color:#745535;
+  background:linear-gradient(145deg,#17130f,#0b0d0f);
+  box-shadow:inset 3px 0 0 var(--copper),0 6px 18px #0004;
+}
+.attack-stage>.volto-meter .meterline b{
+  color:#f0d3a5;
+  font-size:.82rem;
+  letter-spacing:.02em;
+}
+.attack-stage>.volto-meter #chargeLabel{
+  color:var(--copper);
+  font-weight:900;
+}
+.attack-stage>.volto-meter .meter{justify-content:flex-start}
+@media(max-width:767px){
+  .attack-stage>.volto-meter{margin:7px 0;padding:9px}
+  .attack-stage>.volto-meter .meter{justify-content:center}
+}
