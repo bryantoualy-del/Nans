@@ -834,3 +834,15 @@ body.frenzied .drive-mark .frenzy-emblem{
 @media(prefers-reduced-motion:reduce){
   #voltoSection.volto-live,#voltoSection.volto-live::before{animation:none!important}
 }
+
+/* Improve contextual attack CTA label contrast */
+#attacks #attackLabel{
+  color:#fff4df!important;
+  text-shadow:0 1px 0 #000,0 0 8px #ffd28a33;
+}
+#attacks .main-attack:not(:disabled) #attackLabel{
+  color:#fff8eb!important;
+}
+#attacks .attack-cta-row.axe-mode #attackLabel{
+  color:#f7f1e7!important;
+}
