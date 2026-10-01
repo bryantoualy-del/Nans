@@ -24,7 +24,7 @@ function go(id){const powers=id==='powers';if(id==='combat'||powers)id=cfg.comba
  if(cfg.id==='nans'&&id===(cfg.combatTab||'combat'))document.querySelector(`[data-combat-tab="${powers?'resources':'attacks'}"]`)?.click();
  else document.querySelector(`[data-combat-subtab="${powers?'resources':'offense'}"]`)?.click();
  if(id==='social')renderSocial();if(id==='inventory')renderItems();if(id==='notes')renderNotes();
- window.scrollTo({top:0,behavior:'instant'});
+ if(window.matchMedia('(min-width:768px)').matches)window.scrollTo({top:0,behavior:'instant'});
 }
 nav.addEventListener('click',e=>{let b=e.target.closest('[data-v3-tab]');if(b)go(b.dataset.v3Tab);else{const native=e.target.closest('[data-tab]');if(native){$('.v3-social-tabs').hidden=true;host.querySelectorAll('.v3-panel').forEach(p=>p.hidden=true);host.querySelectorAll('[data-v3-go]').forEach(x=>x.classList.toggle('active',x.dataset.v3Go==='combat'));if(cfg.id==='nans'&&native.dataset.tab===(cfg.combatTab||'combat'))document.querySelector('[data-combat-tab="attacks"]')?.click();}}});
 host.addEventListener('click',e=>{const b=e.target.closest('[data-v3-go],[data-v3-social-go]');if(b)go(b.dataset.v3Go||b.dataset.v3SocialGo)});
