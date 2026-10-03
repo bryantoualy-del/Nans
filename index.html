@@ -301,7 +301,7 @@ function boot(){
    let txt="";
    if(ribbon){const t=norm(ribbon.querySelector(".title,.rt,[class*='title']")?.textContent);const b=norm(ribbon.querySelector(".body,.rb,[class*='body']")?.textContent);txt=norm([t,b].filter(Boolean).join(" · "));}
    if(!txt){const net=document.querySelector("[data-rpg-state],#rpgStatus,#rpg-status,.rpg-status");txt=norm(net?.textContent)||"Hors ligne";}
-   const t=tone(txt);strip.dataset.tone=t;setText(strip.querySelector(".rpgstate"),txt.replace(/^rpg connect\s*[·:–-]?\s*/i,"")||"Hors ligne";
+   const t=tone(txt);strip.dataset.tone=t;setText(strip.querySelector(".rpgstate"),txt.replace(/^rpg connect\s*[·:–-]?\s*/i,"")||"Hors ligne");
    const miniClass=t==="idle"?"":t;if(mini.className!==miniClass)mini.className=miniClass;setText(mini,(/hors ligne|déconnect|deconnect/i.test(txt)?"○":"●")+" RPG");
    if(ribbon){if(urgent(txt))ribbon.removeAttribute("data-rpg-passive");else ribbon.setAttribute("data-rpg-passive","1");}
  };
