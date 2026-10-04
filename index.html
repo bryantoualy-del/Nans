@@ -293,7 +293,31 @@ function hornPower(p,cost,eco,awake=false){
  else msg='Esprits guerriers actifs 1 minute autour de Nans.';
  if(net.connected&&savePower)msg+=' · JdS Encounter en attente.';if(p==='ancestors')S.ancReady=false;ribbon('Cor · '+p.toUpperCase(),msg);render()
 }function temptation(){let roll=d(20),dc=S.hornState==='awakened'?15:13,ok=roll>=dc;fx(ok?'ring':'flash');ribbon('Tentation du Grand Saccageur','JdS SAG +0 : '+roll+' vs DD '+dc+' → '+(ok?'RÉUSSITE':'ÉCHEC · ruer/attaquer la créature la plus proche ou subir 2d6 psychiques'))}function grapple(type){if(S.attacksLeft<=0||S.eco.action&&S.attacksLeft===2)return ribbon('Attaques épuisées','Empoigner et bousculer remplacent une attaque.');S.eco.action=true;S.attacksLeft--;let a=d(20),b=S.raging?d(20):null,raw=b?Math.max(a,b):a,total=raw+8;ribbon(type==='grab'?'Empoignade':'Bousculade','Athlétisme +8'+(b?' avec avantage':'')+' : '+(b?a+'/'+b:a)+' + 8 = '+total);log((type==='grab'?'Empoigner':'Bousculer')+' : '+total,'resource','Contrôle');render()}
-function requestRest(type){if(type==='short')shortRest();else if(type==='long')longRest()}function shortRest(){S.hits=0;S.stored='none';S.storedCount=0;stopVoltoEdgeFx();S.weaponMagic=true;resetTurn();ribbon('Repos court','Volto réinitialisé.')}function longRest(){S.hp=S.maxHp;S.temp=0;S.tempSource='';S.rages=4;S.raging=false;S.frenzy=false;S.barkReady=true;S.barkActive=false;S.capeReady=true;S.horn=S.hornMax;S.ancReady=true;S.hits=0;S.stored='none';S.storedCount=0;stopVoltoEdgeFx();S.weaponMagic=true;S.turn=1;S.round=1;S.exhaust=Math.max(0,S.exhaust-1);document.body.classList.remove('raging','bark');resetTurn();ribbon('Repos long','PV, Rages, Écorce, Cape et ressources restaurés. Épuisement −1.');render()}function toggleLog(){const e=$('log');e.classList.toggle('open');if(e.classList.contains('open')&&!e.children.length)e.innerHTML='<div class="log-empty">Aucun événement de combat pour le moment.</div>'}
+function requestRest(type){if(type==='short')shortRest();else if(type==='long')longRest()}
+function companionRestConfirm(kind,detail,apply){
+ let d=document.getElementById('companionRestConfirm');
+ if(!d){
+  let s=document.createElement('style');s.id='companionRestConfirmStyle';s.textContent=`
+dialog.companion-rest-confirm{--rest-accent:#b87835;width:min(480px,calc(100% - 24px));max-height:calc(100dvh - 32px);padding:20px;border:1px solid var(--rest-accent);border-radius:20px;background:linear-gradient(150deg,#222832,#10141a);color:#f4f6f8;box-shadow:0 25px 90px #000,0 0 35px color-mix(in srgb,var(--rest-accent) 24%,transparent);text-align:center}
+dialog.companion-rest-confirm::backdrop{background:#030508dc;backdrop-filter:blur(8px)}
+.companion-rest-kicker{color:var(--rest-accent);font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.companion-rest-symbol{font:800 clamp(2.4rem,9vw,4.2rem)/1 Georgia,serif;color:#f8fbff;text-shadow:0 0 26px color-mix(in srgb,var(--rest-accent) 58%,transparent);margin:9px 0 5px}
+.companion-rest-question{margin:8px 0 3px;font:700 1.18rem Georgia,serif;color:#f5f7f9}
+.companion-rest-detail{margin:9px auto 15px;max-width:400px;color:#bcc5ce;font-size:.86rem;line-height:1.48}
+.companion-rest-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.companion-rest-actions button{min-height:50px;border-radius:11px;font-weight:900;padding:9px 12px}
+.companion-rest-go{border:1px solid var(--rest-accent);background:linear-gradient(135deg,color-mix(in srgb,var(--rest-accent) 58%,#18202a),color-mix(in srgb,var(--rest-accent) 82%,#27303a));color:#fff;box-shadow:0 0 20px color-mix(in srgb,var(--rest-accent) 20%,transparent)}
+.companion-rest-cancel{border:1px solid #4b535d;background:#20262d;color:#cbd2d9}
+`;document.head.appendChild(s);
+  d=document.createElement('dialog');d.id='companionRestConfirm';d.className='companion-rest-confirm';d.innerHTML='<div class="companion-rest-kicker">Récupération</div><div class="companion-rest-symbol"></div><p class="companion-rest-question"></p><div class="companion-rest-detail"></div><div class="companion-rest-actions"><button class="companion-rest-go" type="button"></button><button class="companion-rest-cancel" type="button">Annuler</button></div>';document.body.appendChild(d);
+  d.querySelector('.companion-rest-cancel').onclick=()=>d.close();
+  d.addEventListener('click',e=>{if(e.target===d)d.close()});
+  d.querySelector('.companion-rest-go').onclick=()=>{let fn=d._restApply;d._restApply=null;d.close();if(fn)fn()};
+ }
+ let isLong=kind==='long';d.querySelector('.companion-rest-symbol').textContent=isLong?'☾':'↻';d.querySelector('.companion-rest-question').textContent=isLong?'Effectuer un repos long ?':'Effectuer un repos court ?';d.querySelector('.companion-rest-detail').textContent=detail;d.querySelector('.companion-rest-go').textContent=isLong?'Confirmer le repos long':'Confirmer le repos court';d._restApply=apply;if(!d.open)d.showModal();
+}
+
+function shortRest(){companionRestConfirm('short','Volto-Fendoir et données de tour sont réinitialisés. Les PV et ressources de repos long sont conservés.',()=>{S.hits=0;S.stored='none';S.storedCount=0;stopVoltoEdgeFx();S.weaponMagic=true;resetTurn();ribbon('Repos court','Volto réinitialisé.')})}function longRest(){companionRestConfirm('long','PV, Rages, Écorce, Cape, Cor et ressources sont restaurés. Épuisement réduit de 1 et combat remis au tour 1.',()=>{S.hp=S.maxHp;S.temp=0;S.tempSource='';S.rages=4;S.raging=false;S.frenzy=false;S.barkReady=true;S.barkActive=false;S.capeReady=true;S.horn=S.hornMax;S.ancReady=true;S.hits=0;S.stored='none';S.storedCount=0;stopVoltoEdgeFx();S.weaponMagic=true;S.turn=1;S.round=1;S.exhaust=Math.max(0,S.exhaust-1);document.body.classList.remove('raging','bark');resetTurn();ribbon('Repos long','PV, Rages, Écorce, Cape et ressources restaurés. Épuisement −1.');render()})}function toggleLog(){const e=$('log');e.classList.toggle('open');if(e.classList.contains('open')&&!e.children.length)e.innerHTML='<div class="log-empty">Aucun événement de combat pour le moment.</div>'}
 function render(){
  document.body.classList.toggle('raging',!!S.raging);document.body.classList.toggle('frenzied',!!S.raging&&!!S.frenzy);
  $('rageStateLabel').textContent=S.raging?(S.frenzy?'FRÉNÉSIE':'RAGE ACTIVE'):'FORCE CONTENUE';
