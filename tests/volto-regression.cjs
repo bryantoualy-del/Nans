@@ -77,3 +77,23 @@ run("S.rollMode='auto'");assert.notEqual(get('rollAttack().b'),null,'automatic R
 run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');elements.manualRoll.value='1';run('smartAttack()');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';run('smartAttack()');assert.equal(state().hits,2,'natural 20 automatically hits and charges');
 console.log('Inline manual d20, selected advantage, invalid input, natural 1/20 and Volto charge: OK');
+
+
+// Connected baseline: the rendered AC matches the public Companion API and Rage is conditional.
+run("S.mode='sword';S.raging=false;S.ring=false;S.gwm=false;S.hp=125;render()");
+assert.equal(elements.acText.textContent,18);
+assert.equal(get('window.__CompanionBridge.ac(S)'),18);
+run("S.eco.bonus=false;transferEnergy(true)"); // energy may be empty: switch explicitly below
+run("S.eco.bonus=false;toggleWeaponMode()");
+assert.equal(state().mode,'axe');
+assert.equal(elements.acText.textContent,16,'axe displays same AC as connected profile');
+assert.equal(get('window.__CompanionBridge.ac(S)'),16);
+run("S.eco.bonus=false;toggleWeaponMode()");
+assert.equal(elements.acText.textContent,18,'shield restoration updates UI');
+run("S.raging=false;S.gwm=false;S.ring=false");
+assert.match(get("damageRoll({mode:'sword',impact:false,stored:'none',roll:{crit:false}}).txt"),/\\+ 5(?:$|\\b)/,'without Rage the fixed modifier is +5');
+assert.deepEqual(Array.from(get('window.__CompanionBridge.defenses(S).conditionImmunities')),[]);
+run("S.raging=true");
+assert.match(get("damageRoll({mode:'sword',impact:false,stored:'none',roll:{crit:false}}).txt"),/\\+ 8(?:$|\\b)/,'during Rage the fixed modifier includes +3');
+assert.deepEqual(Array.from(get('window.__CompanionBridge.defenses(S).conditionImmunities')),['Charmé','Effrayé']);
+console.log('Nans connected AC 18/16, Rage-only damage and condition immunities: OK');
