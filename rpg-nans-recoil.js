@@ -7,14 +7,15 @@
  const persist=()=>{const entries=Object.entries(ledger);if(entries.length>80)ledger=Object.fromEntries(entries.slice(-80));localStorage.setItem(key,JSON.stringify(ledger))};
  const context=()=>window.RPGHealth?.getContext?.()||{};
  const online=()=>!!(window.RPGConnect?.getStatus?.().connected&&context().combatId);
- function send(item){if(item.ack||!online()||item.request.combatId!==context().combatId)return;api.emitLocal('damage:self-request',item.request,item.request.actionId+':request')}
+ function send(item){if(item.ack||!item.confirmed||!online()||item.request.combatId!==context().combatId)return;api.emitLocal('damage:self-request',item.request,item.request.actionId+':request')}
  function submit(attackId,amount){
   if(!online()||!attackId||!Number.isInteger(amount)||amount<1||amount>4)return false;
   const combatId=context().combatId,actionId=String(attackId)+':ring-recoil';
-  if(!ledger[actionId]){ledger[actionId]={request:{actionId,attackId:String(attackId),combatId,amount,source:'Anneau de la Surcharge Furieuse'},ack:false};persist()}
-  send(ledger[actionId]);return true;
+  if(!ledger[actionId]){ledger[actionId]={request:{actionId,attackId:String(attackId),combatId,amount,source:'Anneau de la Surcharge Furieuse'},ack:false,confirmed:false};persist()}
+  return true; // Recoil must follow Encounter's confirmation of the target damage.
  }
  api.subscribe(event=>{
+  if(event.type==='damage:resolved'&&event.payload?.attackId){for(const item of Object.values(ledger))if(item.request.attackId===event.payload.attackId&&!item.confirmed&&!event.payload.cancelled){item.confirmed=true;persist();send(item)}return}
   if(event.type!=='message:gm'||!event.payload?.recoilResult)return;
   const r=event.payload.recoilResult,item=ledger[r.actionId];
   if(!item||item.request.combatId!==r.combatId)return;
