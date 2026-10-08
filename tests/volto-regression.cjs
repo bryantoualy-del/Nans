@@ -1,16 +1,17 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
-const html=fs.readFileSync('index.html','utf8');
+const html=fs.readFileSync(require('path').join(__dirname,'../index.html'),'utf8');
 const inline=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 const classes=()=>({set:new Set(),add(x){this.set.add(x)},remove(x){this.set.delete(x)},toggle(x,on){if(on===undefined)on=!this.set.has(x);on?this.set.add(x):this.set.delete(x);return on},contains(x){return this.set.has(x)}});
-function el(){return {classList:classes(),style:{},value:'0',innerHTML:'',textContent:'',children:[],disabled:false,appendChild(c){this.children.push(c)},prepend(c){this.children.unshift(c)},remove(){},animate(){return {}},querySelector(){return null},getBoundingClientRect(){return {left:0,top:0,width:120,height:60}},addEventListener(){},setAttribute(){}}}
+function el(){return {dataset:{},classList:classes(),style:{},value:'0',innerHTML:'',textContent:'',children:[],disabled:false,appendChild(c){this.children.push(c)},prepend(c){this.children.unshift(c)},remove(){},animate(){return {}},querySelector(){return null},getBoundingClientRect(){return {left:0,top:0,width:120,height:60}},addEventListener(){},setAttribute(){}}}
 const elements=Object.fromEntries(ids.map(id=>[id,el()]));
 elements.manualRoll.value='';
 const body=el(),fxClasses=[];elements.fx.appendChild=c=>fxClasses.push(c.className);
 const store=new Map();
 const document={body,getElementById:id=>elements[id]||null,querySelector:s=>s==='.shell'?elements.shell||el():null,querySelectorAll:()=>[],createElement:()=>el(),addEventListener(){}};
-const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,matchMedia:()=>({matches:true})});
+const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,matchMedia:()=>({matches:true})});
 vm.runInContext(inline,ctx);
+vm.runInContext('companionRestConfirm=(type,detail,accept)=>accept()',ctx);
 const get=expr=>vm.runInContext(expr,ctx),run=src=>vm.runInContext(src,ctx);
 const state=()=>get('S');
 const originalRollAttack=get('rollAttack');
@@ -39,7 +40,7 @@ console.log('Volto charge, miss, yellow/red, transfer, switch, impact, purge, te
 run("S.mode='axe';S.gwm=true;S.ring=true;S.hp=60;S.eco={action:false,bonus:false,reaction:false};S.attacksLeft=2");
 assert.equal(get('attackBonus()'),4,'Cogneur lourd attack penalty');
 run("rollAttack=()=>({a:20,b:2,raw:20,total:24,crit:true,bonus:4})");
-run('smartAttack()');assert.equal(state().pending,null,'natural 20 confirms automatically');assert.equal(state().gwmBonus,true,'natural 20 grants bonus attack');
+run('smartAttack()');assert(state().pending,'critical awaits hit validation');run('confirmHit(true)');assert.equal(state().pending,null,'critical resolves after validation');assert.equal(state().gwmBonus,true,'natural 20 grants bonus attack');
 run('S.eco.bonus=false;S.rages=4;S.raging=false;toggleRage()');assert.equal(state().rages,3);assert.equal(state().eco.bonus,true);
 run('S.frenzy=true;nextTurn()');assert.equal(get('bonusAttackAvailable()'),true,'frenzy bonus after initial round');
 run('S.eco.action=false;S.horn=3;hornPower("crash",1,"action")');assert.equal(state().horn,2);assert.equal(state().eco.action,true);
@@ -60,7 +61,7 @@ assert.equal(state().raging,true);assert.equal(state().frenzy,true);assert.equal
 assert.equal(get('bonusAttackAvailable()'),false,'frenzy starts attacking next turn');
 run('nextTurn()');assert.equal(get('bonusAttackAvailable()'),true);
 run('toggleRage()');assert.equal(state().frenzy,false);assert.equal(state().exhaust,1,'exhaustion applied once when frenzy ends');
-run('toggleRage()');assert.equal(state().frenzy,false,'ordinary Rage is not accidentally frenzied');
+run('S.eco.bonus=false;toggleRage()');assert.equal(state().frenzy,false,'ordinary Rage is not accidentally frenzied');
 assert.equal(elements.quickRageBtn.textContent,'Terminer la Rage');
 console.log('One-tap Frenzy, bonus timing, exhaustion and normal Rage: OK');
 // Entered physical dice use the regular attack flow and never charge on a miss.
@@ -69,11 +70,20 @@ run("S.mode='sword';S.hits=0;S.reckless=false;S.rollMode='auto';S.eco.action=fal
 elements.manualRoll.value='11';run('smartAttack()');assert.equal(state().pending.roll.raw,11);
 assert.equal(state().pending.roll.total,20);assert.equal(elements.manualRoll.value,'');run('confirmHit(false)');assert.equal(state().hits,0);
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='12';run('smartAttack()');run('confirmHit(true)');assert.equal(state().hits,1);
-run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');assert.equal(elements.manualHint.textContent.includes('meilleur de 2'),true);
+run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');assert.equal(elements.manualHint.textContent.includes('meilleur de 2'),true);
 elements.manualRoll.value='19';run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,19);assert.equal(state().pending.roll.b,null,'player supplies the better die');run('confirmHit(false)');assert.equal(state().hits,1);
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='21';run('smartAttack()');assert.equal(state().attacksLeft,2,'invalid manual result does not consume attack');assert.equal(state().pending,null);elements.manualRoll.value='';
 run("S.rollMode='manual';renderEco()");ctx.prompt=()=> '17';run('smartAttack()');assert.equal(state().pending.roll.raw,17);assert.equal(state().pending.roll.b,null,'legacy manual mode asks for one selected die');run('confirmHit(false)');ctx.prompt=()=>null;
 run("S.rollMode='auto'");assert.notEqual(get('rollAttack().b'),null,'automatic Reckless Attack still rolls two dice');
-run('S.eco.action=false;S.attacksLeft=2;toggleOpt("reckless")');elements.manualRoll.value='1';run('smartAttack()');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
-run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';run('smartAttack()');assert.equal(state().hits,2,'natural 20 automatically hits and charges');
+run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');elements.manualRoll.value='1';run('smartAttack()');run('confirmHit(false)');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
+run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';run('smartAttack()');assert(state().pending);run('confirmHit(true)');assert.equal(state().hits,2,'natural 20 charges after hit confirmation');
 console.log('Inline manual d20, selected advantage, invalid input, natural 1/20 and Volto charge: OK');
+// Rage's documented +3 is conditional; weapon's existing fixed subtotal remains +5.
+run("Math.random=()=>.5;S.mode='axe';S.ring=false;S.gwm=false;S.hp=100;S.stored='none';S.raging=false");
+const plain=get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).total");
+run('S.raging=true');const enraged=get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).total");
+assert.equal(enraged-plain,3,'Rage adds exactly +3 with the same deterministic die');
+assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 8')"),true);
+run('S.raging=false');assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 5')"),true);
+run("S.mode='axe';render()");assert.equal(elements.acText.textContent,16);run("S.mode='sword';render()");assert.equal(elements.acText.textContent,18);
+console.log('Conditional Rage +3, retained weapon subtotal +5, AC 18/16: OK');
