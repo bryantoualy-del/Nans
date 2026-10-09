@@ -336,4 +336,35 @@ window.__CompanionBridge.adjustTurnDamage=delta=>{S.turnDamage=Math.max(0,(Numbe
 <script src="rpg-weapon-gate.js"></script>
 <script src="rpg-combat-effects-client.js?v=zephyr-effects-20261008"></script>
 <script src="rpg-nans.js?v=nans-20261008-1"></script>
+
+<style id="nans-navigation-single-line">
+@media (min-width:768px){
+  nav.tabs{flex-wrap:nowrap;align-items:center;overflow:visible}
+  nav.tabs>.tab{flex:0 0 auto;width:auto;min-width:0}
+  nav.tabs>.rpg-combat-tools{flex:0 0 auto;flex-wrap:nowrap;width:auto;grid-column:auto;margin:0 0 0 auto;gap:8px}
+  nav.tabs>.rpg-combat-tools>button{white-space:nowrap}
+}
+</style>
+<script id="nans-navigation-single-line-script">
+(()=>{
+  const nav=document.querySelector('nav.tabs');
+  const combat=document.getElementById('combat');
+  const tools=combat?.querySelector('.rpg-combat-tools');
+  if(!nav||!combat||!tools)return;
+  const group=tools.querySelector('.rpg-group-launch:not([data-opportunity])');
+  const opportunity=tools.querySelector('[data-opportunity]');
+  const screen=window.matchMedia('(min-width:768px)');
+  function arrange(){
+    if(screen.matches){
+      if(opportunity&&group)tools.insertBefore(opportunity,group);
+      nav.append(tools);
+    }else{
+      if(opportunity&&group)tools.insertBefore(group,opportunity);
+      combat.prepend(tools);
+    }
+  }
+  arrange();
+  screen.addEventListener('change',arrange);
+})();
+</script>
 </body></html>
