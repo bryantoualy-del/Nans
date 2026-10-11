@@ -266,7 +266,7 @@ function heal(amount){const raw=amount==null?prompt('PV soignés (PV normaux uni
 function assignTemp(n,source){n=Math.max(0,Math.floor(Number(n)||0));if(S.temp>0&&S.tempSource!==source&&!confirm('Remplacer '+S.temp+' PV temporaires ('+(S.tempSource||'source inconnue')+') par '+n+' PV temporaires ('+source+') ?'))return false;S.temp=n;S.tempSource=n?source:'';if(source!=='Écorce'){S.barkActive=false;document.body.classList.remove('bark')}log(source+' : '+n+' PV temporaires.','resource','PV temporaires');render();return true}
 function defineTemp(){let v=prompt('Nombre de PV temporaires',S.temp);if(v===null)return;let source=prompt('Source des PV temporaires','Autre effet');if(source===null)return;assignTemp(v,source.trim()||'Autre effet')}
 function clearTemp(){S.temp=0;S.tempSource='';S.barkActive=false;document.body.classList.remove('bark');log('PV temporaires effacés.','resource','PV temporaires');render()}
-function nansEncounterSaveContext(label){let s=window.RPGConnect?.getStatus?.()||{};if(!s.connected)return{connected:false,target:null};if(!s.target){ribbon(label,'Sélectionne d’abord une cible Encounter dans RPG Connect.');return{connected:true,target:null}}return{connected:true,target:s.target}}
+function nansEncounterSaveContext(label){let s=window.RPGConnect?.getStatus?.()||{};if(!s.controlled)return{connected:false,target:null};if(!s.target){ribbon(label,'Sélectionne d’abord une cible Encounter dans RPG Connect.');return{connected:true,target:null}}return{connected:true,target:s.target}}
 function intimidate(){const net=nansEncounterSaveContext('Présence intimidante');if(net.connected&&!net.target)return;if(S.eco.action)return ribbon('Action indisponible','Action déjà utilisée.');useEco('action');if(net.connected)window.RPGConnect?.requestSave?.({ability:'SAG',dc:12,source:'Présence intimidante',condition:{name:'Effrayé',durationType:'sourceTurnEnd',remaining:2,source:'Présence intimidante',sourceCharacterId:'nans'}});ribbon('Présence intimidante','DD SAG 12 · cible visible à 9 m'+(net.connected?' · JdS Encounter en attente':''));log('Présence intimidante · action · SAG DD 12'+(net.connected?' · Encounter en attente':'')+'.','resource','Contrôle');render()}
 function fxNans(type){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const el=document.createElement('div');el.className='nans-fx nans-'+type;$('fx').appendChild(el);setTimeout(()=>el.remove(),900)}
 function setHp(v){S.hp=Math.max(0,Math.min(S.maxHp,Number(v)||0));render()}function hp(n){setHp(S.hp+n)}function headerDamage(){const raw=prompt('Combien de dégâts Nans subit-il ?','5');if(raw===null)return;const n=Math.max(0,Math.floor(Number(raw)||0));if(!n)return;applyDamage(n)}function setTemp(v){S.temp=Math.max(0,Number(v)||0);if(S.temp&&!S.tempSource)S.tempSource="Manuel";if(!S.temp)S.tempSource="";if(S.barkActive&&S.temp===0){S.barkActive=false;document.body.classList.remove('bark');log('Écorce terminée : PV temporaires épuisés.')}render()}function temp(n){setTemp(S.temp+n)}
@@ -323,19 +323,20 @@ window.__CompanionBridge.saveProfile=ability=>({modifier:window.COMPANION_V3?.so
 window.__CompanionBridge.adjustTurnDamage=delta=>{S.turnDamage=Math.max(0,(Number(S.turnDamage)||0)+delta);render()};
 </script>
 
-<script src="companion-v3.js?v=nans-20261008-15"></script><link rel="stylesheet" href="companion-feedback.css?v=audit1"><script src="companion-feedback.js?v=audit1"></script>
-<script src="companion-api.js?v=samoth-effects-1"></script><script src="rpg-connect-icon-registry.js?v=cloudflare-20261009"></script><script src="rpg-reactions.js?v=session-reliability-2"></script><script src="rpg-concentration.js?v=zephyr-effects-20261008"></script><script src="rpg-player-saves.js?v=zephyr-effects-20261008"></script>
-<script src="rpg-turn-start.js?v=1"></script><script src="rpg-connect-client.js?v=samoth-effects-1"></script><script src="rpg-multi-target.js?v=multi-20261005-1"></script><script>window.RPGMultiTargetUIConfig={"bindings":[{"selector":"button[onclick^=\"hornPower('crash'\"]","source":"Fracas de guerre"},{"selector":"#howlBtn","source":"Hurlement du Grand Saccageur"}]};</script><script src="rpg-effective-damage.js?v=zephyr20261008"></script><script src="rpg-multi-target-ui.js?v=healing-20261006-2"></script><script src="social-dice.js?v=2"></script><script type="module" src="dice-engine.js?v=3"></script>
-<script src="companion-turnbar.js?v=4"></script>
-<script src="rpg-health.js?v=samoth-effects-1"></script>
-<script src="rpg-horn-effects.js?v=1"></script><script src="rpg-triggered-effects.js?v=horn-20261008-1"></script>
-<script src="mj-journal-model.js?v=2"></script><script src="rpg-undo.js?v=nans-20261008-zephyr20261008"></script><script src="rpg-group.js?v=group-20261007-1"></script>
-<script src="rpg-resources.js?v=nans-20261008-group-20261007-1"></script>
-<script src="rpg-native-reactions.js"></script><script src="rpg-opportunities.js?v=session-reliability-1"></script>
-<script src="rpg-instruction.js"></script>
-<script src="rpg-weapon-gate.js"></script>
-<script src="rpg-combat-effects-client.js?v=zephyr-effects-20261008"></script>
-<script src="rpg-nans.js?v=nans-20261008-1"></script>
+<script src="companion-v3.js?v=4-lot1"></script><link rel="stylesheet" href="companion-feedback.css?v=audit1"><script src="companion-feedback.js?v=4-lot1"></script>
+<script src="companion-api.js?v=4-lot1"></script>
+<script src="rpg-resolution.js?v=4-lot1"></script><script src="rpg-connect-icon-registry.js?v=4-lot1"></script><script src="rpg-reactions.js?v=4-lot1"></script><script src="rpg-concentration.js?v=4-lot1"></script><script src="rpg-player-saves.js?v=4-lot1"></script>
+<script src="rpg-turn-start.js?v=4-lot1"></script><script src="rpg-connect-client.js?v=4-lot1"></script><script src="rpg-multi-target.js?v=4-lot1"></script><script>window.RPGMultiTargetUIConfig={"bindings":[{"selector":"button[onclick^=\"hornPower('crash'\"]","source":"Fracas de guerre"},{"selector":"#howlBtn","source":"Hurlement du Grand Saccageur"}]};</script><script src="rpg-effective-damage.js?v=4-lot1"></script><script src="rpg-multi-target-ui.js?v=4-lot1"></script><script src="social-dice.js?v=4-lot1"></script><script type="module" src="dice-engine.js?v=4-lot1"></script>
+<script src="companion-turnbar.js?v=4-lot1"></script>
+<script src="rpg-health.js?v=4-lot1"></script>
+<script src="rpg-horn-effects.js?v=4-lot1"></script><script src="rpg-triggered-effects.js?v=4-lot1"></script>
+<script src="mj-journal-model.js?v=4-lot1"></script><script src="rpg-undo.js?v=4-lot1"></script><script src="rpg-group.js?v=4-lot1"></script>
+<script src="rpg-resources.js?v=4-lot1"></script>
+<script src="rpg-native-reactions.js?v=4-lot1"></script><script src="rpg-opportunities.js?v=4-lot1"></script>
+<script src="rpg-instruction.js?v=4-lot1"></script>
+<script src="rpg-weapon-gate.js?v=4-lot1"></script>
+<script src="rpg-combat-effects-client.js?v=4-lot1"></script>
+<script src="rpg-nans.js?v=4-lot1"></script>
 
 <style id="nans-navigation-single-line">
 @media (min-width:768px){

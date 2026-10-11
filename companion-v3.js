@@ -108,7 +108,7 @@ function snapshotTransaction(){return JSON.stringify({combat:undoAdapter?.snapsh
 function restoreTransaction(raw){const x=JSON.parse(raw);if(x.combat!==null)undoAdapter.restore(x.combat);data=validate(x.surfaces);lastTransaction=null;transactionStart=null;persist();renderItems();if(!$('#v3-notes').hidden)renderNotes();const button=$('#v3-undo');if(button)button.disabled=true;syncEconomy()}
 function recordInventoryMutation(before){if(!undoAdapter)return;lastTransaction=before;const button=$('#v3-undo');if(button)button.disabled=false;}
 if(undoAdapter){let bar=$('.turnbar');if(bar){let u=document.createElement('button');u.type='button';u.id='v3-undo';u.textContent='↶ Annuler';u.disabled=true;u.setAttribute('aria-label','Annuler la dernière opération mécanique');bar.appendChild(u);undoLastTransaction=()=>{if(!lastTransaction)return false;try{restoreTransaction(lastTransaction);return true}catch(e){warn('Annulation impossible : '+e.message);return false}};u.addEventListener('click',undoLastTransaction)}
- document.addEventListener('click',e=>{if(e.target.closest('#v3-root,#v3-undo,nav.tabs'))return;const target=e.target.closest('button,input,select');if(!target)return;
+ document.addEventListener('click',e=>{if(e.target.closest?.('[data-resolution-controls]'))return;if(e.target.closest('#v3-root,#v3-undo,nav.tabs'))return;const target=e.target.closest('button,input,select');if(!target)return;
  if(transactionStart===null)transactionStart=snapshotTransaction();
  setTimeout(()=>{if(transactionStart===null||undoAdapter.pending())return;let after=snapshotTransaction();if(after!==transactionStart){lastTransaction=transactionStart;$('#v3-undo').disabled=false;}transactionStart=null;syncEconomy()},70);
  },true);
