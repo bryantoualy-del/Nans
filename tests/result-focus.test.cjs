@@ -73,6 +73,6 @@ test('Nans Volto-Fendoir captures actual damage dice without changing RPG author
  for(const [,attributes,code] of scripts)new vm.Script(code,{filename:'Nans inline'+attributes});
  assert.match(html,/breakdown:\[\{type:'tranchants'/);
  assert.match(html,/lightningDice\.push\(\.\.\.a\)/);
- assert.match(html,/showStructured\?\.\(\{eventId:p\.attackId/);
+ assert.match(html,/showStructured\?\.\(\{eventId:p\.resultId/);
  assert.match(html,/log\(lines\.join\('\\n'\),'hit'/);
 });
