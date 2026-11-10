@@ -66,3 +66,13 @@ test('structured actual dice, typed mixed damage, one display per event, social 
  assert.equal(card.children[2].children[0].children[1].textContent,'24');
  assert.equal(card.children[2].children[1].children[1].textContent,'11');
 });
+
+test('Nans Volto-Fendoir captures actual damage dice without changing RPG authority',()=>{
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ const scripts=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)].filter(x=>!x[1].includes('src=')&&!x[1].includes('module'));
+ for(const [,attributes,code] of scripts)new vm.Script(code,{filename:'Nans inline'+attributes});
+ assert.match(html,/breakdown:\[\{type:'tranchants'/);
+ assert.match(html,/lightningDice\.push\(\.\.\.a\)/);
+ assert.match(html,/showStructured\?\.\(\{eventId:p\.attackId/);
+ assert.match(html,/log\(lines\.join\('\\n'\),'hit'/);
+});
