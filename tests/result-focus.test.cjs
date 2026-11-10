@@ -102,3 +102,14 @@ test('later ribbon observer cannot overwrite structured result for the same acti
  mutation(); // Different action without structured payload still has legacy fallback.
  assert.equal(card.children[2].children[0].children[1].textContent,'13');
 });
+
+
+test('V1.4: structured result stays visible until explicit close and uses no emoji damage glyphs',()=>{
+ assert.doesNotMatch(source,/setTimeout\(hide,\s*8500\)/);
+ assert.doesNotMatch(source,/[🔥❄⚡💥🧪☠✨🧠🔮🪨🗡]/u);
+ const {normalizeType,semanticColors}=ctx.module.exports;
+ for(const [label,type] of [['feu','fire'],['froid','cold'],['foudre','lightning'],['tonnerre','thunder'],['acide','acid'],['poison','poison'],['nécrotiques','necrotic'],['radiants','radiant'],['psychiques','psychic'],['force','force'],['contondants','bludgeoning'],['perforants','piercing'],['tranchants','slashing']]){
+  assert.equal(normalizeType(label),type);
+  assert.match(semanticColors[type],/^#[0-9A-Fa-f]{6}$/);
+ }
+});
