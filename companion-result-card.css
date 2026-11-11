@@ -29,3 +29,7 @@
 
 /* V1.4: avoid duplicate legacy results; preserve interactive confirmation and undo controls. */
 body:has(#companion-result-focus:not([hidden])) #ribbon:has(#ribActions:empty){opacity:0!important;pointer-events:none!important;}
+
+/* Keep the original ribbon controls, but never duplicate the visible result text. */
+body:has(#companion-result-focus:not([hidden])) #rt,
+body:has(#companion-result-focus:not([hidden])) #rb{visibility:hidden!important}
