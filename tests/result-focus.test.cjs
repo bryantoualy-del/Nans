@@ -166,3 +166,19 @@ test('all D&D skill results, including Histoire, are excluded from the combat po
  }
  assert.equal(isSocial('Trait de feu'),false);
 });
+
+test('level 11 Nans retains exhaustion and Relentless Rage fixes together',()=>{
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ const companion=fs.readFileSync(path.join(root,'companion-v3.js'),'utf8');
+ assert.match(html,/Barbare 11/);
+ assert.match(html,/maxHp:137/);
+ assert.match(html,/relentlessDC:10/);
+ assert.match(html,/exhaust:0/);
+ assert.match(html,/__CompanionBridge\.abilityRollMode=/);
+ assert.match(html,/__CompanionBridge\.abilityRollReason=/);
+ assert.match(companion,/abilityRollReason\?\./);
+ const bridge=html.match(/window\.__CompanionBridge\.abilityRollMode=([\s\S]*?);\nwindow\.__CompanionBridge\.correctionLog=/);
+ assert.ok(bridge,'exhaustion bridge is installed before correction hook');
+ const window={__CompanionBridge:{}};
+ new vm.Script(bridge[0].replace(/window\.__CompanionBridge\.correctionLog=$/,''));
+});
