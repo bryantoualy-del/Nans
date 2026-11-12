@@ -21,7 +21,9 @@ try{
   await page.goto(base);await page.waitForFunction(()=>window.__CompanionBridge?.read);
   const initial=await page.evaluate(()=>{const s=window.__CompanionBridge.read();return{hp:s.hp,max:s.maxHp,exhaust:s.exhaust,dc:s.relentlessDC}});
   assert.deepEqual(initial,{hp:137,max:137,exhaust:0,dc:10});
-  await page.evaluate(()=>{const s=structuredClone(window.__CompanionBridge.read());s.hp=50;s.maxHp=125;s.exhaust=2;s.relentlessDC=15;localStorage.setItem('nans-combat-state-v1',JSON.stringify({state:s,journal:''}))});
+  const oldSave=await page.evaluate(()=>{const s=structuredClone(window.__CompanionBridge.read());s.hp=50;s.maxHp=125;s.exhaust=2;s.relentlessDC=15;return JSON.stringify({state:s,journal:''})});
+  // Nans autosaves on beforeunload: inject after unload but before application boot.
+  await page.addInitScript(raw=>localStorage.setItem('nans-combat-state-v1',raw),oldSave);
   await page.reload();await page.waitForFunction(()=>window.__CompanionBridge?.read);
   const migrated=await page.evaluate(()=>{const s=window.__CompanionBridge.read();return{hp:s.hp,max:s.maxHp,exhaust:s.exhaust,dc:s.relentlessDC}});
   assert.deepEqual(migrated,{hp:62,max:137,exhaust:2,dc:15});
