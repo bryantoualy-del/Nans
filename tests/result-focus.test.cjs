@@ -174,6 +174,7 @@ test('level 11 Nans retains exhaustion and Relentless Rage fixes together',()=>{
  assert.match(html,/maxHp:137/);
  assert.match(html,/relentlessDC:10/);
  assert.match(html,/exhaust:0/);
+ assert.match(html,/id="exhaust">0<\/div>/);
  assert.match(html,/__CompanionBridge\.abilityRollMode=/);
  assert.match(html,/__CompanionBridge\.abilityRollReason=/);
  assert.match(companion,/abilityRollReason\?\./);
