@@ -7,14 +7,14 @@ const root=process.cwd();
 const server=createServer(async(req,res)=>{try{
  const u=new URL(req.url,'http://localhost'),file=resolve(root,'.'+u.pathname.replace(/\/$/,'/index.html'));
  if(!file.startsWith(root+'/'))throw Error('Outside repo');
- const data=await readFile(file);res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.html':'text/html','.json':'application/json'})[extname(file)]||'application/octet-stream');res.end(data);
+ const data=await readFile(file);res.setHeader('Content-Type',({'.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.js':'text/javascript','.css':'text/css','.html':'text/html','.json':'application/json'})[extname(file)]||'application/octet-stream');res.end(data);
 }catch{res.writeHead(404).end()}});
 await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
 const base='http://127.0.0.1:'+server.address().port;
 const engine=process.env.E2E_BROWSER==='webkit'?webkit:chromium;
 let browser;
 try{
- browser=await engine.launch(engine===webkit?{}:{args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});
+ browser=await engine.launch(engine===webkit?{}:{executablePath:process.env.E2E_CHROMIUM_PATH,args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});
  for(const width of [390,1180]){
   const page=await browser.newPage({viewport:{width,height:820}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));

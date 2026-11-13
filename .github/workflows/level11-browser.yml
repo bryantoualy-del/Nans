@@ -20,3 +20,7 @@ jobs:
         env:
           E2E_BROWSER: ${{ matrix.browser }}
         run: node e2e/level11-smoke.mjs
+      - name: Browser combat and layout
+        env:
+          E2E_BROWSER: ${{ matrix.browser }}
+        run: node e2e/nans-v2.mjs

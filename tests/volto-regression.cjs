@@ -9,30 +9,31 @@ elements.manualRoll.value='';
 const body=el(),fxClasses=[];elements.fx.appendChild=c=>fxClasses.push(c.className);
 const store=new Map();
 const document={body,getElementById:id=>elements[id]||null,querySelector:s=>s==='.shell'?elements.shell||el():null,querySelectorAll:()=>[],createElement:()=>el(),addEventListener(){}};
-const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,matchMedia:()=>({matches:true})});
+const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,crypto:require('node:crypto').webcrypto,RPGDialogs:{confirm:()=>ctx.confirm(),prompt:()=>ctx.prompt()},matchMedia:()=>({matches:true})});
 vm.runInContext(inline,ctx);
 vm.runInContext('companionRestConfirm=(type,detail,accept)=>accept()',ctx);
 const get=expr=>vm.runInContext(expr,ctx),run=src=>vm.runInContext(src,ctx);
 const state=()=>get('S');
+async function main(){
 const originalRollAttack=get('rollAttack');
-function attack(hit=true){run("S.eco.action=false;S.attacksLeft=2;S.rollMode='manual'");run("rollAttack=()=>({a:10,b:null,raw:10,total:19,crit:false,bonus:9})");run('smartAttack()');assert(state().pending);run(`confirmHit(${hit})`)}
+async function attack(hit=true){run("S.eco.action=false;S.attacksLeft=2;S.rollMode='manual'");run("rollAttack=()=>({a:10,b:null,raw:10,total:19,crit:false,bonus:9})");await run('smartAttack()');assert(state().pending);run(`confirmHit(${hit})`)}
 assert.equal(state().mode,'sword');assert.equal(state().hits,0);
-attack(false);assert.equal(state().hits,0,'miss must not charge');
-for(let i=1;i<=3;i++){attack();assert.equal(state().hits,i)}
+await attack(false);assert.equal(state().hits,0,'miss must not charge');
+for(let i=1;i<=3;i++){await attack();assert.equal(state().hits,i)}
 assert.equal(elements.chargeLabel.textContent.startsWith('3 / 5'),true);
 run('S.eco.bonus=false;transferEnergy()');assert.equal(state().stored,'yellow');assert(body.classList.contains('volto-yellow'));
 run('S.eco.bonus=false;toggleWeaponMode()');assert.equal(state().mode,'axe');assert.equal(state().stored,'yellow');
-run("S.eco.action=false;chargedImpact()");assert(state().pending);run('confirmHit(true)');assert(fxClasses.some(x=>x==='fx-impact-flash'));
+await run("S.eco.action=false;chargedImpact()");assert(state().pending);run('confirmHit(true)');assert(fxClasses.some(x=>x==='fx-impact-flash'));
 run('clearVolto()');assert.equal(state().stored,'none');assert(!body.classList.contains('volto-yellow'));
 run('S.eco.bonus=false;toggleWeaponMode()');assert.equal(state().mode,'sword');
-for(let i=1;i<=5;i++)attack();assert.equal(state().hits,5);
+for(let i=1;i<=5;i++)await attack();assert.equal(state().hits,5);
 run('S.eco.bonus=false;transferEnergy()');assert.equal(state().stored,'red');assert(body.classList.contains('volto-red'));
 run('S.eco.bonus=false;toggleWeaponMode()');assert.equal(state().mode,'axe');
-run('S.eco.action=false;chargedImpact()');run('confirmHit(true)');assert(fxClasses.some(x=>x==='fx-impact-flash red'));
+await run('S.eco.action=false;chargedImpact()');run('confirmHit(true)');assert(fxClasses.some(x=>x==='fx-impact-flash red'));
 run('clearVolto()');assert.equal(state().stored,'none');
 for(let i=0;i<4;i++){run('S.eco.bonus=false;toggleWeaponMode()')}assert.equal(state().mode,'axe');
-run("S.temp=12;S.tempSource='Autre effet';S.barkReady=true;S.eco.bonus=false");ctx.confirm=()=>false;run('useBark()');assert.equal(state().temp,12);assert.equal(state().barkReady,true);
-ctx.confirm=()=>true;run('useBark()');assert.equal(state().temp,20);assert.equal(state().tempSource,'Écorce');
+run("S.temp=12;S.tempSource='Autre effet';S.barkReady=true;S.eco.bonus=false");ctx.confirm=()=>false;await run('useBark()');assert.equal(state().temp,12);assert.equal(state().barkReady,true);
+ctx.confirm=()=>true;await run('useBark()');assert.equal(state().temp,20);assert.equal(state().tempSource,'Écorce');
 elements.incomingDamage.value='25';run('applyDamage()');assert.equal(state().temp,0);assert.equal(state().tempSource,'');assert.equal(state().barkActive,false);
 assert(store.has('nans-combat-state-v1'));
 console.log('Volto charge, miss, yellow/red, transfer, switch, impact, purge, temp replacement and absorption: OK');
@@ -40,7 +41,7 @@ console.log('Volto charge, miss, yellow/red, transfer, switch, impact, purge, te
 run("S.mode='axe';S.gwm=true;S.ring=true;S.hp=60;S.eco={action:false,bonus:false,reaction:false};S.attacksLeft=2");
 assert.equal(get('attackBonus()'),4,'Cogneur lourd attack penalty');
 run("rollAttack=()=>({a:20,b:2,raw:20,total:24,crit:true,bonus:4})");
-run('smartAttack()');assert(state().pending,'critical awaits hit validation');run('confirmHit(true)');assert.equal(state().pending,null,'critical resolves after validation');assert.equal(state().gwmBonus,true,'natural 20 grants bonus attack');
+await run('smartAttack()');assert(state().pending,'critical awaits hit validation');run('confirmHit(true)');assert.equal(state().pending,null,'critical resolves after validation');assert.equal(state().gwmBonus,true,'natural 20 grants bonus attack');
 run('S.eco.bonus=false;S.rages=4;S.raging=false;toggleRage()');assert.equal(state().rages,3);assert.equal(state().eco.bonus,true);
 run('S.frenzy=true;nextTurn()');assert.equal(get('bonusAttackAvailable()'),true,'frenzy bonus after initial round');
 run('S.eco.action=false;S.horn=3;hornPower("crash",1,"action")');assert.equal(state().horn,2);assert.equal(state().eco.action,true);
@@ -67,16 +68,16 @@ console.log('One-tap Frenzy, bonus timing, exhaustion and normal Rage: OK');
 // Entered physical dice use the regular attack flow and never charge on a miss.
 ctx.originalRollAttack=originalRollAttack;run('rollAttack=originalRollAttack');
 run("S.mode='sword';S.hits=0;S.reckless=false;S.rollMode='auto';S.eco.action=false;S.attacksLeft=2");
-elements.manualRoll.value='11';run('smartAttack()');assert.equal(state().pending.roll.raw,11);
+elements.manualRoll.value='11';await run('smartAttack()');assert.equal(state().pending.roll.raw,11);
 assert.equal(state().pending.roll.total,20);assert.equal(elements.manualRoll.value,'');run('confirmHit(false)');assert.equal(state().hits,0);
-run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='12';run('smartAttack()');run('confirmHit(true)');assert.equal(state().hits,1);
+run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='12';await run('smartAttack()');run('confirmHit(true)');assert.equal(state().hits,1);
 run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');assert.equal(elements.manualHint.textContent.includes('meilleur de 2'),true);
-elements.manualRoll.value='19';run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,19);assert.equal(state().pending.roll.b,null,'player supplies the better die');run('confirmHit(false)');assert.equal(state().hits,1);
-run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='21';run('smartAttack()');assert.equal(state().attacksLeft,2,'invalid manual result does not consume attack');assert.equal(state().pending,null);elements.manualRoll.value='';
-run("S.rollMode='manual';renderEco()");ctx.prompt=()=> '17';run('smartAttack()');assert.equal(state().pending.roll.raw,17);assert.equal(state().pending.roll.b,null,'legacy manual mode asks for one selected die');run('confirmHit(false)');ctx.prompt=()=>null;
-run("S.rollMode='auto'");assert.notEqual(get('rollAttack().b'),null,'automatic Reckless Attack still rolls two dice');
-run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');elements.manualRoll.value='1';run('smartAttack()');run('confirmHit(false)');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
-run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';run('smartAttack()');assert(state().pending);run('confirmHit(true)');assert.equal(state().hits,2,'natural 20 charges after hit confirmation');
+elements.manualRoll.value='19';await run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,19);assert.equal(state().pending.roll.b,null,'player supplies the better die');run('confirmHit(false)');assert.equal(state().hits,1);
+run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='21';await run('smartAttack()');assert.equal(state().attacksLeft,2,'invalid manual result does not consume attack');assert.equal(state().pending,null);elements.manualRoll.value='';
+run("S.rollMode='manual';renderEco()");ctx.prompt=()=> '17';await run('smartAttack()');assert.equal(state().pending.roll.raw,17);assert.equal(state().pending.roll.b,null,'legacy manual mode asks for one selected die');run('confirmHit(false)');ctx.prompt=()=>null;
+run("S.rollMode='auto'");assert.notEqual((await get('rollAttack()')).b,null,'automatic Reckless Attack still rolls two dice');
+run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');elements.manualRoll.value='1';await run('smartAttack()');run('confirmHit(false)');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
+run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';await run('smartAttack()');assert(state().pending);run('confirmHit(true)');assert.equal(state().hits,2,'natural 20 charges after hit confirmation');
 console.log('Inline manual d20, selected advantage, invalid input, natural 1/20 and Volto charge: OK');
 // Rage's documented +3 is conditional; weapon's existing fixed subtotal remains +5.
 run("Math.random=()=>.5;S.mode='axe';S.ring=false;S.gwm=false;S.hp=100;S.stored='none';S.raging=false");
@@ -87,3 +88,6 @@ assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:
 run('S.raging=false');assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 5')"),true);
 run("S.mode='axe';render()");assert.equal(elements.acText.textContent,16);run("S.mode='sword';render()");assert.equal(elements.acText.textContent,18);
 console.log('Conditional Rage +3, retained weapon subtotal +5, AC 18/16: OK');
+
+}
+main().catch(error=>{console.error(error);process.exitCode=1});

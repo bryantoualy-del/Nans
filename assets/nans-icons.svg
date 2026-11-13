@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="metal" x2="0" y2="1">
+   <stop stop-color="#fff1cc"/><stop offset=".47" stop-color="#d7ad71"/><stop offset="1" stop-color="#855435"/>
+  </linearGradient>
+  <linearGradient id="ember" x2="0" y2="1">
+   <stop stop-color="#ffb29a"/><stop offset=".48" stop-color="#c76146"/><stop offset="1" stop-color="#7f2e25"/>
+  </linearGradient>
+ </defs>
+ <symbol id="sword" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m11 19 13-14 5-2-2 6-13 13zM6 18l9 9 2-2-9-9zm4 5-6 5 2 2 6-5z"/>
+  <path fill="none" stroke="#513421" d="M13 20 27 6"/>
+ </symbol>
+ <symbol id="swords" viewBox="0 0 32 32">
+  <use href="#sword" transform="translate(0 -2) scale(.96)"/>
+  <path fill="url(#metal)" stroke="#201715" stroke-width=".65" d="m3 2 6 3 15 17 3-3 2 2-3 3 4 4-2 2-4-4-3 3-2-2 3-3L5 8z"/>
+ </symbol>
+ <symbol id="axe" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m4 29 2 2L25 8l-3-2zM12 2c5 1 7 4 9 5 3 0 6-1 8-4 2 5 1 11-3 15-2-4-4-6-7-7-4 0-7 2-9 4-2-5-1-9 2-13"/>
+  <path fill="none" stroke="#624329" d="M12 4q6 1 8 5m8-3q1 4-2 8M8 25l2 2m1-6 2 2m1-6 2 2"/>
+ </symbol>
+ <symbol id="shield" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m16 2 12 5-1 10c-1 5-5 9-11 13C10 26 6 22 5 17L4 7z"/>
+  <path fill="none" stroke="#775333" d="m16 5 9 4-1 8q-1 5-8 10-7-5-8-10L7 9z"/>
+  <path fill="#503526" d="M14.5 9h3v5h5v3h-5v5h-3v-5h-5v-3h5z"/>
+ </symbol>
+ <symbol id="rage" viewBox="0 0 32 32">
+  <path fill="url(#ember)" stroke="#602820" stroke-width=".6" d="m5 4 6 3 5-3 5 3 6-3-2 6 3 4-3 10-4 5H11l-4-5-3-10 3-4z"/>
+  <path fill="#311717" d="m6 12 8 3-4 3-3-2zm20 0-8 3 4 3 3-2zm-10 4 3 5h-6zm-6 7 3-2h6l3 2-2 4h-8z"/>
+  <path fill="#f8c59b" d="m8 14 5 1-2 1zm16 0-5 1 2 1zm-12 9h8l-2 2h-4z"/>
+ </symbol>
+ <symbol id="vial" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m14 2 10 3-1 3-3-1-2 7c5 2 7 6 6 10-1 6-6 8-12 6-6-1-9-6-7-11 1-4 5-7 9-7l2-6-3-1z"/>
+  <path fill="#3b281b" d="M8 18c2-3 5-4 8-3 4 1 7 5 6 8-1 4-5 6-9 5-4-1-7-4-5-10"/>
+  <path fill="#ce933c" d="M9 21c3-3 7 2 12-1 1 5-3 8-8 7-3-1-5-3-4-6"/>
+ </symbol>
+ <symbol id="horn" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="M4 19c7 6 13 2 15-4l-3-2 2-3 5 1 4-7 4 3-6 12-3-1c-5 10-13 12-20 5z"/>
+  <path fill="none" stroke="#65432b" stroke-width="1.4" d="m7 21-2 4m6-3-1 4m5-5 1 3m6-12 4 3m1-8 3 2"/>
+ </symbol>
+ <symbol id="hourglass" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="M6 3h20v3h-3c0 4-1 7-5 10 4 3 5 6 5 10h3v3H6v-3h3c0-4 1-7 5-10-4-3-5-6-5-10H6z"/>
+  <path fill="#453121" d="M11 6h10q0 5-5 8-5-3-5-8m0 20q0-5 5-8 5 3 5 8z"/>
+  <path fill="#edc180" d="m12 25 4-4 4 4z"/>
+ </symbol>
+ <symbol id="bolt" viewBox="0 0 32 32"><path fill="currentColor" d="m17 2-10 16h8l-3 12 14-18h-9l5-10z"/></symbol>
+ <symbol id="plus" viewBox="0 0 32 32"><path fill="currentColor" d="M13 5h6v8h8v6h-8v8h-6v-8H5v-6h8z"/></symbol>
+ <symbol id="boot" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m15 3 12 4-3 11 2 6-2 5H3l-1-5 4-3 7-1z"/>
+  <path fill="none" stroke="#69462f" d="m15 7 11 3m-12 2 11 3m-12 1 11 4M3 25h22"/>
+ </symbol>
+ <symbol id="run" viewBox="0 0 32 32">
+  <path fill="currentColor" d="M25 3a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0M13 8l7-1 5 6 4-1 1 3-6 2-5-4-4 6 7 4-2 8-3-1 1-6-8-4L6 28H1v-3h3l6-10 3-4-4 1-2 4-3-1 3-6z"/>
+ </symbol>
+ <symbol id="moon" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="M19 2C7 2 1 14 6 23c5 10 20 10 24-2C17 25 10 13 19 2"/>
+  <path fill="#edc180" d="m23 6 1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z"/>
+ </symbol>
+ <symbol id="heart" viewBox="0 0 32 32"><path fill="url(#ember)" d="M16 29 4 17C-6 6 8-3 16 7c8-10 22-1 12 10z"/><path fill="none" stroke="#ffbf9c" opacity=".6" d="M5 11q0-4 4-4"/></symbol>
+ <symbol id="eye" viewBox="0 0 32 32">
+  <path fill="none" stroke="url(#metal)" stroke-width="2" d="M2 16Q16-1 30 16 16 33 2 16zm14-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0-9v4m0 22v4M4 5l3 4m21-4-3 4M4 27l3-4m21 4-3-4"/>
+ </symbol>
+ <symbol id="flag" viewBox="0 0 32 32"><path fill="url(#metal)" d="m5 3 3-1 2 4c7-5 12 1 18 0l-3 7 4 5c-7 3-12-3-16 1l3 11-3 1z"/><path fill="none" stroke="#704a2c" d="m11 9 2 8"/></symbol>
+ <symbol id="impact" viewBox="0 0 32 32"><path fill="url(#ember)" d="m16 0 3 10 8-5-4 9 9 2-9 4 4 7-9-4-2 9-4-9-8 4 4-8-8-3 9-3-5-8 9 5z"/><path fill="#f3c17f" d="m17 8-6 10h5l-1 6 7-11h-5z"/></symbol>
+ <symbol id="howl" viewBox="0 0 32 32">
+  <path fill="url(#metal)" d="m3 2 10 8h6l10-8-3 13 3 5-7 4-2 6h-8l-2-6-7-4 3-5z"/>
+  <path fill="#382a24" d="m7 13 7 4-5 1zm18 0-7 4 5 1zm-13 9 4-3 4 3-4 4z"/>
+ </symbol>
+ <symbol id="ancestors" viewBox="0 0 32 32"><path fill="url(#metal)" d="M12 5a4 4 0 1 1 8 0 4 4 0 1 1-8 0M11 11h10l4 10-3 1-3-6 1 13h-8l1-13-3 6-3-1zM4 10a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 1 1-5.4 0m-1 5h6l-3 7 2 5H2zm20-5a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 1 1-5.4 0m0 5h6l2 12h-7l2-5z"/></symbol>
+ <symbol id="temptation" viewBox="0 0 32 32"><path fill="none" stroke="url(#ember)" stroke-width="2.4" d="m16 2 14 26H2zm0 9v8"/><circle fill="#ea8c71" cx="16" cy="23" r="1.6"/></symbol>
+ <symbol id="die" viewBox="0 0 32 32"><path fill="none" stroke="url(#metal)" stroke-width="1.8" d="m16 2 12 7v14l-12 7-12-7V9zm0 0 7 18H9zm-7 18-5 3m19-3 5 3M4 9l5 11 7 10 7-10 5-11z"/></symbol>
+ <symbol id="book" viewBox="0 0 32 32"><path fill="url(#metal)" d="M2 4q8-2 13 3v22q-5-5-13-3zm28 0q-8-2-13 3v22q5-5 13-3z"/><path fill="none" stroke="#69472f" d="m5 9 7 2m-7 3 7 2m-7 3 7 2m8-10 7-2m-7 7 7-2m-7 7 7-2"/></symbol>
+ <symbol id="next" viewBox="0 0 32 32"><path fill="url(#metal)" d="M3 6v20l13-10zm14 0v20l13-10z"/></symbol>
+ <symbol id="gear" viewBox="0 0 32 32"><path fill="url(#metal)" fill-rule="evenodd" d="m13 2 6 0 1 4 3 2 4-1 3 5-3 3v3l3 3-3 5-4-1-3 2-1 4h-6l-1-4-3-2-4 1-3-5 3-3v-3l-3-3 3-5 4 1 3-2zm3 8a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13"/></symbol>
+ <symbol id="target" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="none" stroke="url(#metal)" stroke-width="3"/><path fill="none" stroke="url(#metal)" stroke-width="2.5" d="M16 1v9m0 12v9M1 16h9m12 0h9"/><circle cx="16" cy="16" r="3" fill="#e8bd80"/></symbol>
+ <symbol id="bin" viewBox="0 0 32 32"><path fill="none" stroke="url(#metal)" stroke-width="2.5" d="M6 8h20M10 8V5h12v3M8 8l2 20h12l2-20m-10 5v10m4-10v10"/></symbol>
+</svg>
