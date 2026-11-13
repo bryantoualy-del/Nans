@@ -42,8 +42,6 @@
   decorate('#chargeAxeBtn', 'axe');
   decorate('.charge-reset', 'bin');
 
-  decorate('#nans-connect-slot .rpg-connect-launch', 'gear');
-
   for (const [id, mode] of [['swordName', 'sword'], ['axeName', 'axe']]) {
     document.getElementById(id).addEventListener('click', () => {
       if (window.__CompanionBridge.read().mode !== mode) document.getElementById('modeSwitch').click();
