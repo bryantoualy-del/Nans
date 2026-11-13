@@ -282,12 +282,61 @@ body.nans-v2 #combat #horn .horn-temptation{
 .nans-v2 #horn .horn-settings select{max-width:240px}
 .nans-v2 #combatResources .resource{min-height:114px}
 .nans-v2 #combatResources .resource button,.nans-v2 #defense button{min-height:44px}
-.nans-v2 #v3-root{--v3-panel:#221d18;--v3-line:#89674b;--v3-ink:#f0e4cf;--v3-accent:#e7bd83}
-body.nans-v2 #v3-root :is(.v3-panel,.v3-card,.v3-dock),body.nans-v2 .log-entry{background:var(--steel);border-color:#816044}
+/* The other views share Combat's surfaces, typography and selected controls. */
+body.nans-v2 #v3-root{
+  --v3-panel:#221d18;--v3-line:#89674b;--v3-text:var(--cream);--v3-accent:#e7bd83;
+  max-width:none;
+}
+body.nans-v2 #v3-root .v3-panel{padding:4px 0 18px}
+body.nans-v2 #v3-root .v3-heading{margin:8px 0}
+body.nans-v2 #v3-root :is(h2,h3),.nans-v2 #rpgGroupView h2{
+  color:#f1d8b1;font-family:Georgia,serif;font-weight:700;
+}
+body.nans-v2 #v3-root h3{margin-bottom:8px}
+body.nans-v2 #v3-root :is(.v3-sub,small,.v3-empty),.nans-v2 #rpgGroupView small{color:var(--muted)}
+body.nans-v2 #v3-root :is(.v3-card,.v3-item,.v3-social-tabs,.v3-sheet-tabs,.v3-social-mode,.v3-dock),
+body.nans-v2 #rpgGroupView :is(.rpg-initiative-row,.rpg-group-empty){
+  background:var(--steel);border-color:#816044;
+}
+body.nans-v2 #v3-root .v3-card,body.nans-v2 #rpgGroupView .rpg-initiative{
+  border:1px solid #a77d55;border-radius:11px;
+  background:url("assets/nans-corner.svg") left top/23px no-repeat,var(--steel);
+  box-shadow:inset 0 0 0 3px #100e0c,inset 0 0 0 4px #63472f;
+  padding:13px;
+}
+body.nans-v2 #v3-root :is(button,input:not([type=checkbox]),select,textarea),
+body.nans-v2 #combat :is(#combatResources,#defense) :is(button:not(.pip),input),
+body.nans-v2 #rpgGroupView button{
+  background:var(--steel);border-color:#89674b;color:var(--cream);
+}
+body.nans-v2 #v3-root :is(select option){background:#221d18;color:var(--cream)}
+body.nans-v2 #v3-root button.active,body.nans-v2 #combat :is(#combatResources,#defense) button.on{
+  background:var(--ember);border-color:#da916c;box-shadow:inset 0 0 8px #da7c3c44;
+}
+body.nans-v2 #v3-root button:not(:disabled):hover{border-color:#d9b678}
+body.nans-v2 #v3-root .v3-roll-grid button strong{
+  color:#f3ce91;font:700 17px Georgia,serif;
+}
+body.nans-v2 #v3-root .v3-result{
+  background:var(--bronze);border-color:#c59059;color:var(--cream);
+}
+body.nans-v2 #combat #combatResources .btn-rage{background:var(--ember);border-color:#b46b50}
+body.nans-v2 #combat :is(#combatResources,#defense) .btn-green,
+body.nans-v2 #combat #combatResources .horn-top{
+  background:var(--grain),linear-gradient(140deg,#30392b,#161d17);border-color:#828463;
+}
+body.nans-v2 #combat #defense .btn-blue{background:var(--blue-steel);border-color:#718695}
 .nans-v2 [data-unified-companion]{display:none}
 .nans-v2 #v3-notes [data-unified-companion]{display:block}
 .nans-v2 #v3-root > #log{display:none}
-.nans-v2 #v3-root .v3-dock button.active{background:var(--ember);border-color:#c78b61}
+body.nans-v2 #v3-notes .log{background:#131211;border-color:#76583f}
+body.nans-v2 #v3-notes :is(.log-entry,.rpg-journal-turn,.rpg-journal-action){background:var(--steel)}
+body.nans-v2 #v3-notes .rpg-journal-turn{border-color:#8a6648}
+body.nans-v2 #v3-notes .rpg-journal-toolbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto}
+body.nans-v2 #v3-notes .rpg-journal-toolbar :is(input,select){min-width:0;width:100%}
+body.nans-v2 #v3-notes .log-head{color:#e9be85}
+body.nans-v2 #v3-notes .log-body{font:13px/1.4 system-ui,sans-serif;color:var(--cream)}
+body.nans-v2 #v3-root .v3-dock button:not(.active){background:transparent;border-color:transparent}
 
 @media(max-width:1023px){
   body.nans-v2 .top{padding-right:0;grid-template-columns:1fr 1.16fr}
@@ -324,6 +373,8 @@ body.nans-v2 #v3-root :is(.v3-panel,.v3-card,.v3-dock),body.nans-v2 .log-entry{b
 }
 
 @media(max-width:767px){
+  body.nans-v2 #v3-notes .rpg-journal-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)}
+  body.nans-v2 #v3-notes [data-journal-latest]{grid-column:1/-1}
   body.nans-v2 #v3-root .v3-dock{grid-template-columns:repeat(var(--rpg-nav-count,4),minmax(0,1fr))}
   body.nans-v2 #v3-root .v3-dock button{overflow-wrap:normal}
   .nans-v2 #attacks .attack-roll-choice{white-space:nowrap}
