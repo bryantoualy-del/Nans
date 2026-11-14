@@ -56,6 +56,8 @@ try{
   assert.equal(manualResult.ribbon,false,'the old top banner is dismissed as soon as the save resolves');
   assert.equal(manualResult.badge,true,'no stale result badge after the save');
   assert.equal(manualResult.last,null,'no stale top result retained');
+  await page.waitForFunction(()=>document.getElementById('lastStandBanner'));
+  assert.equal(await page.locator('#lastStandBanner').isVisible(),false,'recovering never leaves a survivor banner at the top');
   await page.evaluate(()=>{
    const s=window.__CompanionBridge.read();s.hp=0;s.raging=true;s.relentlessDC=10;s.rollMode='auto';
    window.__relentlessOriginalRandom=Math.random;Math.random=()=>0;render();
