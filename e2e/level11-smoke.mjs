@@ -23,10 +23,38 @@ try{
   assert.deepEqual(initial,{hp:137,max:137,exhaust:0,dc:10});
   const oldSave=await page.evaluate(()=>{const s=structuredClone(window.__CompanionBridge.read());s.hp=50;s.maxHp=125;s.exhaust=2;s.relentlessDC=15;return JSON.stringify({state:s,journal:''})});
   // Nans autosaves on beforeunload: inject after unload but before application boot.
-  await page.addInitScript(raw=>localStorage.setItem('nans-combat-state-v1',raw),oldSave);
+  const legacyGear=JSON.stringify({schema:1,items:[
+   {name:'Anneau de la Surcharge Furieuse',category:'equipment',qty:1,image:'',note:'ancien anneau',active:true,attuned:true},
+   {name:'Potion de soin',category:'misc',qty:2,image:'',note:'conserver',active:false,attuned:false}
+  ],notes:'notes à conserver',preview:true,npcs:[],noteTab:'mechanical',nansGearMigration:true});
+  await page.addInitScript(({combat,gear})=>{
+   localStorage.setItem('nans-combat-state-v1',combat);
+   localStorage.setItem('companion-v3:nans:/',gear);
+  },{combat:oldSave,gear:legacyGear});
   await page.reload();await page.waitForFunction(()=>window.__CompanionBridge?.read);
   const migrated=await page.evaluate(()=>{const s=window.__CompanionBridge.read();return{hp:s.hp,max:s.maxHp,exhaust:s.exhaust,dc:s.relentlessDC}});
   assert.deepEqual(migrated,{hp:62,max:137,exhaust:2,dc:15});
+  await page.waitForFunction(()=>window.CompanionV3?.getItems);
+  const transfer=await page.evaluate(()=>({
+   score:window.COMPANION_V3.social.scores.FOR,
+   ability:window.COMPANION_V3.social.abilities.FOR,
+   save:window.COMPANION_V3.social.saves.FOR,
+   athletics:window.COMPANION_V3.social.skills['Athlétisme'],
+   attack:attackBonus(),
+   ringButton:!!document.querySelector('#ringBtn,#ringBtn2'),
+   items:window.CompanionV3.getItems(),
+   migrated:JSON.parse(localStorage.getItem('companion-v3:nans:/')),
+   custom:window.__CompanionBridge.custom(window.__CompanionBridge.read())
+  }));
+  assert.deepEqual([transfer.score,transfer.ability,transfer.save,transfer.athletics,transfer.attack],[25,7,11,11,12],'belt stats match the updated Nans character sheet');
+  assert.equal(transfer.ringButton,false,'the surcharge ring has no combat button');
+  assert.equal(transfer.items.some(x=>x.name==='Anneau de la Surcharge Furieuse'),false,'legacy ring removed from saved inventory');
+  const belt=transfer.items.find(x=>x.name==='Ceinture de force de géant du feu');
+  assert.ok(belt&&belt.attuned&&belt.active,'fire giant belt is equipped and attuned after migration');
+  assert.equal(transfer.items.find(x=>x.name==='Potion de soin')?.qty,2,'unrelated inventory items are preserved');
+  assert.equal(transfer.migrated.notes,'notes à conserver','personal notes survive inventory migration');
+  assert.equal(transfer.migrated.nansFireGiantBeltMigration,true,'migration only occurs once');
+  assert.equal(Object.hasOwn(transfer.custom,'surcharge'),false,'retired ring is not advertised to Encounter');
   // Rage implacable stays in the Rage card, but only the player can trigger its save.
   const shortcut=page.locator('#relentlessShortcut'),attempt=page.locator('#relentlessQuickBtn');
   assert.equal(await shortcut.isVisible(),true,'Rage shortcut visible on iPad / iPhone');

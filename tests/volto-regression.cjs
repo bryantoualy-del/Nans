@@ -9,14 +9,14 @@ elements.manualRoll.value='';
 const body=el(),fxClasses=[];elements.fx.appendChild=c=>fxClasses.push(c.className);
 const store=new Map();
 const document={body,getElementById:id=>elements[id]||null,querySelector:s=>s==='.shell'?elements.shell||el():null,querySelectorAll:()=>[],createElement:()=>el(),addEventListener(){}};
-const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,crypto:require('node:crypto').webcrypto,RPGDialogs:{confirm:()=>ctx.confirm(),prompt:()=>ctx.prompt()},matchMedia:()=>({matches:true})});
+const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},CompanionStorage:{write:(k,v)=>{store.set(k,v);return true}},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,crypto:require('node:crypto').webcrypto,RPGDialogs:{confirm:()=>ctx.confirm(),prompt:()=>ctx.prompt()},matchMedia:()=>({matches:true})});
 vm.runInContext(inline,ctx);
 vm.runInContext('companionRestConfirm=(type,detail,accept)=>accept()',ctx);
 const get=expr=>vm.runInContext(expr,ctx),run=src=>vm.runInContext(src,ctx);
 const state=()=>get('S');
 async function main(){
 const originalRollAttack=get('rollAttack');
-async function attack(hit=true){run("S.eco.action=false;S.attacksLeft=2;S.rollMode='manual'");run("rollAttack=()=>({a:10,b:null,raw:10,total:19,crit:false,bonus:9})");await run('smartAttack()');assert(state().pending);run(`confirmHit(${hit})`)}
+async function attack(hit=true){run("S.eco.action=false;S.attacksLeft=2;S.rollMode='manual'");run("rollAttack=()=>({a:10,b:null,raw:10,total:22,crit:false,bonus:12})");await run('smartAttack()');assert(state().pending);run(`confirmHit(${hit})`)}
 assert.equal(state().mode,'sword');assert.equal(state().hits,0);
 await attack(false);assert.equal(state().hits,0,'miss must not charge');
 for(let i=1;i<=3;i++){await attack();assert.equal(state().hits,i)}
@@ -38,9 +38,9 @@ elements.incomingDamage.value='25';run('applyDamage()');assert.equal(state().tem
 assert(store.has('nans-combat-state-v1'));
 console.log('Volto charge, miss, yellow/red, transfer, switch, impact, purge, temp replacement and absorption: OK');
 // Other combat resources and turn accounting.
-run("S.mode='axe';S.gwm=true;S.ring=true;S.hp=60;S.eco={action:false,bonus:false,reaction:false};S.attacksLeft=2");
-assert.equal(get('attackBonus()'),4,'Cogneur lourd attack penalty');
-run("rollAttack=()=>({a:20,b:2,raw:20,total:24,crit:true,bonus:4})");
+run("S.mode='axe';S.gwm=true;S.hp=60;S.eco={action:false,bonus:false,reaction:false};S.attacksLeft=2");
+assert.equal(get('attackBonus()'),7,'Strength 25 weapon +12, GWM reduces to +7');
+run("rollAttack=()=>({a:20,b:2,raw:20,total:27,crit:true,bonus:7})");
 await run('smartAttack()');assert(state().pending,'critical awaits hit validation');run('confirmHit(true)');assert.equal(state().pending,null,'critical resolves after validation');assert.equal(state().gwmBonus,true,'natural 20 grants bonus attack');
 run('S.eco.bonus=false;S.rages=4;S.raging=false;toggleRage()');assert.equal(state().rages,3);assert.equal(state().eco.bonus,true);
 run('S.frenzy=true;nextTurn()');assert.equal(get('bonusAttackAvailable()'),true,'frenzy bonus after initial round');
@@ -48,7 +48,7 @@ run('S.eco.action=false;S.horn=3;hornPower("crash",1,"action")');assert.equal(st
 run("S.eco.action=false;S.hornState='awakened';S.hornMax=5;S.horn=5;hornPower('ancestors',3,'action',true)");assert.equal(state().ancReady,false);assert.equal(state().horn,2);
 run('hornRest()');assert.equal(state().horn,5);assert.equal(state().ancReady,true);
 run('longRest()');assert.equal(state().hp,state().maxHp);assert.equal(state().rages,4);
-console.log('Critical, GWM, ring, rage, frenzy, horn, rest: OK');
+console.log('Critical, GWM, Strength 25, rage, frenzy, horn, rest: OK');
 // Ordinary results collapse to Pik-like badge; hit confirmation stays modal.
 run("S.pending=null;ribbon('Essai','14 dégâts')");assert(elements.ribbon.classList.contains('show'));assert(!elements.ribbon.classList.contains('question'));
 run('collapseRibbon()');assert(!elements.ribbon.classList.contains('show'));assert.equal(elements.resultBadge.hidden,false);
@@ -69,7 +69,7 @@ console.log('One-tap Frenzy, bonus timing, exhaustion and normal Rage: OK');
 ctx.originalRollAttack=originalRollAttack;run('rollAttack=originalRollAttack');
 run("S.mode='sword';S.hits=0;S.reckless=false;S.rollMode='auto';S.eco.action=false;S.attacksLeft=2");
 elements.manualRoll.value='11';await run('smartAttack()');assert.equal(state().pending.roll.raw,11);
-assert.equal(state().pending.roll.total,20);assert.equal(elements.manualRoll.value,'');run('confirmHit(false)');assert.equal(state().hits,0);
+assert.equal(state().pending.roll.total,23);assert.equal(elements.manualRoll.value,'');run('confirmHit(false)');assert.equal(state().hits,0);
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='12';await run('smartAttack()');run('confirmHit(true)');assert.equal(state().hits,1);
 run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');assert.equal(elements.manualHint.textContent.includes('meilleur de 2'),true);
 elements.manualRoll.value='19';await run('smartAttack()');assert.equal(state().pending.roll.raw,19);assert.equal(state().pending.roll.a,19);assert.equal(state().pending.roll.b,null,'player supplies the better die');run('confirmHit(false)');assert.equal(state().hits,1);
@@ -79,15 +79,24 @@ run("S.rollMode='auto'");assert.notEqual((await get('rollAttack()')).b,null,'aut
 run('S.eco.action=false;S.attacksLeft=2;S.recklessLocked=false;toggleOpt("reckless")');elements.manualRoll.value='1';await run('smartAttack()');run('confirmHit(false)');assert.equal(state().pending,null);assert.equal(state().hits,1,'natural 1 never charges');
 run('S.eco.action=false;S.attacksLeft=2');elements.manualRoll.value='20';await run('smartAttack()');assert(state().pending);run('confirmHit(true)');assert.equal(state().hits,2,'natural 20 charges after hit confirmation');
 console.log('Inline manual d20, selected advantage, invalid input, natural 1/20 and Volto charge: OK');
-// Rage's documented +3 is conditional; weapon's existing fixed subtotal remains +5.
-run("Math.random=()=>.5;S.mode='axe';S.ring=false;S.gwm=false;S.hp=100;S.stored='none';S.raging=false");
+// Fire giant belt sets Strength 25: weapon +12 to hit and +8 flat damage outside Rage; +11 in Rage.
+run("Math.random=()=>.5;S.mode='axe';S.gwm=false;S.hp=100;S.stored='none';S.raging=false");
 const plain=get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).total");
 run('S.raging=true');const enraged=get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).total");
 assert.equal(enraged-plain,3,'Rage adds exactly +3 with the same deterministic die');
-assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 8')"),true);
-run('S.raging=false');assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 5')"),true);
+assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 11')"),true);
+run('S.raging=false');assert.equal(get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false}).txt.includes('+ 8')"),true);
 run("S.mode='axe';render()");assert.equal(elements.acText.textContent,16);run("S.mode='sword';render()");assert.equal(elements.acText.textContent,18);
-console.log('Conditional Rage +3, retained weapon subtotal +5, AC 18/16: OK');
+assert.equal(get('attackBonus()'),12,'both weapon modes use +12 attack with the belt');
+run("S.gwm=true;S.mode='axe'");assert.equal(get('attackBonus()'),7,'GWM penalty still subtracts five');
+run("S.gwm=false;S.hp=40;S.ring=true");const afterUnattunedRing=get("damageRoll({mode:'axe',roll:{crit:false},stored:'none',impact:false})");
+assert.equal(afterUnattunedRing.total,plain,'old ring flag and low HP no longer grant damage');
+assert.equal(afterUnattunedRing.selfDamage,0,'removed ring never causes 1d4 self-damage');
+assert.equal(state().hp,40,'removed ring never reduces HP');
+run("delete S.ring;toggleOpt('ring')");assert.equal(Object.hasOwn(state(),'ring'),false,'retired ring cannot be re-enabled by old UI');
+run("S.mode='sword';S.raging=false");const sword=get("damageRoll({mode:'sword',roll:{crit:false},stored:'none',impact:false})");
+assert.equal(sword.txt.includes('+ 8'),true,'sword uses +8 out of Rage');
+console.log('Strength 25, +12 attack, +8/+11 damage, retired ring, AC 18/16: OK');
 
 }
 main().catch(error=>{console.error(error);process.exitCode=1});

@@ -10,3 +10,5 @@ jobs:
           node-version: 22
       - name: Parse combat values and verify isolated UI integration
         run: node --test tests/result-focus.test.cjs
+      - name: Verify Volto 25 Strength, removed ring, and unchanged attack cycle
+        run: node tests/volto-regression.cjs
