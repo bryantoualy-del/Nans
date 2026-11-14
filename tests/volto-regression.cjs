@@ -9,7 +9,7 @@ elements.manualRoll.value='';
 const body=el(),fxClasses=[];elements.fx.appendChild=c=>fxClasses.push(c.className);
 const store=new Map();
 const document={body,getElementById:id=>elements[id]||null,querySelector:s=>s==='.shell'?elements.shell||el():null,querySelectorAll:()=>[],createElement:()=>el(),addEventListener(){}};
-const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,crypto:require('node:crypto').webcrypto,RPGDialogs:{confirm:()=>ctx.confirm(),prompt:()=>ctx.prompt()},matchMedia:()=>({matches:true})});
+const ctx=vm.createContext({document,window:{addEventListener(){}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},CompanionStorage:{write:(k,v)=>{store.set(k,v);return true}},console,Math,Date,JSON,Number,String,queueMicrotask:()=>{},setTimeout:()=>0,clearTimeout(){},innerWidth:1024,innerHeight:768,confirm:()=>true,prompt:()=>null,crypto:require('node:crypto').webcrypto,RPGDialogs:{confirm:()=>ctx.confirm(),prompt:()=>ctx.prompt()},matchMedia:()=>({matches:true})});
 vm.runInContext(inline,ctx);
 vm.runInContext('companionRestConfirm=(type,detail,accept)=>accept()',ctx);
 const get=expr=>vm.runInContext(expr,ctx),run=src=>vm.runInContext(src,ctx);
