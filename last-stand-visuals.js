@@ -16,8 +16,6 @@
  .last-stand-notice small{display:block;font-weight:400;opacity:.85;margin-top:3px}
  html.last-stand-down body:after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;box-shadow:inset 0 0 95px 28px #8e293b75;animation:lastStandPulse 3s ease-in-out infinite}
  html.last-stand-down #lastStandBanner{border-color:#d16d73}
- html.last-stand-survivor body:after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;box-shadow:inset 0 0 95px 20px #cb4c2475}
- html.last-stand-survivor #lastStandBanner{border-color:#e49b56;background:linear-gradient(110deg,#271719,#63301e);box-shadow:0 0 30px #bb492d65}
  @keyframes lastStandPulse{50%{box-shadow:inset 0 0 70px 12px #8e293b45}}
  @keyframes lastStandIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
  @media(prefers-reduced-motion:reduce){html.last-stand-down body:after,.last-stand-notice{animation:none}}
@@ -30,19 +28,17 @@
  function setBanner(title,sub){panel.replaceChildren(document.createTextNode(title));const small=document.createElement('small');small.textContent=sub;panel.append(small);panel.hidden=false}
  function refreshSelf(){const hp=local(),id=selfId();if(hp===null)return;const raging=!!bridge()?.read?.()?.raging;
  if(!wasReady){wasReady=true;previousHp=hp}
- if(id==='nans'&&survivor&&!raging)survivor=false;
  const actor=(window.RPGGroup?.getActors?.()||[]).find(a=>String(a.companionId||'').toLowerCase()===id);
  const life=normalize(actor?.lifeStatus);
  const dead=life==='dead'||life==='mort';const stable=life==='stable';
  const down=hp<=0&&!dead&&!stable;
  root.classList.toggle('last-stand-down',down);
- root.classList.toggle('last-stand-survivor',survivor&&!down);
  if(dead)setBanner('MORT AU COMBAT','0 PV · Décès confirmé par Encounter');
  else if(stable)setBanner('STABILISÉ · 0 PV','Inconscient, mais stable');
  else if(down)setBanner('À TERRE · 0 PV',id==='nans'&&raging?'Rage implacable disponible dans Combat · jet déclenché par le joueur':'Jets de sauvegarde contre la mort · secours possible');
- else if(survivor)setBanner('NANS SE RELÈVE · SURVIVANT','Rage implacable réussie · '+hp+' PV');
- else panel.hidden=true;
+ else panel.hidden=true; // Successful recovery must never leave a sticky top-of-screen banner.
  if(survivor&&previousHp===0&&hp>0)notify('NANS SE RELÈVE !','Rage implacable réussie · '+hp+' PV',true);
+ if(hp>0||!raging)survivor=false;
  previousHp=hp;
  }
  window.addEventListener('nans:relentless-success',()=>{survivor=true;refreshSelf()});
