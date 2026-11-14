@@ -414,3 +414,6 @@ body.nans-v2 #v3-root .v3-dock button:not(.active){background:transparent;border
   .nans-v2 #attacks .attack-roll-choice{white-space:nowrap}
   .nans-v2 #attacks .attack-roll-choice select{width:auto;flex:1}
 }
+
+/* The surcharge ring is retired: two existing attack modifiers share the full row on iPad/iPhone. */
+body.nans-v2 #attacks .attack-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
