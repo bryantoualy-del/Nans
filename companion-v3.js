@@ -5,7 +5,22 @@ const key='companion-v3:'+cfg.id+':'+location.pathname.replace(/index\.html$/,''
 const backup=key+':backup';const base=()=>({schema:1,items:[],notes:'',preview:true,npcs:[],noteTab:'mechanical'});
 let data=base(),blocked=false;
 try{let raw=localStorage.getItem(key);if(raw)data=validate(JSON.parse(raw));else data.items=structuredClone(cfg.defaultItems||[]);}catch(e){blocked=true;data=base();}
-if(cfg.id==='nans'&&!blocked&&!data.nansGearMigration){const ring=(cfg.defaultItems||[]).find(i=>i.name==='Anneau de la Surcharge Furieuse');if(ring&&!data.items.some(i=>i.name===ring.name))data.items.push(structuredClone(ring));data.nansGearMigration=true;try{localStorage.setItem(key,JSON.stringify(data))}catch{}}
+// Fire giant belt transfer: migrate existing saves without touching other equipment, notes or NPCs.
+if(cfg.id==='nans'&&!blocked){
+ const normalizeName=name=>String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+ const isRetiredRing=item=>normalizeName(item?.name)==='anneau de la surcharge furieuse';
+ const isFireBelt=item=>{const name=normalizeName(item?.name);return name.includes('ceinture')&&name.includes('geant')&&name.includes('feu')};
+ const oldCount=data.items.length;
+ data.items=data.items.filter(item=>!isRetiredRing(item));
+ let changed=oldCount!==data.items.length;
+ if(!data.nansFireGiantBeltMigration){
+  const existing=data.items.find(isFireBelt);
+  if(existing){if(!existing.active||!existing.attuned){existing.active=true;existing.attuned=true;changed=true;}}
+  else {const belt=(cfg.defaultItems||[]).find(isFireBelt);if(belt){data.items.push(structuredClone(belt));changed=true;}}
+  data.nansFireGiantBeltMigration=true;changed=true;
+ }
+ if(changed)try{localStorage.setItem(key,JSON.stringify(data))}catch{}
+}
 function validate(x){if(!x||x.schema!==1||!Array.isArray(x.items)||!Array.isArray(x.npcs)||typeof x.notes!=='string'||typeof x.preview!=='boolean')throw Error('Format de sauvegarde V3 incompatible.');if(x.items.length>300||x.npcs.length>200||x.notes.length>150000)throw Error('Sauvegarde trop volumineuse.');for(const i of x.items){if(!i||typeof i.name!=='string'||i.name.length>160||!Number.isInteger(i.qty)||i.qty<0||i.qty>9999||typeof i.note!=='string'||i.note.length>5000||typeof i.image!=='string'||i.image.length>400000)throw Error('Objet invalide.');}for(const p of x.npcs){if(!p||typeof p.name!=='string'||typeof p.note!=='string'||typeof p.image!=='string'||p.image.length>400000)throw Error('PNJ invalide.');}x.noteTab=['mechanical','notes'].includes(x.noteTab)?x.noteTab:'mechanical';return x;}
 function persist(){if(blocked){warn('Sauvegarde illisible conservée : exporte-la avant de remplacer.');return false;}try{localStorage.setItem(key,JSON.stringify(data));queueMicrotask(()=>window.CompanionAPI?.sync());return true;}catch{warn('Stockage indisponible. Exporte ta partie.');return false;}}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
