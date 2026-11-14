@@ -30,7 +30,7 @@
  function setBanner(title,sub){panel.replaceChildren(document.createTextNode(title));const small=document.createElement('small');small.textContent=sub;panel.append(small);panel.hidden=false}
  function refreshSelf(){const hp=local(),id=selfId();if(hp===null)return;const raging=!!bridge()?.read?.()?.raging;
  if(!wasReady){wasReady=true;previousHp=hp}
- if(id==='nans'&&survivor&&(!raging||hp<=0))survivor=false;
+ if(id==='nans'&&survivor&&!raging)survivor=false;
  const actor=(window.RPGGroup?.getActors?.()||[]).find(a=>String(a.companionId||'').toLowerCase()===id);
  const life=normalize(actor?.lifeStatus);
  const dead=life==='dead'||life==='mort';const stable=life==='stable';
@@ -42,9 +42,10 @@
  else if(down)setBanner('À TERRE · 0 PV',id==='nans'&&raging?'Rage implacable disponible dans Combat · jet déclenché par le joueur':'Jets de sauvegarde contre la mort · secours possible');
  else if(survivor)setBanner('NANS SE RELÈVE · SURVIVANT','Rage implacable réussie · '+hp+' PV');
  else panel.hidden=true;
+ if(survivor&&previousHp===0&&hp>0)notify('NANS SE RELÈVE !','Rage implacable réussie · '+hp+' PV',true);
  previousHp=hp;
  }
- window.addEventListener('nans:relentless-success',()=>{survivor=true;notify('NANS SE RELÈVE !','Rage implacable réussie · 1 PV',true);refreshSelf()});
+ window.addEventListener('nans:relentless-success',()=>{survivor=true;refreshSelf()});
  function status(a){const hp=Number(a?.health?.current);const valid=Number.isFinite(hp)&&a?.health?.current!==undefined;const life=normalize(a?.lifeStatus);if(life==='dead'||life==='mort')return'dead';if(life==='stable')return'stable';if(life==='unconscious'||life==='inconscient'||(valid&&hp<=0))return'down';if(valid&&hp>0||life==='alive'||life==='vivant')return'up';return null}
  function refreshAllies(){const actors=window.RPGGroup?.getActors?.();if(!Array.isArray(actors))return;const epoch=String(window.RPGHealth?.getContext?.()?.encounterEpoch||'');if(epoch&&lastEpoch&&epoch!==lastEpoch){allyReady=false;previousActors.clear()}lastEpoch=epoch||lastEpoch;
  const next=new Map();for(const a of actors){if(a.kind!=='player'||!a.id||String(a.companionId||'').toLowerCase()===(selfId()||'nans'))continue;const id=String(a.id),s=status(a);if(s)next.set(id,{status:s,name:a.name||'Un allié'})}
