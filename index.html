@@ -292,16 +292,27 @@ async function relentlessRage(){
  if(!S.raging)return ribbon('Rage implacable','Nécessite une Rage active.');
  if(S.hp>0)return ribbon('Rage implacable','Disponible lorsque les PV sont à 0.');
  const dc=Math.max(10,Number(S.relentlessDC)||10);
- const manual=await RPGDialogs.prompt('Rage implacable · JdS CON +7 contre DD '+dc+'\nRésultat naturel du d20 (1 à 20), ou laisser vide pour lancer :','');
- if(manual===null)return;
- const entered=String(manual).trim();
- const dieRoll=entered===''?d(20):Number(entered);
+ // Roll directly with the companion dice engine in auto mode; retain a physical-dice entry in manual mode.
+ let dieRoll;
+ if(S.rollMode==='manual'){
+  const manual=await RPGDialogs.prompt('Rage implacable · JdS CON +7 contre DD '+dc+'\nRésultat naturel du d20 (1 à 20), ou laisser vide pour lancer :','');
+  if(manual===null)return;
+  const entered=String(manual).trim();
+  dieRoll=entered===''?d(20):Number(entered);
+ }else dieRoll=d(20);
  if(!Number.isInteger(dieRoll)||dieRoll<1||dieRoll>20)return ribbon('Rage implacable','Résultat naturel invalide : saisir 1 à 20.');
  const total=dieRoll+7,success=total>=dc;
  S.relentlessDC=dc+5;
  if(success&&!window.RPGHealth?.authoritative())S.hp=1;
  const message='JdS CON '+dieRoll+'+7='+total+' contre DD '+dc+' · '+(success?'RÉUSSITE : 1 PV':'ÉCHEC : reste à 0 PV')+(window.RPGHealth?.authoritative()&&success?' · MJ : appliquer 1 PV dans Encounter':'');
- log(message,'resource','Rage implacable');ribbon('Rage implacable',message);render();if(success)window.dispatchEvent(new CustomEvent('nans:relentless-success'));return success;
+ // The dice overlay shows the outcome; never leave a persistent top ribbon or result badge after this save.
+ clearTimeout(ribTimer);closeRibbon();S.lastResult=null;$('resultBadge').hidden=true;
+ log(message,'resource','Rage implacable');render();
+ const roll={label:'Rage implacable · JdS CON',rolls:[dieRoll],chosen:dieRoll,total,mode:'normal',detail:'d20 '+dieRoll+' + 7 = '+total+' · DD '+dc,verdict:success?'JdS réussi · 1 PV':'JdS raté · 0 PV'};
+ if(window.CompanionDiceEngine?.roll)void window.CompanionDiceEngine.roll(roll);
+ else window.CompanionSocialDice?.show({label:roll.label,dice:[dieRoll],bonus:7,total,mode:'normal'});
+ if(success)window.dispatchEvent(new CustomEvent('nans:relentless-success'));
+ return success;
 }
 function applyDamage(amount){const v=Math.max(0,Math.floor(Number(amount??$('incomingDamage').value)||0));if(!v)return;const absorbed=Math.min(S.temp,v);S.temp-=absorbed;S.hp=Math.max(0,S.hp-(v-absorbed));if(S.hp===0&&S.raging&&!window.RPGHealth?.authoritative())ribbon('Rage implacable','0 PV pendant la Rage : utiliser « Tenter Rage implacable » pour résoudre le JdS CON.');if(!S.temp){S.tempSource='';S.barkActive=false;document.body.classList.remove('bark')}log(v+' dégâts reçus · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV','resource','Dégâts reçus');ribbon('Dégâts reçus','−'+v+' annoncé · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV\nPV : '+S.hp+'/'+S.maxHp);$('incomingDamage').value=0;previewDamage();fxNans('stone');render()}
 async function heal(amount){const raw=amount==null?(await RPGDialogs.prompt('PV soignés (PV normaux uniquement)',0)):amount;if(raw===null)return;const n=Math.max(0,Math.floor(Number(raw)||0));if(!n)return;const before=S.hp;S.hp=Math.min(S.maxHp,S.hp+n);const healed=S.hp-before;log(healed+' PV soignés.','resource','Soins');ribbon('Soins reçus','+'+healed+' PV\nPV : '+S.hp+'/'+S.maxHp);fxNans('heal');render()}
@@ -408,7 +419,7 @@ window.__CompanionBridge.adjustTurnDamage=delta=>{S.turnDamage=Math.max(0,(Numbe
 <style>:root{--crf-accent:#ffb83f;--crf-damage:#ee9874;--crf-heal:#88b967;--crf-panel:#2b2115;--crf-deep:#090704;--crf-line:#705835;--crf-text:#f3e3bd;--crf-muted:#bfae88}</style>
 <script>window.CompanionResultFocusConfig={name:"NANS",sources:["#ribbon #rb"],labels:["#ribbon #rt"]};</script>
 <script src="companion-result-card.js?v=2.3"></script>
-<link rel="stylesheet" href="nans-v2.css?v=4-rage-implacable">
+<link rel="stylesheet" href="nans-v2.css?v=5-group-journal-20261114">
 <script src="nans-v2.js?v=2"></script>
 <script src="./last-stand-visuals.js?v=1"></script>
 </body></html>
