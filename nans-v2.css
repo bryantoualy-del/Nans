@@ -214,6 +214,38 @@ body.nans-v2 #attacks .drive-copy strong{font-size:14px;color:#fae8ce;text-trans
 body.nans-v2 #barbarianDrive .drive-actions button{min-height:44px;border-radius:7px;background:var(--bronze);border-color:#ac7e55}
 body.nans-v2 #barbarianDrive #quickRageBtn{background:var(--ember);border-color:#c56c52}
 body.nans-v2 #barbarianDrive #quickRageBtn.on{border-color:#ff9e6b;box-shadow:inset 0 0 10px #ff754c88}
+/* Rage implacable: always visible next to Rage / Frenzy, but manually triggered only at 0 HP. */
+body.nans-v2 #attacks #barbarianDrive .relentless-shortcut{
+  grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:8px;min-height:56px;padding:6px 7px 6px 10px;
+  border:1px solid #76513d;border-radius:7px;
+  background:var(--grain),linear-gradient(110deg,#2b1815,#171315 76%);
+  box-shadow:inset 0 0 0 1px #d6a36910;
+}
+body.nans-v2 #barbarianDrive .relentless-shortcut-copy{min-width:0}
+body.nans-v2 #barbarianDrive .relentless-shortcut-copy strong{
+  display:block;color:#f1d8b1;font:700 14px/1.16 Georgia,serif;
+}
+body.nans-v2 #barbarianDrive .relentless-shortcut-copy span{
+  display:block;margin-top:3px;color:#d7bda0;font-size:11px;line-height:1.2;
+}
+body.nans-v2 #attacks #barbarianDrive #relentlessQuickBtn{
+  min-height:44px;min-width:125px;margin:0;padding:6px 9px;
+  border:1px solid #ad8055;border-radius:7px;background:var(--bronze);
+  color:#f5dfc1;font:700 12px/1.1 system-ui,sans-serif;
+}
+body.nans-v2 #attacks #barbarianDrive #relentlessQuickBtn:disabled{
+  opacity:.58;filter:saturate(.7);cursor:not-allowed;box-shadow:none;
+}
+body.nans-v2 #attacks #barbarianDrive .relentless-shortcut.is-ready{
+  border-color:#efa66f;
+  background:var(--grain),linear-gradient(115deg,#622c23,#311815 75%);
+  box-shadow:inset 0 0 0 1px #dc865344,0 0 10px #a33e244d;
+}
+body.nans-v2 #attacks #barbarianDrive .relentless-shortcut.is-ready #relentlessQuickBtn{
+  background:var(--ember);border-color:#ffc18c;color:#fff2dc;
+  box-shadow:inset 0 0 9px #e16a354d,0 0 8px #e16a353e;
+}
 body.nans-v2 #attacks .volto-meter{
   display:flex;flex-direction:column;justify-content:space-between;
   padding:8px 11px;margin:0!important;
