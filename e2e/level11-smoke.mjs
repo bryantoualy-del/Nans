@@ -27,6 +27,20 @@ try{
   await page.reload();await page.waitForFunction(()=>window.__CompanionBridge?.read);
   const migrated=await page.evaluate(()=>{const s=window.__CompanionBridge.read();return{hp:s.hp,max:s.maxHp,exhaust:s.exhaust,dc:s.relentlessDC}});
   assert.deepEqual(migrated,{hp:62,max:137,exhaust:2,dc:15});
+  // Rage implacable stays in the Rage card, but only the player can trigger its save.
+  const shortcut=page.locator('#relentlessShortcut'),attempt=page.locator('#relentlessQuickBtn');
+  assert.equal(await shortcut.isVisible(),true,'Rage shortcut visible on iPad / iPhone');
+  assert.equal(await attempt.isDisabled(),true,'save disabled when conditions are not met');
+  assert.match(await page.locator('#relentlessQuickState').textContent(),/DD 15/,'saved DC is displayed');
+  await page.evaluate(()=>{const s=window.__CompanionBridge.read();s.hp=0;s.raging=true;render();});
+  assert.equal(await attempt.isEnabled(),true,'save enabled at 0 HP during Rage');
+  assert.equal(await shortcut.evaluate(el=>el.classList.contains('is-ready')),true);
+  await page.evaluate(()=>{window.__relentlessOriginalPrompt=RPGDialogs.prompt;RPGDialogs.prompt=async()=> '15';});
+  await attempt.click();
+  await page.evaluate(()=>{RPGDialogs.prompt=window.__relentlessOriginalPrompt;});
+  assert.equal(await page.evaluate(()=>window.__CompanionBridge.read().relentlessDC),20,'DC increases after the test');
+  assert.equal(await page.evaluate(()=>window.__CompanionBridge.read().hp),1,'successful manual CON save restores 1 HP');
+  assert.equal(await attempt.isDisabled(),true,'save locks again after returning to 1 HP');
   assert.deepEqual(errors,[],'no browser runtime errors');
   await page.close();
  }
