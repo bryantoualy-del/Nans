@@ -361,6 +361,8 @@ body.nans-v2 #combat #defense .btn-blue{background:var(--blue-steel);border-colo
 .nans-v2 [data-unified-companion]{display:none}
 .nans-v2 #v3-notes [data-unified-companion]{display:block}
 .nans-v2 #v3-root > #log{display:none}
+/* Group is initiative/party state only; keep all journals in their dedicated tab. */
+body.nans-v2.rpg-group-visible :is(#v3-notes,#log,[data-unified-companion],.rpg-unified-journal){display:none!important}
 body.nans-v2 #v3-notes .log{background:#131211;border-color:#76583f}
 body.nans-v2 #v3-notes :is(.log-entry,.rpg-journal-turn,.rpg-journal-action){background:var(--steel)}
 body.nans-v2 #v3-notes .rpg-journal-turn{border-color:#8a6648}
