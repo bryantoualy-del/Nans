@@ -301,7 +301,7 @@ async function relentlessRage(){
  S.relentlessDC=dc+5;
  if(success&&!window.RPGHealth?.authoritative())S.hp=1;
  const message='JdS CON '+dieRoll+'+7='+total+' contre DD '+dc+' · '+(success?'RÉUSSITE : 1 PV':'ÉCHEC : reste à 0 PV')+(window.RPGHealth?.authoritative()&&success?' · MJ : appliquer 1 PV dans Encounter':'');
- log(message,'resource','Rage implacable');ribbon('Rage implacable',message);render();return success;
+ log(message,'resource','Rage implacable');ribbon('Rage implacable',message);render();if(success)window.dispatchEvent(new CustomEvent('nans:relentless-success'));return success;
 }
 function applyDamage(amount){const v=Math.max(0,Math.floor(Number(amount??$('incomingDamage').value)||0));if(!v)return;const absorbed=Math.min(S.temp,v);S.temp-=absorbed;S.hp=Math.max(0,S.hp-(v-absorbed));if(S.hp===0&&S.raging&&!window.RPGHealth?.authoritative())ribbon('Rage implacable','0 PV pendant la Rage : utiliser « Tenter Rage implacable » pour résoudre le JdS CON.');if(!S.temp){S.tempSource='';S.barkActive=false;document.body.classList.remove('bark')}log(v+' dégâts reçus · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV','resource','Dégâts reçus');ribbon('Dégâts reçus','−'+v+' annoncé · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV\nPV : '+S.hp+'/'+S.maxHp);$('incomingDamage').value=0;previewDamage();fxNans('stone');render()}
 async function heal(amount){const raw=amount==null?(await RPGDialogs.prompt('PV soignés (PV normaux uniquement)',0)):amount;if(raw===null)return;const n=Math.max(0,Math.floor(Number(raw)||0));if(!n)return;const before=S.hp;S.hp=Math.min(S.maxHp,S.hp+n);const healed=S.hp-before;log(healed+' PV soignés.','resource','Soins');ribbon('Soins reçus','+'+healed+' PV\nPV : '+S.hp+'/'+S.maxHp);fxNans('heal');render()}
@@ -403,4 +403,5 @@ window.__CompanionBridge.adjustTurnDamage=delta=>{S.turnDamage=Math.max(0,(Numbe
 <script src="companion-result-card.js?v=2.3"></script>
 <link rel="stylesheet" href="nans-v2.css?v=3">
 <script src="nans-v2.js?v=2"></script>
+<script src="./last-stand-visuals.js?v=1"></script>
 </body></html>
