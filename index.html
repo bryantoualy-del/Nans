@@ -288,16 +288,22 @@ function resetTurn(){S.eco={action:false,bonus:false,reaction:false};S.energyUse
 function nextTurn(){S.turn++;S.round++;logTurnSummary();resetTurn();render();if(bonusAttackAvailable())ribbon('Frénésie disponible','Une attaque d’arme peut être utilisée en action bonus ce tour.')}
 function previewDamage(){const v=Math.max(0,Number($('incomingDamage').value)||0),absorbed=Math.min(v,S.temp);$('damagePreview').textContent=absorbed+' absorbés par PV temporaires · '+(v-absorbed)+' sur les PV'}
 function setDamage(v){$('incomingDamage').value=v;previewDamage()}
-function relentlessRage(automatic=false){
+async function relentlessRage(){
  if(!S.raging)return ribbon('Rage implacable','Nécessite une Rage active.');
- if(S.hp>0&&!window.RPGHealth?.authoritative())return ribbon('Rage implacable','Disponible lorsque les PV sont à 0.');
- const dc=Math.max(10,Number(S.relentlessDC)||10),dieRoll=d(20),total=dieRoll+7,success=total>=dc;
+ if(S.hp>0)return ribbon('Rage implacable','Disponible lorsque les PV sont à 0.');
+ const dc=Math.max(10,Number(S.relentlessDC)||10);
+ const manual=await RPGDialogs.prompt('Rage implacable · JdS CON +7 contre DD '+dc+'\nRésultat naturel du d20 (1 à 20), ou laisser vide pour lancer :','');
+ if(manual===null)return;
+ const entered=String(manual).trim();
+ const dieRoll=entered===''?d(20):Number(entered);
+ if(!Number.isInteger(dieRoll)||dieRoll<1||dieRoll>20)return ribbon('Rage implacable','Résultat naturel invalide : saisir 1 à 20.');
+ const total=dieRoll+7,success=total>=dc;
  S.relentlessDC=dc+5;
  if(success&&!window.RPGHealth?.authoritative())S.hp=1;
  const message='JdS CON '+dieRoll+'+7='+total+' contre DD '+dc+' · '+(success?'RÉUSSITE : 1 PV':'ÉCHEC : reste à 0 PV')+(window.RPGHealth?.authoritative()&&success?' · MJ : appliquer 1 PV dans Encounter':'');
  log(message,'resource','Rage implacable');ribbon('Rage implacable',message);render();return success;
 }
-function applyDamage(amount){const v=Math.max(0,Math.floor(Number(amount??$('incomingDamage').value)||0));if(!v)return;const absorbed=Math.min(S.temp,v);S.temp-=absorbed;S.hp=Math.max(0,S.hp-(v-absorbed));if(S.hp===0&&S.raging&&!window.RPGHealth?.authoritative())relentlessRage(true);if(!S.temp){S.tempSource='';S.barkActive=false;document.body.classList.remove('bark')}log(v+' dégâts reçus · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV','resource','Dégâts reçus');ribbon('Dégâts reçus','−'+v+' annoncé · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV\nPV : '+S.hp+'/'+S.maxHp);$('incomingDamage').value=0;previewDamage();fxNans('stone');render()}
+function applyDamage(amount){const v=Math.max(0,Math.floor(Number(amount??$('incomingDamage').value)||0));if(!v)return;const absorbed=Math.min(S.temp,v);S.temp-=absorbed;S.hp=Math.max(0,S.hp-(v-absorbed));if(S.hp===0&&S.raging&&!window.RPGHealth?.authoritative())ribbon('Rage implacable','0 PV pendant la Rage : utiliser « Tenter Rage implacable » pour résoudre le JdS CON.');if(!S.temp){S.tempSource='';S.barkActive=false;document.body.classList.remove('bark')}log(v+' dégâts reçus · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV','resource','Dégâts reçus');ribbon('Dégâts reçus','−'+v+' annoncé · '+absorbed+' absorbés · '+(v-absorbed)+' sur les PV\nPV : '+S.hp+'/'+S.maxHp);$('incomingDamage').value=0;previewDamage();fxNans('stone');render()}
 async function heal(amount){const raw=amount==null?(await RPGDialogs.prompt('PV soignés (PV normaux uniquement)',0)):amount;if(raw===null)return;const n=Math.max(0,Math.floor(Number(raw)||0));if(!n)return;const before=S.hp;S.hp=Math.min(S.maxHp,S.hp+n);const healed=S.hp-before;log(healed+' PV soignés.','resource','Soins');ribbon('Soins reçus','+'+healed+' PV\nPV : '+S.hp+'/'+S.maxHp);fxNans('heal');render()}
 async function assignTemp(n,source){n=Math.max(0,Math.floor(Number(n)||0));if(S.temp>0&&S.tempSource!==source&&!(await RPGDialogs.confirm('Remplacer '+S.temp+' PV temporaires ('+(S.tempSource||'source inconnue')+') par '+n+' PV temporaires ('+source+') ?')))return false;S.temp=n;S.tempSource=n?source:'';if(source!=='Écorce'){S.barkActive=false;document.body.classList.remove('bark')}log(source+' : '+n+' PV temporaires.','resource','PV temporaires');render();return true}
 async function defineTemp(){let v=(await RPGDialogs.prompt('Nombre de PV temporaires',S.temp));if(v===null)return;let source=(await RPGDialogs.prompt('Source des PV temporaires','Autre effet'));if(source===null)return;(await assignTemp(v,source.trim()||'Autre effet'))}
