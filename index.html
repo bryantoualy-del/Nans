@@ -306,7 +306,7 @@ async function relentlessRage(){
  if(success&&!window.RPGHealth?.authoritative())S.hp=1;
  const message='JdS CON '+dieRoll+'+7='+total+' contre DD '+dc+' · '+(success?'RÉUSSITE : 1 PV':'ÉCHEC : reste à 0 PV')+(window.RPGHealth?.authoritative()&&success?' · MJ : appliquer 1 PV dans Encounter':'');
  // The dice overlay shows the outcome; never leave a persistent top ribbon or result badge after this save.
- clearTimeout(ribTimer);closeRibbon();S.lastResult=null;$('resultBadge').hidden=true;
+ clearTimeout(ribTimer);closeRibbon();S.lastResult=null;$('resultBadge').hidden=true;window.CompanionResultFocus?.hide?.();
  log(message,'resource','Rage implacable');render();
  const roll={label:'Rage implacable · JdS CON',rolls:[dieRoll],chosen:dieRoll,total,mode:'normal',detail:'d20 '+dieRoll+' + 7 = '+total+' · DD '+dc,verdict:success?'JdS réussi · 1 PV':'JdS raté · 0 PV'};
  if(window.CompanionDiceEngine?.roll)void window.CompanionDiceEngine.roll(roll);
